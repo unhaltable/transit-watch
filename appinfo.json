@@ -15,6 +15,11 @@
     "resources": {
         "media": [
             {
+                "type": "png-trans",
+                "name": "IMAGE_LOGO",
+                "file": "images/pebble-app-icon-large.png"
+            },
+            {
                 "menuIcon": true,
                 "type": "png",
                 "name": "IMAGE_MENU_ICON",
