@@ -34,3 +34,11 @@ We'll use [CloudPebble](https://cloudpebble.net) to collaborate on the Pebble po
 [Android Studio](http://developer.android.com/sdk/installing/studio.html) for the Android portion of the app. Android Studio is preferrable to Eclipse because it uses the Gradle build system, which makes dependency management much easier when collaborating.
 
 Both the Pebble app and the Android app will be in the same repository (*sigh*) because that's how we submit to CODE.
+
+#### Useful links
+
+- [SDK guide](https://developer.getpebble.com/2/)
+- [SDK samples](https://github.com/pebble/pebble-sdk-examples)
+- [SDK reference](https://developer.getpebble.com/2/api-reference/modules.html)
+- [Design resources](https://developer.getpebble.com/2/design/)
+- [Android Pebble library](https://developer.getpebble.com/2/mobile-app-guide/android-guide.html/)
