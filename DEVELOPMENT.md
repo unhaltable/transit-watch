@@ -59,6 +59,7 @@ Both the Pebble app and the Android app will be in the same repository (*sigh*) 
 - [SDK reference](https://developer.getpebble.com/2/api-reference/modules.html)
 - [Design resources](https://developer.getpebble.com/2/design/)
 - [Android Pebble library](https://developer.getpebble.com/2/mobile-app-guide/android-guide.html/)
+- [NextBus XML API](https://github.com/elliottsj/nextbusapi/raw/master/nextbus-docs/NextBusXMLFeed.pdf) (we won't be using the XML directly, but this PDF shows what data is available)
 
 ### Development environment setup
 
@@ -75,8 +76,7 @@ Once the hackathon has started and I've committed some starter code:
     - Branch: (leave blank for 'master')
 - Compiling:
     - Go to the "Compilation" section
-    - Enter the IP address I have on my phone (this will change occasionally). For example:
-    ![image](https://raw.github.com/elliottsj/pebble-transit/master/images/Screenshot_2014-02-28-13-37-30.png?token=2177366__eyJzY29wZSI6IlJhd0Jsb2I6ZWxsaW90dHNqL3BlYmJsZS10cmFuc2l0L21hc3Rlci9pbWFnZXMvU2NyZWVuc2hvdF8yMDE0LTAyLTI4LTEzLTM3LTMwLnBuZyIsImV4cGlyZXMiOjEzOTQyMjIxMTl9--4f526ab6f3fea2439b451c253b5051554cb69fc5)
+    - Enter the IP address I have on my phone (this will change occasionally). ([For example](https://github.com/elliottsj/transit-watch/blob/master/images/Screenshot_2014-02-28-13-37-30.png))
     - Check "Automatically pull changes" and "Automatically build after pulling"
     - Now the app will compile automatically whenever anyone pushes to the repo.
 - Clone the [repository](https://github.com/elliottsj/pebble-transit) using your favourite Git client and edit using your favourite text editor.
@@ -84,4 +84,8 @@ Once the hackathon has started and I've committed some starter code:
 ##### Android
 
 - Install [Android Studio](http://developer.android.com/sdk/installing/studio.html)
-- 
+- Install [Maven](http://maven.apache.org/download.cgi) (you need this to install the NextBus API into a local maven repo)
+- Open Android Studio and import the project from path `transit-watch/android`
+- Clone the [NextBus API Java library repo](https://github.com/elliottsj/nextbusapi)
+- Open a terminal and change directory to `nextbusapi/adapter`
+- Run `mvn install`. This will install the library into your local maven repository.
