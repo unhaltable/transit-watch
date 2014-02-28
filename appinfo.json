@@ -7,12 +7,19 @@
     "capabilities": [
         ""
     ],
-    "shortName": "Transit",
+    "shortName": "Transit Watch",
     "companyName": "Cryptr",
     "watchapp": {
         "watchface": false
     },
     "resources": {
-        "media": []
+        "media": [
+            {
+                "menuIcon": true,
+                "type": "png",
+                "name": "IMAGE_MENU_ICON",
+                "file": "images/pebble-menu-image.png"
+            }
+        ]
     }
 }
