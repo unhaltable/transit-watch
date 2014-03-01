@@ -1,9 +1,42 @@
 package ca.cryptr.transit_watch.preferences;
 
+import android.content.ContentValues;
 import android.content.Context;
+import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.database.sqlite.SQLiteQueryBuilder;
+
+import net.sf.nextbus.publicxmlfeed.domain.Agency;
+import net.sf.nextbus.publicxmlfeed.domain.Route;
+import net.sf.nextbus.publicxmlfeed.domain.Stop;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import ca.cryptr.transit_watch.util.Util;
 
 public class PreferencesDataSource {
+
+    private static final String[] AGENCIES_COLUMNS = new String[] {
+            PreferencesSQLiteHelper.AGENCIES.COLUMN_TAG,
+            PreferencesSQLiteHelper.AGENCIES.COLUMN_TITLE,
+            PreferencesSQLiteHelper.AGENCIES.COLUMN_SHORT_TITLE,
+            PreferencesSQLiteHelper.AGENCIES.COLUMN_REGION_TITLE,
+    };
+
+    private static final String[] ROUTES_COLUMNS = new String[] {
+            PreferencesSQLiteHelper.ROUTES.COLUMN_AGENCY,
+            PreferencesSQLiteHelper.ROUTES.COLUMN_TAG,
+            PreferencesSQLiteHelper.ROUTES.COLUMN_TITLE,
+            PreferencesSQLiteHelper.ROUTES.COLUMN_SHORT_TITLE
+    };
+
+    private static final String[] STOPS_COLUMNS = new String[] {
+            PreferencesSQLiteHelper.STOPS.COLUMN_ROUTE,
+            PreferencesSQLiteHelper.STOPS.COLUMN_TAG,
+            PreferencesSQLiteHelper.STOPS.COLUMN_TITLE,
+            PreferencesSQLiteHelper.STOPS.COLUMN_SHORT_TITLE
+    };
 
     private PreferencesSQLiteHelper mDbHelper;
     private SQLiteDatabase mDatabase;
@@ -20,6 +53,244 @@ public class PreferencesDataSource {
         mDbHelper.close();
     }
 
+    /**
+     * Add the given stop to the database.
+     *
+     * @param stop a transit stop
+     */
+    public void saveStop(Route route, Stop stop) {
+        mDatabase.beginTransaction();
+        try {
+            // Insert the agency
+            Agency agency = stop.getAgency();
+            ContentValues agencyValues = new ContentValues();
+            agencyValues.put(PreferencesSQLiteHelper.AGENCIES.COLUMN_TAG, agency.getTag());
+            agencyValues.put(PreferencesSQLiteHelper.AGENCIES.COLUMN_TITLE, agency.getTitle());
+            agencyValues.put(PreferencesSQLiteHelper.AGENCIES.COLUMN_SHORT_TITLE, agency.getShortTitle());
+            agencyValues.put(PreferencesSQLiteHelper.AGENCIES.COLUMN_REGION_TITLE, agency.getRegionTitle());
+            mDatabase.insertWithOnConflict(PreferencesSQLiteHelper.AGENCIES.TABLE, null, agencyValues, SQLiteDatabase.CONFLICT_IGNORE);
 
+            // Insert the route
+            ContentValues routeValues = new ContentValues();
+            routeValues.put(PreferencesSQLiteHelper.ROUTES.COLUMN_AGENCY, agency.getTag());
+            routeValues.put(PreferencesSQLiteHelper.ROUTES.COLUMN_TAG, route.getTag());
+            routeValues.put(PreferencesSQLiteHelper.ROUTES.COLUMN_TITLE, route.getTitle());
+            routeValues.put(PreferencesSQLiteHelper.ROUTES.COLUMN_SHORT_TITLE, route.getShortTitle());
+            mDatabase.insertWithOnConflict(PreferencesSQLiteHelper.ROUTES.TABLE, null, routeValues, SQLiteDatabase.CONFLICT_IGNORE);
+
+            // Insert the stop
+            ContentValues stopValues = new ContentValues();
+            stopValues.put(PreferencesSQLiteHelper.STOPS.COLUMN_ROUTE, route.getTag());
+            stopValues.put(PreferencesSQLiteHelper.STOPS.COLUMN_TAG, stop.getTag());
+            stopValues.put(PreferencesSQLiteHelper.STOPS.COLUMN_TITLE, stop.getTitle());
+            stopValues.put(PreferencesSQLiteHelper.STOPS.COLUMN_SHORT_TITLE, stop.getShortTitle());
+            mDatabase.insertOrThrow(PreferencesSQLiteHelper.STOPS.TABLE, null, stopValues);
+
+            mDatabase.setTransactionSuccessful();
+        } finally {
+            mDatabase.endTransaction();
+        }
+    }
+
+    /**
+     * Delete the given stop from the database, if it exists
+     *
+     * @param stop a transit stop
+     */
+    public void deleteStop(Stop stop) {
+        mDatabase.beginTransaction();
+        try {
+            // Delete the stop
+            mDatabase.delete(PreferencesSQLiteHelper.STOPS.TABLE,
+                             PreferencesSQLiteHelper.STOPS.COLUMN_TAG + " = ?", new String[] { stop.getTag() });
+
+            // Delete the route if it's no longer referenced
+            mDatabase.delete(PreferencesSQLiteHelper.ROUTES.TABLE,
+                             PreferencesSQLiteHelper.ROUTES.COLUMN_TAG + " NOT IN (SELECT " +
+                             PreferencesSQLiteHelper.STOPS.COLUMN_ROUTE + " FROM " +
+                             PreferencesSQLiteHelper.STOPS.TABLE + ")", null);
+
+            // Delete the agency if it's no longer referenced
+            mDatabase.delete(PreferencesSQLiteHelper.AGENCIES.TABLE,
+                             PreferencesSQLiteHelper.AGENCIES.COLUMN_TAG + " NOT IN (SELECT " +
+                             PreferencesSQLiteHelper.ROUTES.COLUMN_AGENCY + " FROM " +
+                             PreferencesSQLiteHelper.ROUTES.TABLE + ")", null);
+
+            mDatabase.setTransactionSuccessful();
+        } finally {
+            mDatabase.endTransaction();
+        }
+    }
+
+    /**
+     * Retrieve all stops from the database.
+     *
+     * @return all stops from the database
+     */
+    public List<RouteStopTuple> getStops() {
+        List<RouteStopTuple> routeStops = new ArrayList<RouteStopTuple>();
+
+        SQLiteQueryBuilder queryBuilder = new SQLiteQueryBuilder();
+        queryBuilder.setTables(PreferencesSQLiteHelper.AGENCIES.TABLE + ", " +
+                               PreferencesSQLiteHelper.ROUTES.TABLE + ", " +
+                               PreferencesSQLiteHelper.STOPS.TABLE);
+        queryBuilder.appendWhere(PreferencesSQLiteHelper.STOPS.COLUMN_ROUTE + " = " +
+                                 PreferencesSQLiteHelper.ROUTES.COLUMN_TAG);
+        queryBuilder.appendWhere(" AND ");
+        queryBuilder.appendWhere(PreferencesSQLiteHelper.ROUTES.COLUMN_AGENCY + " = " +
+                                 PreferencesSQLiteHelper.AGENCIES.COLUMN_TAG);
+        Cursor cursor = queryBuilder.query(mDatabase,
+                                           Util.concatAll(AGENCIES_COLUMNS, ROUTES_COLUMNS, STOPS_COLUMNS),
+                                           null, null, null, null, null);
+
+        // Keep references to the column positions of each property
+        AgencyCursorColumns agencyCursorColumns = AgencyCursorColumns.fromCursor(cursor);
+        RouteCursorColumns routeCursorColumns = RouteCursorColumns.fromCursor(cursor);
+        StopCursorColumns stopCursorColumns = StopCursorColumns.fromCursor(cursor);
+
+        // Iterate over the cursor to build the list of stops
+        //noinspection ConstantConditions
+        cursor.moveToFirst();
+        while(!cursor.isAfterLast()) {
+            Agency agency = agencyFromCursor(cursor, agencyCursorColumns);
+            Route route = routeFromCursor(cursor, routeCursorColumns, agency);
+            Stop stop = stopFromCursor(cursor, stopCursorColumns, agency);
+            routeStops.add(new RouteStopTuple(route, stop));
+
+            cursor.moveToNext();
+        }
+        cursor.close();
+
+        return routeStops;
+    }
+
+    private Agency agencyFromCursor(Cursor cursor, AgencyCursorColumns agencyCursorColumns) {
+        return new Agency(cursor.getString(agencyCursorColumns.getTagColumn()),
+                          cursor.getString(agencyCursorColumns.getTitleColumn()),
+                          cursor.getString(agencyCursorColumns.getShortTitleColumn()),
+                          cursor.getString(agencyCursorColumns.getRegionTitleColumn()), null);
+    }
+
+    private Route routeFromCursor(Cursor cursor, RouteCursorColumns routeCursorColumns, Agency agency) {
+        return new Route(agency,
+                         cursor.getString(routeCursorColumns.getTagColumn()),
+                         cursor.getString(routeCursorColumns.getTitleColumn()),
+                         cursor.getString(routeCursorColumns.getShortTitleColumn()), null);
+    }
+
+    private Stop stopFromCursor(Cursor cursor, StopCursorColumns stopCursorColumns, Agency agency) {
+        return new Stop(agency,
+                        cursor.getString(stopCursorColumns.getTagColumn()),
+                        cursor.getString(stopCursorColumns.getTitleColumn()),
+                        cursor.getString(stopCursorColumns.getShortTitleColumn()), null, null, null);
+    }
+
+    /**
+     * Specifies which columns in a cursor correspond to each property of an {@link net.sf.nextbus.publicxmlfeed.domain.Agency}
+     */
+    private static class AgencyCursorColumns {
+        private final int tagColumn;
+        private final int titleColumn;
+        private final int shortTitleColumn;
+        private final int regionTitleColumn;
+
+        private AgencyCursorColumns(int tagColumn, int titleColumn, int shortTitleColumn, int regionTitleColumn) {
+            this.tagColumn = tagColumn;
+            this.titleColumn = titleColumn;
+            this.shortTitleColumn = shortTitleColumn;
+            this.regionTitleColumn = regionTitleColumn;
+        }
+
+        public static AgencyCursorColumns fromCursor(Cursor cursor) {
+            return new AgencyCursorColumns(cursor.getColumnIndexOrThrow(PreferencesSQLiteHelper.AGENCIES.COLUMN_TAG),
+                                           cursor.getColumnIndexOrThrow(PreferencesSQLiteHelper.AGENCIES.COLUMN_TITLE),
+                                           cursor.getColumnIndexOrThrow(PreferencesSQLiteHelper.AGENCIES.COLUMN_SHORT_TITLE),
+                                           cursor.getColumnIndexOrThrow(PreferencesSQLiteHelper.AGENCIES.COLUMN_REGION_TITLE));
+        }
+
+        public int getTagColumn() {
+            return tagColumn;
+        }
+
+        public int getTitleColumn() {
+            return titleColumn;
+        }
+
+        public int getShortTitleColumn() {
+            return shortTitleColumn;
+        }
+
+        public int getRegionTitleColumn() {
+            return regionTitleColumn;
+        }
+
+    }
+
+    /**
+     * Specifies which columns in a cursor correspond to each property of an {@link net.sf.nextbus.publicxmlfeed.domain.Agency}
+     */
+    private static class RouteCursorColumns {
+        private final int tagColumn;
+        private final int titleColumn;
+        private final int shortTitleColumn;
+
+        private RouteCursorColumns(int tagColumn, int titleColumn, int shortTitleColumn) {
+            this.tagColumn = tagColumn;
+            this.titleColumn = titleColumn;
+            this.shortTitleColumn = shortTitleColumn;
+        }
+
+        public static RouteCursorColumns fromCursor(Cursor cursor) {
+            return new RouteCursorColumns(cursor.getColumnIndexOrThrow(PreferencesSQLiteHelper.ROUTES.COLUMN_TAG),
+                                           cursor.getColumnIndexOrThrow(PreferencesSQLiteHelper.ROUTES.COLUMN_TITLE),
+                                           cursor.getColumnIndexOrThrow(PreferencesSQLiteHelper.ROUTES.COLUMN_SHORT_TITLE));
+        }
+
+        public int getTagColumn() {
+            return tagColumn;
+        }
+
+        public int getTitleColumn() {
+            return titleColumn;
+        }
+
+        public int getShortTitleColumn() {
+            return shortTitleColumn;
+        }
+
+    }
+
+    /**
+     * Specifies which columns in a cursor correspond to each property of an {@link net.sf.nextbus.publicxmlfeed.domain.Stop}
+     */
+    private static class StopCursorColumns {
+        private final int tagColumn;
+        private final int titleColumn;
+        private final int shortTitleColumn;
+
+        private StopCursorColumns(int tagColumn, int titleColumn, int shortTitleColumn) {
+            this.tagColumn = tagColumn;
+            this.titleColumn = titleColumn;
+            this.shortTitleColumn = shortTitleColumn;
+        }
+
+        public static StopCursorColumns fromCursor(Cursor cursor) {
+            return new StopCursorColumns(cursor.getColumnIndexOrThrow(PreferencesSQLiteHelper.STOPS.COLUMN_TAG),
+                                         cursor.getColumnIndexOrThrow(PreferencesSQLiteHelper.STOPS.COLUMN_TITLE),
+                                         cursor.getColumnIndexOrThrow(PreferencesSQLiteHelper.STOPS.COLUMN_SHORT_TITLE));
+        }
+
+        public int getTagColumn() {
+            return tagColumn;
+        }
+
+        public int getTitleColumn() {
+            return titleColumn;
+        }
+
+        public int getShortTitleColumn() {
+            return shortTitleColumn;
+        }
+    }
 
 }

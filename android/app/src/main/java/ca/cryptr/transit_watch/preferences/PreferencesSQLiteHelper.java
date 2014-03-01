@@ -12,7 +12,6 @@ public class PreferencesSQLiteHelper extends SQLiteOpenHelper {
     public static final class AGENCIES {
         public static final String TABLE = "agencies";
 
-        public static final String COLUMN_AUTO_ID = "_ID";
         public static final String COLUMN_TAG = "agency_tag";
         public static final String COLUMN_TITLE = "agency_title";
         public static final String COLUMN_SHORT_TITLE = "agency_short_title";
@@ -22,7 +21,6 @@ public class PreferencesSQLiteHelper extends SQLiteOpenHelper {
     public static final class ROUTES {
         public static final String TABLE = "routes";
 
-        public static final String COLUMN_AUTO_ID = "_ID";
         public static final String COLUMN_AGENCY = "route_agency";
         public static final String COLUMN_TAG = "route_tag";
         public static final String COLUMN_TITLE = "route_title";
@@ -32,7 +30,6 @@ public class PreferencesSQLiteHelper extends SQLiteOpenHelper {
     public static final class STOPS {
         public static final String TABLE = "stops";
 
-        public static final String COLUMN_AUTO_ID = "_ID";
         public static final String COLUMN_ROUTE = "stop_route";
         public static final String COLUMN_TAG = "stop_tag";
         public static final String COLUMN_TITLE = "stop_title";
@@ -51,7 +48,7 @@ public class PreferencesSQLiteHelper extends SQLiteOpenHelper {
 
     private static final String CREATE_TABLE_ROUTES =
             "CREATE TABLE " + ROUTES.TABLE + " (" +
-            ROUTES.COLUMN_AGENCY + " INTEGER NOT NULL REFERENCES " + AGENCIES.TABLE + "(" + AGENCIES.COLUMN_AUTO_ID + ") ON DELETE CASCADE, " +
+            ROUTES.COLUMN_AGENCY + " TEXT NOT NULL REFERENCES " + AGENCIES.TABLE + "(" + AGENCIES.COLUMN_TAG + ") ON DELETE CASCADE, " +
             ROUTES.COLUMN_TAG + " TEXT PRIMARY KEY, " +
             ROUTES.COLUMN_TITLE + " TEXT NOT NULL, " +
             ROUTES.COLUMN_SHORT_TITLE + " TEXT, " +
@@ -59,11 +56,11 @@ public class PreferencesSQLiteHelper extends SQLiteOpenHelper {
 
     private static final String CREATE_TABLE_STOPS =
             "CREATE TABLE " + STOPS.TABLE + " (" +
-            STOPS.COLUMN_AUTO_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
-            STOPS.COLUMN_ROUTE + " TEXT NOT NULL REFERENCES " + ROUTES.TABLE + "(" + ROUTES.COLUMN_AUTO_ID + ") ON DELETE CASCADE" +
+            STOPS.COLUMN_ROUTE + " TEXT NOT NULL REFERENCES " + ROUTES.TABLE + "(" + ROUTES.COLUMN_TAG + ") ON DELETE CASCADE" +
             STOPS.COLUMN_TAG + " TEXT NOT NULL, " +
             STOPS.COLUMN_TITLE + " TEXT NOT NULL, " +
             STOPS.COLUMN_SHORT_TITLE + " TEXT, " +
+            "PRIMARY KEY (" + STOPS.COLUMN_ROUTE + ", " + STOPS.COLUMN_TAG + ")" +
             ");";
 
     public PreferencesSQLiteHelper(Context context) {
