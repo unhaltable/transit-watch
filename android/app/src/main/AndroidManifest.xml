@@ -24,6 +24,15 @@
             android:name=".activities.SettingsActivity"
             android:label="@string/title_activity_settings"
             android:parentActivityName="ca.cryptr.transit_watch.activities.StopsActivity" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="ca.cryptr.transit_watch.activities.StopsActivity" />
+        </activity>
+
+        <activity
+            android:name=".activities.AddStopActivity"
+            android:label="@string/title_activity_add_stop"
+            android:parentActivityName="ca.cryptr.transit_watch.activities.StopsActivity" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
@@ -32,6 +41,7 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="ca.cryptr.transit_watch.activities.StopsActivity" />
         </activity>
+
         <receiver android:name=".services.DataReceiver">
             <intent-filter>
                 <action android:name="com.getpebble.action.app.RECEIVE" />

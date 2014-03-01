@@ -1,0 +1,15 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context="ca.cryptr.transit_watch.activities.AddStopActivity" >
+
+    <item android:id="@+id/action_route_next"
+        android:icon="@drawable/ic_action_next_item"
+        android:showAsAction="always|withText"
+        android:title="@string/action_next" />
+
+    <item android:id="@+id/action_stop_done"
+        android:icon="@drawable/ic_action_accept"
+        android:showAsAction="always|withText"
+        android:title="@string/action_done" />
+
+</menu>
