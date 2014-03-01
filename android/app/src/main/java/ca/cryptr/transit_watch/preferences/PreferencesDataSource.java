@@ -7,6 +7,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteQueryBuilder;
 
 import net.sf.nextbus.publicxmlfeed.domain.Agency;
+import net.sf.nextbus.publicxmlfeed.domain.Direction;
 import net.sf.nextbus.publicxmlfeed.domain.Route;
 import net.sf.nextbus.publicxmlfeed.domain.Stop;
 
@@ -65,7 +66,7 @@ public class PreferencesDataSource {
      *
      * @param stop a transit stop
      */
-    public void saveStop(Route route, Stop stop) {
+    public void saveStop(Direction direction, Stop stop) {
         mDatabase.beginTransaction();
         try {
             // Insert the agency
@@ -80,22 +81,22 @@ public class PreferencesDataSource {
             // Insert the route
             ContentValues routeValues = new ContentValues();
             routeValues.put(PreferencesSQLiteHelper.ROUTES.COLUMN_AGENCY, agency.getTag());
-            routeValues.put(PreferencesSQLiteHelper.ROUTES.COLUMN_TAG, route.getTag());
-            routeValues.put(PreferencesSQLiteHelper.ROUTES.COLUMN_TITLE, route.getTitle());
-            routeValues.put(PreferencesSQLiteHelper.ROUTES.COLUMN_SHORT_TITLE, route.getShortTitle());
+            routeValues.put(PreferencesSQLiteHelper.ROUTES.COLUMN_TAG, direction.getRoute().getTag());
+            routeValues.put(PreferencesSQLiteHelper.ROUTES.COLUMN_TITLE, direction.getRoute().getTitle());
+            routeValues.put(PreferencesSQLiteHelper.ROUTES.COLUMN_SHORT_TITLE, direction.getRoute().getShortTitle());
             mDatabase.insertWithOnConflict(PreferencesSQLiteHelper.ROUTES.TABLE, null, routeValues, SQLiteDatabase.CONFLICT_IGNORE);
 
             // Insert the direction
             ContentValues directionValues = new ContentValues();
-            directionValues.put(PreferencesSQLiteHelper.DIRECTIONS.COLUMN_ROUTE, route.getTag());
-            directionValues.put(PreferencesSQLiteHelper.DIRECTIONS.COLUMN_ROUTE, .getTag());
-            directionValues.put(PreferencesSQLiteHelper.DIRECTIONS.COLUMN_ROUTE, route.getTag());
-            directionValues.put(PreferencesSQLiteHelper.DIRECTIONS.COLUMN_ROUTE, route.getTag());
+            directionValues.put(PreferencesSQLiteHelper.DIRECTIONS.COLUMN_ROUTE, direction.getRoute().getTag());
+            directionValues.put(PreferencesSQLiteHelper.DIRECTIONS.COLUMN_TAG, direction.getTag());
+            directionValues.put(PreferencesSQLiteHelper.DIRECTIONS.COLUMN_TITLE, direction.getTitle());
+            directionValues.put(PreferencesSQLiteHelper.DIRECTIONS.COLUMN_NAME, direction.getName());
             mDatabase.insertWithOnConflict(PreferencesSQLiteHelper.DIRECTIONS.TABLE, null, directionValues, SQLiteDatabase.CONFLICT_IGNORE);
 
             // Insert the stop
             ContentValues stopValues = new ContentValues();
-            stopValues.put(PreferencesSQLiteHelper.STOPS.COLUMN_ROUTE, route.getTag());
+            stopValues.put(PreferencesSQLiteHelper.STOPS.COLUMN_DIRECTION, direction.getTag());
             stopValues.put(PreferencesSQLiteHelper.STOPS.COLUMN_TAG, stop.getTag());
             stopValues.put(PreferencesSQLiteHelper.STOPS.COLUMN_TITLE, stop.getTitle());
             stopValues.put(PreferencesSQLiteHelper.STOPS.COLUMN_SHORT_TITLE, stop.getShortTitle());
@@ -119,11 +120,17 @@ public class PreferencesDataSource {
             mDatabase.delete(PreferencesSQLiteHelper.STOPS.TABLE,
                              PreferencesSQLiteHelper.STOPS.COLUMN_TAG + " = ?", new String[] { stop.getTag() });
 
+            // Delete the direction if it's no longer referenced
+            mDatabase.delete(PreferencesSQLiteHelper.DIRECTIONS.TABLE,
+                             PreferencesSQLiteHelper.DIRECTIONS.COLUMN_TAG + " NOT IN (SELECT " +
+                             PreferencesSQLiteHelper.STOPS.COLUMN_DIRECTION+ " FROM " +
+                             PreferencesSQLiteHelper.STOPS.TABLE + ")", null);
+
             // Delete the route if it's no longer referenced
             mDatabase.delete(PreferencesSQLiteHelper.ROUTES.TABLE,
                              PreferencesSQLiteHelper.ROUTES.COLUMN_TAG + " NOT IN (SELECT " +
-                             PreferencesSQLiteHelper.STOPS.COLUMN_ROUTE + " FROM " +
-                             PreferencesSQLiteHelper.STOPS.TABLE + ")", null);
+                             PreferencesSQLiteHelper.DIRECTIONS.COLUMN_ROUTE + " FROM " +
+                             PreferencesSQLiteHelper.DIRECTIONS.TABLE + ")", null);
 
             // Delete the agency if it's no longer referenced
             mDatabase.delete(PreferencesSQLiteHelper.AGENCIES.TABLE,
@@ -149,13 +156,16 @@ public class PreferencesDataSource {
         queryBuilder.setTables(PreferencesSQLiteHelper.AGENCIES.TABLE + ", " +
                                PreferencesSQLiteHelper.ROUTES.TABLE + ", " +
                                PreferencesSQLiteHelper.STOPS.TABLE);
-        queryBuilder.appendWhere(PreferencesSQLiteHelper.STOPS.COLUMN_ROUTE + " = " +
+        queryBuilder.appendWhere(PreferencesSQLiteHelper.STOPS.COLUMN_DIRECTION + " = " +
+                                 PreferencesSQLiteHelper.DIRECTIONS.COLUMN_TAG);
+        queryBuilder.appendWhere(" AND ");
+        queryBuilder.appendWhere(PreferencesSQLiteHelper.DIRECTIONS.COLUMN_ROUTE+ " = " +
                                  PreferencesSQLiteHelper.ROUTES.COLUMN_TAG);
         queryBuilder.appendWhere(" AND ");
         queryBuilder.appendWhere(PreferencesSQLiteHelper.ROUTES.COLUMN_AGENCY + " = " +
                                  PreferencesSQLiteHelper.AGENCIES.COLUMN_TAG);
         Cursor cursor = queryBuilder.query(mDatabase,
-                                           Util.concatAll(AGENCIES_COLUMNS, ROUTES_COLUMNS, STOPS_COLUMNS),
+                                           Util.concatAll(AGENCIES_COLUMNS, ROUTES_COLUMNS, DIRECTIONS_COLUMNS, STOPS_COLUMNS),
                                            null, null, null, null, null);
 
         // Keep references to the column positions of each property
@@ -271,6 +281,40 @@ public class PreferencesDataSource {
 
         public int getShortTitleColumn() {
             return shortTitleColumn;
+        }
+
+    }
+
+    /**
+     * Specifies which columns in a cursor correspond to each property of an {@link net.sf.nextbus.publicxmlfeed.domain.Agency}
+     */
+    private static class DirectionCursorColumns {
+        private final int tagColumn;
+        private final int titleColumn;
+        private final int nameColumn;
+
+        private DirectionCursorColumns(int tagColumn, int titleColumn, int nameColumn) {
+            this.tagColumn = tagColumn;
+            this.titleColumn = titleColumn;
+            this.nameColumn = nameColumn;
+        }
+
+        public static DirectionCursorColumns fromCursor(Cursor cursor) {
+            return new DirectionCursorColumns(cursor.getColumnIndexOrThrow(PreferencesSQLiteHelper.DIRECTIONS.COLUMN_TAG),
+                                              cursor.getColumnIndexOrThrow(PreferencesSQLiteHelper.DIRECTIONS.COLUMN_TITLE),
+                                              cursor.getColumnIndexOrThrow(PreferencesSQLiteHelper.DIRECTIONS.COLUMN_NAME));
+        }
+
+        public int getTagColumn() {
+            return tagColumn;
+        }
+
+        public int getTitleColumn() {
+            return titleColumn;
+        }
+
+        public int getNameColumn() {
+            return nameColumn;
         }
 
     }
