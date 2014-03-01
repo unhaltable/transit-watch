@@ -2,5 +2,12 @@
 <resources>
   <string name="app_name">Transit Watch</string>
   <string name="action_settings">Settings</string>
-  <string name="hello_world">Hello world!</string>
+  <string name="empty_stops_list">Stops will show up here</string>
+  <string name="fav_stops">Favourite stops</string>
+  <string name="add_stop">ADD</string>
+  <string name="title_activity_add_transit">Choose a transit</string>
+  <string name="title_activity_add_route">Choose a route</string>
+  <string name="title_activity_add_stop">Choose a stop</string>
+  <string name="title_activity_settings">Settings</string>
+  <string name="get_pebble">Get it from the Pebble Appstore</string>
 </resources>

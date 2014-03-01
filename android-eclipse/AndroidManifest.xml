@@ -19,5 +19,37 @@
         <category android:name="android.intent.category.LAUNCHER" />
       </intent-filter>
     </activity>
+    <activity
+      android:name="ca.cryptr.transitwatch.SettingsActivity"
+      android:label="@string/title_activity_settings"
+      android:parentActivityName="ca.cryptr.transitwatch.MainActivity" >
+      <meta-data
+        android:name="android.support.PARENT_ACTIVITY"
+        android:value="ca.cryptr.transitwatch.MainActivity" />
+    </activity>
+    <activity
+      android:name="ca.cryptr.transitwatch.AddTransitActivity"
+      android:label="@string/title_activity_add_transit"
+      android:parentActivityName="ca.cryptr.transitwatch.MainActivity" >
+      <meta-data
+        android:name="android.support.PARENT_ACTIVITY"
+        android:value="ca.cryptr.transitwatch.MainActivity" />
+    </activity>
+    <activity
+      android:name="ca.cryptr.transitwatch.AddRouteActivity"
+      android:label="@string/title_activity_add_route"
+      android:parentActivityName="ca.cryptr.transitwatch.AddTransitActivity" >
+      <meta-data
+        android:name="android.support.PARENT_ACTIVITY"
+        android:value="ca.cryptr.transitwatch.AddTransitActivity" />
+    </activity>
+    <activity
+      android:name="ca.cryptr.transitwatch.AddStopActivity"
+      android:label="@string/title_activity_add_stop"
+      android:parentActivityName="ca.cryptr.transitwatch.AddRouteActivity" >
+      <meta-data
+        android:name="android.support.PARENT_ACTIVITY"
+        android:value="ca.cryptr.transitwatch.AddRouteActivity" />
+    </activity>
   </application>
 </manifest>
