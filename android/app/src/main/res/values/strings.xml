@@ -12,7 +12,7 @@
     <string name="location_error">Your location couldn\'t be determined</string>
     <string name="location_error_check">Please check your locations settings</string>
 
-    <!-- Saved stops -->
+    <!-- Saved ca.cryptr.transit_watch.stops -->
     <string name="fav_stops">Favourite stops</string>
     <string name="add_stop">ADD</string>
     <string name="empty_stops_list">Stops will show up here</string>

@@ -1,7 +1,6 @@
 package ca.cryptr.transit_watch.activities;
 
 import android.app.Activity;
-import android.app.FragmentManager;
 import android.app.FragmentTransaction;
 import android.content.Intent;
 import android.os.Bundle;
@@ -11,6 +10,8 @@ import android.view.MenuItem;
 import ca.cryptr.transit_watch.R;
 
 public class AddStopActivity extends Activity {
+
+    private static String transit = "", route = "", stop = "";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -85,5 +86,29 @@ public class AddStopActivity extends Activity {
         } else {
             getFragmentManager().popBackStack();
         }
+    }
+
+    public String getTransit() {
+        return transit;
+    }
+
+    public void setTransit(String transit) {
+        this.transit = transit;
+    }
+
+    public String getRoute() {
+        return route;
+    }
+
+    public void setRoute(String route) {
+        this.route = route;
+    }
+
+    public String getStop() {
+        return stop;
+    }
+
+    public void setStop(String stop) {
+        this.stop = stop;
     }
 }

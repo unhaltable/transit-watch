@@ -1,6 +1,7 @@
 package ca.cryptr.transit_watch.activities;
 
 import android.app.Fragment;
+import android.app.FragmentTransaction;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -9,6 +10,7 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.SimpleAdapter;
@@ -25,7 +27,6 @@ public class AddTransitFragment extends Fragment {
     private ListView transits;
     private EditText filter;
     private SimpleAdapter adapter;
-
     private View view;
 
     @Override
@@ -36,9 +37,10 @@ public class AddTransitFragment extends Fragment {
         getActivity().getActionBar().setTitle(R.string.title_activity_add_transit);
         setHasOptionsMenu(true);
 
-        // Show the transit companies in the list
+        // Display the transit companies in the list
         setupTransitList();
 
+        // Set up the filter box
         filter = (EditText) view.findViewById(R.id.filter_transit);
         filter.addTextChangedListener(new TextWatcher() {
             @Override
@@ -48,13 +50,10 @@ public class AddTransitFragment extends Fragment {
             }
 
             @Override
-            public void afterTextChanged(Editable s) {
-            }
+            public void afterTextChanged(Editable s) {}
 
             @Override
-            public void beforeTextChanged(CharSequence s, int start, int count,
-                                          int after) {
-            }
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
         });
 
         return view;
@@ -72,7 +71,23 @@ public class AddTransitFragment extends Fragment {
     public void setupTransitList() {
         transits = (ListView) view.findViewById(R.id.add_transit_list);
 
-        String[] companies = getResources().getStringArray(R.array.transits);
+        final String[] companies = getResources().getStringArray(R.array.transits);
+
+        transits.setClickable(true);
+        transits.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int pos, long l) {
+                // Set the transit name
+                ((AddStopActivity) getActivity()).setTransit(companies[2 * (int) parent.getItemIdAtPosition(pos)]);
+
+                // Go to the next page
+                FragmentTransaction ft = getFragmentManager().beginTransaction();
+                AddRouteFragment nextRoute = new AddRouteFragment();
+                ft.replace(R.id.fragment_add, nextRoute);
+                ft.addToBackStack(null);
+                ft.commit();
+            }
+        });
 
         List<Map<String, String>> data = new ArrayList<Map<String, String>>();
 
@@ -90,5 +105,4 @@ public class AddTransitFragment extends Fragment {
 
         transits.setAdapter(adapter);
     }
-
 }

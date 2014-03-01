@@ -145,9 +145,9 @@ public class PreferencesDataSource {
     }
 
     /**
-     * Retrieve all stops from the database.
+     * Retrieve all ca.cryptr.transit_watch.stops from the database.
      *
-     * @return all stops from the database
+     * @return all ca.cryptr.transit_watch.stops from the database
      */
     public List<RouteStopTuple> getStops() {
         List<RouteStopTuple> routeStops = new ArrayList<RouteStopTuple>();
@@ -173,7 +173,7 @@ public class PreferencesDataSource {
         RouteCursorColumns routeCursorColumns = RouteCursorColumns.fromCursor(cursor);
         StopCursorColumns stopCursorColumns = StopCursorColumns.fromCursor(cursor);
 
-        // Iterate over the cursor to build the list of stops
+        // Iterate over the cursor to build the list of ca.cryptr.transit_watch.stops
         //noinspection ConstantConditions
         cursor.moveToFirst();
         while(!cursor.isAfterLast()) {

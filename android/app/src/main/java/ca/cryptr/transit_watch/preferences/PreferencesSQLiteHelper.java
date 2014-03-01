@@ -7,7 +7,7 @@ import android.database.sqlite.SQLiteOpenHelper;
 public class PreferencesSQLiteHelper extends SQLiteOpenHelper {
 
     protected static final int DATABASE_VERSION = 1;
-    protected static final String DATABASE_NAME = "stops.db";
+    protected static final String DATABASE_NAME = "ca.cryptr.transit_watch.stops.db";
 
     public static final class AGENCIES {
         public static final String TABLE = "agencies";
@@ -37,7 +37,7 @@ public class PreferencesSQLiteHelper extends SQLiteOpenHelper {
     }
 
     public static final class STOPS {
-        public static final String TABLE = "stops";
+        public static final String TABLE = "ca/cryptr/transit_watch/stops";
 
         public static final String COLUMN_DIRECTION = "stop_direction";
         public static final String COLUMN_TAG = "stop_tag";

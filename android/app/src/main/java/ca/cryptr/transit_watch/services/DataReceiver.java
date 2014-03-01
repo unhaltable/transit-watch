@@ -48,7 +48,7 @@ public class DataReceiver extends PebbleKit.PebbleDataReceiver {
     }
 
     private void onAppOpened(Context context) {
-        // Sync saved stops
+        // Sync saved ca.cryptr.transit_watch.stops
         PebbleDictionary savedStops = new PebbleDictionary();
         for (RouteStopTuple routeStop : mPreferencesDataSource.getStops()) {
             Route route = routeStop.getRoute();
