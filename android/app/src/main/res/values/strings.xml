@@ -2,7 +2,9 @@
 <resources>
 
     <string name="app_name">Transit Watch</string>
-    <string name="hello_world">Hello world!</string>
-    <string name="action_settings">Settings</string>
+
+    <!-- String related to StopsActivity -->
+    <string name="settings">Settings</string>
+    <string name="about">About</string>
 
 </resources>

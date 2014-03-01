@@ -89,3 +89,39 @@ Once the hackathon has started and I've committed some starter code:
 - Clone the [NextBus API Java library repo](https://github.com/elliottsj/nextbusapi)
 - Open a terminal and change directory to `nextbusapi/adapter`
 - Run `mvn install`. This will install the library into your local maven repository.
+- Install Silk library:
+    * Clone a copy of [this repository](https://github.com/afollestad/Silk).
+    * Determine the location of your copy of the Android SDK. (See [Installing Android Studio](http://developer.android.com/sdk/installing/studio.html) to learn where the SDK might be installed.)
+    * Create a file at the root of the repository called `local.properties`. Add the following line, replacing "/path/to/sdk" with the actual path as determined above:
+    
+    ```
+    sdk.dir=/path/to/sdk
+    ```
+    * At the root of the repository, run `./gradlew install`. You should see some ":library:..." lines in the output, and at the end something like this:
+    
+    ```
+    Uploading: com/afollestad/silk/library/1.0-SNAPSHOT/library-1.0-20131007.005624-2.aar to repository remote at file:///home/<username>/.m2/repository
+    Transferring 1228K from remote
+    Uploaded 1228K
+    :library:install
+    
+    BUILD SUCCESSFUL
+    ```
+- Install Cards UI library:
+    * Clone a copy of [this repository](https://github.com/afollestad/Cards-UI).
+    * Determine the location of your copy of the Android SDK. (See [Installing Android Studio](http://developer.android.com/sdk/installing/studio.html) to learn where the SDK might be installed.)
+    * Create a file at the root of the repository called `local.properties`. Add the following line, replacing "/path/to/sdk" with the actual path as determined above:
+    
+    ```
+    sdk.dir=/path/to/sdk
+    ```
+    * At the root of the repository, run `./gradlew install`. You should see some ":library:..." lines in the output, and at the end something like this:
+    
+    ```
+    Uploading: com/afollestad/cardsui/library/1.0-SNAPSHOT/library-1.0-20131007.010822-2.aar to repository remote at file:///home/<username>/.m2/repository
+    Transferring 24K from remote
+    Uploaded 24K
+    :library:install
+    
+    BUILD SUCCESSFUL
+    ```
