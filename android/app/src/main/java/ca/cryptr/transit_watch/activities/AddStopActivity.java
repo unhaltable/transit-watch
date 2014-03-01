@@ -17,11 +17,11 @@ public class AddStopActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_stop);
 
-        FragmentManager fm = getFragmentManager();
-        FragmentTransaction ft = fm.beginTransaction();
+        FragmentTransaction ft = getFragmentManager().beginTransaction();
 
         AddTransitFragment transit = new AddTransitFragment();
         ft.add(R.id.fragment_add, transit);
+        ft.addToBackStack(null);
         ft.commit();
     }
 
@@ -31,11 +31,13 @@ public class AddStopActivity extends Activity {
         return true;
     }
 
+    /**
+     * Handles all of of the menu items' selections.
+     */
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         Intent intent = new Intent(this, StopsActivity.class);
-        FragmentManager fm = getFragmentManager();
-        FragmentTransaction ft = fm.beginTransaction();
+        FragmentTransaction ft = getFragmentManager().beginTransaction();
 
         switch (item.getItemId()) {
             case R.id.action_add_cancel:
@@ -44,21 +46,25 @@ public class AddStopActivity extends Activity {
             case R.id.action_add_next_route:
                 AddRouteFragment nextRoute = new AddRouteFragment();
                 ft.replace(R.id.fragment_add, nextRoute);
+                ft.addToBackStack(null);
                 ft.commit();
                 return true;
             case R.id.action_add_previous_transit:
                 AddTransitFragment prevTransit = new AddTransitFragment();
                 ft.replace(R.id.fragment_add, prevTransit);
+                ft.addToBackStack(null);
                 ft.commit();
                 return true;
             case R.id.action_add_next_stop:
                 AddStopFragment nextStop = new AddStopFragment();
                 ft.replace(R.id.fragment_add, nextStop);
+                ft.addToBackStack(null);
                 ft.commit();
                 return true;
             case R.id.action_add_previous_route:
                 AddRouteFragment prevRoute = new AddRouteFragment();
                 ft.replace(R.id.fragment_add, prevRoute);
+                ft.addToBackStack(null);
                 ft.commit();
                 return true;
             case R.id.action_add_done:
@@ -66,6 +72,18 @@ public class AddStopActivity extends Activity {
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
+        }
+    }
+
+    /**
+     * Allows for the back button to go back to the previous fragment.
+     */
+    @Override
+    public void onBackPressed() {
+        if (getFragmentManager().getBackStackEntryCount() == 0) {
+            this.finish();
+        } else {
+            getFragmentManager().popBackStack();
         }
     }
 }
