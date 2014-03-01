@@ -1,6 +1,7 @@
 package ca.cryptr.transitwatch;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.NavUtils;
 import android.view.Menu;
@@ -32,7 +33,8 @@ public class AddStopActivity extends Activity {
 			NavUtils.navigateUpFromSameTask(this);
 			return true;
 		case R.id.action_stop_done:
-
+			Intent intent = new Intent(this, MainActivity.class);
+			startActivity(intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP));
 			return true;
 		}
 		return super.onOptionsItemSelected(item);

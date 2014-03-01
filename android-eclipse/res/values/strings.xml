@@ -9,8 +9,11 @@
   <string name="file_error">File error</string>
   <string name="title_activity_add_transit">Choose a transit</string>
   <string name="action_next">Next</string>
+  <string name="filter_transit">Filter transit companies</string>
   <string name="title_activity_add_route">Choose a route</string>
+  <string name="filter_routes">Filter routes</string>
   <string name="title_activity_add_stop">Choose a stop</string>
+  <string name="filter_stops">Filter stops]</string>
   <string name="action_done">Done</string>
   <string name="title_activity_settings">Settings</string>
   <string name="get_pebble">Get it from the Pebble Appstore</string>
