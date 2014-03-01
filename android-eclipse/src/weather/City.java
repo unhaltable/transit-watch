@@ -1,50 +1,50 @@
-package transit;
+package weather;
 
 public class City {
 
-	private String code, nameEn, nameFr, province;
+	private String _code, _nameEn, _nameFr, _province;
 
 	public City() {
 
 	}
 
 	public City(String code, String nameEn, String nameFr, String province) {
-		this.code = code;
-		this.nameEn = nameEn;
-		this.nameFr = nameFr;
-		this.province = province;
+		this._code = code;
+		this._nameEn = nameEn;
+		this._nameFr = nameFr;
+		this._province = province;
 	}
 
 	public String getCode() {
-		return code;
+		return _code;
 	}
 
 	public void setCode(String code) {
-		this.code = code;
+		this._code = code;
 	}
 
 	public String getNameEn() {
-		return nameEn;
+		return _nameEn;
 	}
 
 	public void setNameEn(String nameEn) {
-		this.nameEn = nameEn;
+		this._nameEn = nameEn;
 	}
 
 	public String getNameFr() {
-		return nameFr;
+		return _nameFr;
 	}
 
 	public void setNameFr(String nameFr) {
-		this.nameFr = nameFr;
+		this._nameFr = nameFr;
 	}
 
 	public String getProvince() {
-		return province;
+		return _province;
 	}
 
 	public void setProvince(String province) {
-		this.province = province;
+		this._province = province;
 	}
 
 }
