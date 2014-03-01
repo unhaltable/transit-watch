@@ -42,11 +42,12 @@
                 android:value="ca.cryptr.transit_watch.activities.StopsActivity" />
         </activity>
 
-        <receiver android:name=".services.DataReceiver">
-            <intent-filter>
-                <action android:name="com.getpebble.action.app.RECEIVE" />
-            </intent-filter>
-        </receiver>
+        <!--<receiver android:name=".services.DataReceiver">-->
+            <!--<intent-filter>-->
+                <!--<action android:name="com.getpebble.action.app.RECEIVE" />-->
+            <!--</intent-filter>-->
+        <!--</receiver>-->
+
     </application>
 
 </manifest>

@@ -16,10 +16,10 @@ import ca.cryptr.transit_watch.R;
 public class StopListAdapter extends BaseAdapter {
 
     private Activity activity;
-    private ArrayList<HashMap<String, Stop>> data;
+    private ArrayList<Stop> data;
     private static LayoutInflater inflater = null;
 
-    public StopListAdapter(Activity a, ArrayList<HashMap<String, Stop>> d) {
+    public StopListAdapter(Activity a, ArrayList<Stop> d) {
         activity = a;
         data = d;
         inflater = (LayoutInflater)activity.getSystemService(Context.LAYOUT_INFLATER_SERVICE);;
@@ -43,15 +43,14 @@ public class StopListAdapter extends BaseAdapter {
     @Override
     public View getView(int position, View view, ViewGroup viewGroup) {
         View vi = view;
-        if(view == null)
+        if (view == null)
             vi = inflater.inflate(R.layout.stop_list_item, null);
 
         TextView minutes = (TextView)vi.findViewById(R.id.minutes);
         TextView route = (TextView)vi.findViewById(R.id.route);
         TextView stop = (TextView)vi.findViewById(R.id.stop);
 
-        HashMap<String, String> stopInfo = new HashMap<String, String>();
-        stopInfo = data.get(position);
+        Stop stopInfo = data.get(position);
 
         // Setting all values in listview
         minutes.setText("0");
