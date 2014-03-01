@@ -12,6 +12,8 @@ import ca.cryptr.transit_watch.R;
 
 public class WatchListenerService extends IntentService implements DataReceiver.Callbacks {
 
+    private static final String PREFERENCES_NAME = "transit_stops";
+
     private PebbleKit.PebbleDataReceiver mDataReceiver = null;
     private UUID watchappUUID;
 
