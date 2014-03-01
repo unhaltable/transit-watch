@@ -43,22 +43,22 @@ public class AddStopActivity extends Activity {
                 return true;
             case R.id.action_add_next_route:
                 AddRouteFragment nextRoute = new AddRouteFragment();
-                ft.add(R.id.fragment_add, nextRoute);
+                ft.replace(R.id.fragment_add, nextRoute);
                 ft.commit();
                 return true;
             case R.id.action_add_previous_transit:
                 AddTransitFragment prevTransit = new AddTransitFragment();
-                ft.add(R.id.fragment_add, prevTransit);
+                ft.replace(R.id.fragment_add, prevTransit);
                 ft.commit();
                 return true;
             case R.id.action_add_next_stop:
                 AddStopFragment nextStop = new AddStopFragment();
-                ft.add(R.id.fragment_add, nextStop);
+                ft.replace(R.id.fragment_add, nextStop);
                 ft.commit();
                 return true;
             case R.id.action_add_previous_route:
                 AddRouteFragment prevRoute = new AddRouteFragment();
-                ft.add(R.id.fragment_add, prevRoute);
+                ft.replace(R.id.fragment_add, prevRoute);
                 ft.commit();
                 return true;
             case R.id.action_add_done:

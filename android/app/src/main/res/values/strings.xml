@@ -31,7 +31,7 @@
 
     <!-- Add stop -->
     <string name="title_activity_add_stop">Choose a stop</string>
-    <string name="filter_stops">Filter stops]</string>
+    <string name="filter_stops">Filter stops</string>
     <string name="action_done">Done</string>
 
     <!-- Settings -->
