@@ -39,8 +39,14 @@ public class StopsActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_stops);
 
+<<<<<<< HEAD
 //        mNextbusService = new AndroidNextbusService();
 //        mPreferencesDataSource = new PreferencesDataSource(this);
+=======
+        mNextbusService = new AndroidNextbusService();
+        mPreferencesDataSource = new PreferencesDataSource(this);
+        mPreferencesDataSource.open();
+>>>>>>> f931f647312befa8ed56652f0526612af40c10c3
 
         favStops.add(new Stop("TTC", "5 N Avenue Rd", "Queen's Park @ Museum Station"));
         favStops.add(new Stop("MiWay", "1 E Hurontario Rd", "Hurontario @ Eglinton"));

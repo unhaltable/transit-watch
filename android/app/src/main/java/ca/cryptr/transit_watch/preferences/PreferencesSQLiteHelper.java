@@ -60,7 +60,7 @@ public class PreferencesSQLiteHelper extends SQLiteOpenHelper {
             ROUTES.COLUMN_AGENCY + " TEXT NOT NULL REFERENCES " + AGENCIES.TABLE + "(" + AGENCIES.COLUMN_TAG + ") ON DELETE CASCADE, " +
             ROUTES.COLUMN_TAG + " TEXT PRIMARY KEY, " +
             ROUTES.COLUMN_TITLE + " TEXT NOT NULL, " +
-            ROUTES.COLUMN_SHORT_TITLE + " TEXT, " +
+            ROUTES.COLUMN_SHORT_TITLE + " TEXT" +
             ");";
 
     private static final String CREATE_TABLE_DIRECTIONS =
@@ -73,7 +73,7 @@ public class PreferencesSQLiteHelper extends SQLiteOpenHelper {
 
     private static final String CREATE_TABLE_STOPS =
             "CREATE TABLE " + STOPS.TABLE + " (" +
-            STOPS.COLUMN_DIRECTION + " TEXT NOT NULL REFERENCES " + DIRECTIONS.TABLE + "(" + DIRECTIONS.COLUMN_TAG + ") ON DELETE CASCADE" +
+            STOPS.COLUMN_DIRECTION + " TEXT NOT NULL REFERENCES " + DIRECTIONS.TABLE + "(" + DIRECTIONS.COLUMN_TAG + ") ON DELETE CASCADE, " +
             STOPS.COLUMN_TAG + " TEXT NOT NULL, " +
             STOPS.COLUMN_TITLE + " TEXT NOT NULL, " +
             STOPS.COLUMN_SHORT_TITLE + " TEXT, " +
