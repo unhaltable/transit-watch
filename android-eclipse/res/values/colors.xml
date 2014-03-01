@@ -5,6 +5,7 @@
   <color name="transparent">#00000000</color>
   <color name="grey">#FF333333</color>
   <color name="grey_pane">#FF1F282D</color>
+  <color name="grey_text">#FF373838</color>
   <color name="grey_pane_light">#FF39464E</color>
   <color name="cards_shadow">#FFDFDFDF</color>
   <color name="cards_pressed">#FFEEEEEE</color>

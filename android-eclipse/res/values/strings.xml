@@ -5,6 +5,8 @@
   <string name="empty_stops_list">Stops will show up here</string>
   <string name="fav_stops">Favourite stops</string>
   <string name="add_stop">ADD</string>
+  <string name="minutes">min</string>
+  <string name="file_error">File error</string>
   <string name="title_activity_add_transit">Choose a transit</string>
   <string name="action_next">Next</string>
   <string name="title_activity_add_route">Choose a route</string>
