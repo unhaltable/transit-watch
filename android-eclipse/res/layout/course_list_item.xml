@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+  android:layout_width="match_parent"
+  android:layout_height="wrap_content"
+  android:layout_gravity="center_vertical"
+  android:background="@drawable/cards_items"
+  android:gravity="fill_horizontal"
+  android:orientation="horizontal"
+  android:padding="15dp" >
+  <LinearLayout
+    android:layout_width="0dp"
+    android:layout_height="match_parent"
+    android:layout_weight="1"
+    android:orientation="vertical" >
+    <TextView
+      android:id="@+id/name"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:ellipsize="end"
+      android:fontFamily="sans-serif-light"
+      android:paddingBottom="10dp"
+      android:singleLine="true"
+      android:textColor="@android:color/black"
+      android:textSize="24sp" />
+    <LinearLayout
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:layout_marginTop="-3dp"
+      android:orientation="horizontal" >
+      <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:paddingRight="5sp"
+        android:singleLine="true"
+        android:text="@string/weight"
+        android:textColor="@color/grey"
+        android:textSize="14sp" />
+      <TextView
+        android:id="@+id/weight"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="@color/grey"
+        android:textSize="14sp" />
+    </LinearLayout>
+  </LinearLayout>
+  <TextView
+    android:id="@+id/gpa"
+    android:layout_width="wrap_content"
+    android:layout_height="match_parent"
+    android:fontFamily="sans-serif-light"
+    android:gravity="right|center_vertical"
+    android:textColor="@android:color/black"
+    android:textSize="30sp" />
+</LinearLayout>
