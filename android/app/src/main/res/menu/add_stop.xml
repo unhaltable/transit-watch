@@ -2,22 +2,32 @@
     xmlns:tools="http://schemas.android.com/tools"
     tools:context="ca.cryptr.transit_watch.activities.AddStopActivity" >
 
-    <item android:id="@+id/action_route_cancel"
+    <item android:id="@+id/action_add_cancel"
         android:icon="@drawable/ic_action_cancel"
         android:showAsAction="always|withText"
         android:title="@string/action_cancel" />
 
-    <item android:id="@+id/action_route_previous"
-        android:icon="@drawable/ic_action_previous_item"
-        android:showAsAction="always|withText"
-        android:title="@string/action_previous" />
-
-    <item android:id="@+id/action_route_next"
+    <item android:id="@+id/action_add_next_route"
         android:icon="@drawable/ic_action_next_item"
         android:showAsAction="always|withText"
         android:title="@string/action_next" />
 
-    <item android:id="@+id/action_stop_done"
+    <item android:id="@+id/action_add_previous_transit"
+        android:icon="@drawable/ic_action_previous_item"
+        android:showAsAction="always|withText"
+        android:title="@string/action_previous" />
+
+    <item android:id="@+id/action_add_next_stop"
+        android:icon="@drawable/ic_action_next_item"
+        android:showAsAction="always|withText"
+        android:title="@string/action_next" />
+
+    <item android:id="@+id/action_add_previous_route"
+        android:icon="@drawable/ic_action_previous_item"
+        android:showAsAction="always|withText"
+        android:title="@string/action_next" />
+
+    <item android:id="@+id/action_add_done"
         android:icon="@drawable/ic_action_accept"
         android:showAsAction="always|withText"
         android:title="@string/action_done" />

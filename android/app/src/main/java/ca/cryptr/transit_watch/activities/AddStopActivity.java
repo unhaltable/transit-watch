@@ -1,6 +1,9 @@
 package ca.cryptr.transit_watch.activities;
 
 import android.app.Activity;
+import android.app.FragmentManager;
+import android.app.FragmentTransaction;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -13,27 +16,56 @@ public class AddStopActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_stop);
-    }
 
+        FragmentManager fm = getFragmentManager();
+        FragmentTransaction ft = fm.beginTransaction();
+
+        AddTransitFragment transit = new AddTransitFragment();
+        ft.add(R.id.fragment_add, transit);
+        ft.commit();
+    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        
-        // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.add_stop, menu);
         return true;
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-//        if (id == R.id.action_settings) {
-//            return true;
-//        }
-        return super.onOptionsItemSelected(item);
-    }
+        Intent intent = new Intent(this, StopsActivity.class);
+        FragmentManager fm = getFragmentManager();
+        FragmentTransaction ft = fm.beginTransaction();
 
+        switch (item.getItemId()) {
+            case R.id.action_add_cancel:
+                startActivity(intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP));
+                return true;
+            case R.id.action_add_next_route:
+                AddRouteFragment nextRoute = new AddRouteFragment();
+                ft.add(R.id.fragment_add, nextRoute);
+                ft.commit();
+                return true;
+            case R.id.action_add_previous_transit:
+                AddTransitFragment prevTransit = new AddTransitFragment();
+                ft.add(R.id.fragment_add, prevTransit);
+                ft.commit();
+                return true;
+            case R.id.action_add_next_stop:
+                AddStopFragment nextStop = new AddStopFragment();
+                ft.add(R.id.fragment_add, nextStop);
+                ft.commit();
+                return true;
+            case R.id.action_add_previous_route:
+                AddRouteFragment prevRoute = new AddRouteFragment();
+                ft.add(R.id.fragment_add, prevRoute);
+                ft.commit();
+                return true;
+            case R.id.action_add_done:
+                startActivity(intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP));
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+    }
 }

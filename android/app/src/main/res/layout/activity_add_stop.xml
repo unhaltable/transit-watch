@@ -14,10 +14,11 @@
         android:background="@color/background"
         android:orientation="vertical" >
 
-        <fragment android:name="ca.cryptr.transit_watch.activities.SettingsFragment"
-            android:id="@+id/settings"
+        <LinearLayout
+            android:id="@+id/fragment_add"
             android:layout_width="match_parent"
-            android:layout_height="match_parent" />
+            android:layout_height="match_parent"
+            android:orientation="vertical"/>
 
     </LinearLayout>
 
