@@ -27,10 +27,19 @@ public class PreferencesSQLiteHelper extends SQLiteOpenHelper {
         public static final String COLUMN_SHORT_TITLE = "route_short_title";
     }
 
+    public static final class DIRECTIONS {
+        public static final String TABLE = "directions";
+
+        public static final String COLUMN_ROUTE = "direction_route";
+        public static final String COLUMN_TAG = "direction_tag";
+        public static final String COLUMN_TITLE = "direction_title";
+        public static final String COLUMN_NAME = "direction_name";
+    }
+
     public static final class STOPS {
         public static final String TABLE = "stops";
 
-        public static final String COLUMN_ROUTE = "stop_route";
+        public static final String COLUMN_DIRECTION = "stop_direction";
         public static final String COLUMN_TAG = "stop_tag";
         public static final String COLUMN_TITLE = "stop_title";
         public static final String COLUMN_SHORT_TITLE = "stop_short_title";
@@ -54,13 +63,21 @@ public class PreferencesSQLiteHelper extends SQLiteOpenHelper {
             ROUTES.COLUMN_SHORT_TITLE + " TEXT, " +
             ");";
 
+    private static final String CREATE_TABLE_DIRECTIONS =
+            "CREATE TABLE " + DIRECTIONS.TABLE + " (" +
+            DIRECTIONS.COLUMN_ROUTE + " TEXT NOT NULL REFERENCES " + ROUTES.TABLE + "(" + ROUTES.COLUMN_TAG + ") ON DELETE CASCADE, " +
+            DIRECTIONS.COLUMN_TAG + " TEXT PRIMARY KEY, " +
+            DIRECTIONS.COLUMN_TITLE + " TEXT NOT NULL, " +
+            DIRECTIONS.COLUMN_NAME + " TEXT" +
+            ");";
+
     private static final String CREATE_TABLE_STOPS =
             "CREATE TABLE " + STOPS.TABLE + " (" +
-            STOPS.COLUMN_ROUTE + " TEXT NOT NULL REFERENCES " + ROUTES.TABLE + "(" + ROUTES.COLUMN_TAG + ") ON DELETE CASCADE" +
+            STOPS.COLUMN_DIRECTION + " TEXT NOT NULL REFERENCES " + DIRECTIONS.TABLE + "(" + DIRECTIONS.COLUMN_TAG + ") ON DELETE CASCADE" +
             STOPS.COLUMN_TAG + " TEXT NOT NULL, " +
             STOPS.COLUMN_TITLE + " TEXT NOT NULL, " +
             STOPS.COLUMN_SHORT_TITLE + " TEXT, " +
-            "PRIMARY KEY (" + STOPS.COLUMN_ROUTE + ", " + STOPS.COLUMN_TAG + ")" +
+            "PRIMARY KEY (" + STOPS.COLUMN_DIRECTION + ", " + STOPS.COLUMN_TAG + ")" +
             ");";
 
     public PreferencesSQLiteHelper(Context context) {
@@ -71,6 +88,7 @@ public class PreferencesSQLiteHelper extends SQLiteOpenHelper {
     public void onCreate(SQLiteDatabase db) {
         db.execSQL(CREATE_TABLE_AGENCIES);
         db.execSQL(CREATE_TABLE_ROUTES);
+        db.execSQL(CREATE_TABLE_DIRECTIONS);
         db.execSQL(CREATE_TABLE_STOPS);
     }
 
@@ -93,6 +111,7 @@ public class PreferencesSQLiteHelper extends SQLiteOpenHelper {
     public void empty(SQLiteDatabase db) {
         db.execSQL("DROP TABLE IF EXISTS " + AGENCIES.TABLE);
         db.execSQL("DROP TABLE IF EXISTS " + ROUTES.TABLE);
+        db.execSQL("DROP TABLE IF EXISTS " + DIRECTIONS.TABLE);
         db.execSQL("DROP TABLE IF EXISTS " + STOPS.TABLE);
     }
 

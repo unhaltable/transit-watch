@@ -31,8 +31,15 @@ public class PreferencesDataSource {
             PreferencesSQLiteHelper.ROUTES.COLUMN_SHORT_TITLE
     };
 
+    private static final String[] DIRECTIONS_COLUMNS = new String[] {
+            PreferencesSQLiteHelper.DIRECTIONS.COLUMN_ROUTE,
+            PreferencesSQLiteHelper.DIRECTIONS.COLUMN_TAG,
+            PreferencesSQLiteHelper.DIRECTIONS.COLUMN_TITLE,
+            PreferencesSQLiteHelper.DIRECTIONS.COLUMN_NAME
+    };
+
     private static final String[] STOPS_COLUMNS = new String[] {
-            PreferencesSQLiteHelper.STOPS.COLUMN_ROUTE,
+            PreferencesSQLiteHelper.STOPS.COLUMN_DIRECTION,
             PreferencesSQLiteHelper.STOPS.COLUMN_TAG,
             PreferencesSQLiteHelper.STOPS.COLUMN_TITLE,
             PreferencesSQLiteHelper.STOPS.COLUMN_SHORT_TITLE
@@ -77,6 +84,14 @@ public class PreferencesDataSource {
             routeValues.put(PreferencesSQLiteHelper.ROUTES.COLUMN_TITLE, route.getTitle());
             routeValues.put(PreferencesSQLiteHelper.ROUTES.COLUMN_SHORT_TITLE, route.getShortTitle());
             mDatabase.insertWithOnConflict(PreferencesSQLiteHelper.ROUTES.TABLE, null, routeValues, SQLiteDatabase.CONFLICT_IGNORE);
+
+            // Insert the direction
+            ContentValues directionValues = new ContentValues();
+            directionValues.put(PreferencesSQLiteHelper.DIRECTIONS.COLUMN_ROUTE, route.getTag());
+            directionValues.put(PreferencesSQLiteHelper.DIRECTIONS.COLUMN_ROUTE, .getTag());
+            directionValues.put(PreferencesSQLiteHelper.DIRECTIONS.COLUMN_ROUTE, route.getTag());
+            directionValues.put(PreferencesSQLiteHelper.DIRECTIONS.COLUMN_ROUTE, route.getTag());
+            mDatabase.insertWithOnConflict(PreferencesSQLiteHelper.DIRECTIONS.TABLE, null, directionValues, SQLiteDatabase.CONFLICT_IGNORE);
 
             // Insert the stop
             ContentValues stopValues = new ContentValues();
