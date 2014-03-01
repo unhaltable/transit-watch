@@ -19,6 +19,9 @@ public class WatchListenerService extends IntentService implements DataReceiver.
 
     private static final String PREFERENCES_NAME = "transit_stops";
 
+    private static final int ROUTE_TAG = 1;
+    private static final int STOP_TAG = 2;
+
     private PebbleKit.PebbleDataReceiver mDataReceiver = null;
     private UUID mWatchappUUID;
     private PreferencesDataSource mPreferencesDataSource;
@@ -47,11 +50,11 @@ public class WatchListenerService extends IntentService implements DataReceiver.
 
             String routeTag = route.getTag();
             String routeTitle = route.getShortTitle() != null ? route.getShortTitle() : route.getTitle();
+            String stopTag = stop.getTag();
             String stopTitle = stop.getShortTitle() != null ? stop.getShortTitle() : stop.getTitle();
 
             // We can only send primitive data to Pebble
             // TODO: figure out in what format to send the data
-            
         }
 
         PebbleKit.sendDataToPebble(this, mWatchappUUID, savedStops);
