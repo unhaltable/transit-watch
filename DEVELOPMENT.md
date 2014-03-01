@@ -54,10 +54,10 @@ Both the Pebble app and the Android app will be in the same repository (*sigh*) 
 
 #### Useful links
 
-- [SDK guide](https://developer.getpebble.com/2/)
-- [SDK samples](https://github.com/pebble/pebble-sdk-examples)
-- [SDK reference](https://developer.getpebble.com/2/api-reference/modules.html)
-- [Design resources](https://developer.getpebble.com/2/design/)
+- [Pebble SDK guide](https://developer.getpebble.com/2/)
+- [Pebble SDK samples](https://github.com/pebble/pebble-sdk-examples)
+- [Pebble SDK reference](https://developer.getpebble.com/2/api-reference/modules.html)
+- [Pebble Design resources](https://developer.getpebble.com/2/design/)
 - [Android Pebble library](https://developer.getpebble.com/2/mobile-app-guide/android-guide.html/)
 - [NextBus XML API](https://github.com/elliottsj/nextbusapi/raw/master/nextbus-docs/NextBusXMLFeed.pdf) (we won't be using the XML directly, but this PDF shows what data is available)
 
@@ -76,7 +76,7 @@ Once the hackathon has started and I've committed some starter code:
     - Branch: (leave blank for 'master')
 - Compiling:
     - Go to the "Compilation" section
-    - Enter the IP address I have on my phone (this will change occasionally). ([For example](https://github.com/elliottsj/transit-watch/blob/master/images/Screenshot_2014-02-28-13-37-30.png))
+    - Enter the IP address I have on my phone (this will change occasionally). ([For example](https://github.com/elliottsj/transit-watch/blob/master/images/pebble-dev.png))
     - Check "Automatically pull changes" and "Automatically build after pulling"
     - Now the app will compile automatically whenever anyone pushes to the repo.
 - Clone the [repository](https://github.com/elliottsj/pebble-transit) using your favourite Git client and edit using your favourite text editor.
