@@ -1,7 +1,7 @@
 package ca.cryptr.transit_watch.activities;
 
 import android.app.Activity;
-import android.content.Intent;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -11,11 +11,10 @@ import net.sf.nextbus.publicxmlfeed.domain.Direction;
 import net.sf.nextbus.publicxmlfeed.domain.Route;
 import net.sf.nextbus.publicxmlfeed.domain.Stop;
 import net.sf.nextbus.publicxmlfeed.impl.NextbusService;
-import net.sf.nextbus.publicxmlfeed.impl.SimplestNextbusServiceAdapter;
 
 import ca.cryptr.transit_watch.R;
 import ca.cryptr.transit_watch.preferences.PreferencesDataSource;
-import ca.cryptr.transit_watch.services.WatchListenerService;
+import ca.cryptr.transit_watch.util.AndroidNextbusService;
 
 public class StopsActivity extends Activity {
 
@@ -29,16 +28,12 @@ public class StopsActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_stops);
 
-        mNextbusService = new SimplestNextbusServiceAdapter();
+        mNextbusService = new AndroidNextbusService();
         mPreferencesDataSource = new PreferencesDataSource(this);
 
 
         // TEMP
-        addStop();
-
-
-        // Start background service if not already started
-        startService(new Intent(this, WatchListenerService.class));
+        new AddStopTask().execute();
     }
 
     @Override
@@ -60,21 +55,26 @@ public class StopsActivity extends Activity {
     }
 
     // TEMP
-    private void addStop() {
-        Agency ttc = mNextbusService.getAgency("ttc");
-        Route carlton506 = null;
-        for (Route route : mNextbusService.getRoutes(ttc))
-            if (route.getTag().equals("506"))
-                carlton506 = route;
-        Direction carlton506east = null;
-        for (Direction direction : mNextbusService.getRouteConfiguration(carlton506).getDirections())
-            if (direction.getName().equals("East"))
-                carlton506east = direction;
-        Stop stGeorgeAndBeverly = null;
-        for (Stop stop : carlton506east.getStops())
-            if (stop.getTag().equals("2748"))
-                stGeorgeAndBeverly = stop;
-        mPreferencesDataSource.saveStop(carlton506east, stGeorgeAndBeverly);
+    private class AddStopTask extends AsyncTask<Void, Void, Void> {
+
+        @Override
+        protected Void doInBackground(Void... params) {
+            Agency ttc = mNextbusService.getAgency("ttc");
+            Route carlton506 = null;
+            for (Route route : mNextbusService.getRoutes(ttc))
+                if (route.getTag().equals("506"))
+                    carlton506 = route;
+            Direction carlton506east = null;
+            for (Direction direction : mNextbusService.getRouteConfiguration(carlton506).getDirections())
+                if (direction.getName().equals("East"))
+                    carlton506east = direction;
+            Stop stGeorgeAndBeverly = null;
+            for (Stop stop : carlton506east.getStops())
+                if (stop.getTag().equals("2748"))
+                    stGeorgeAndBeverly = stop;
+            mPreferencesDataSource.saveStop(carlton506east, stGeorgeAndBeverly);
+            return null;
+        }
     }
 
 }

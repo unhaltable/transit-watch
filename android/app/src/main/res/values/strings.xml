@@ -2,8 +2,6 @@
 <resources>
 
     <string name="app_name">Transit Watch</string>
-    
-    <string name="watchapp_uuid">454d46ec-0647-4ef4-8df8-53e1e378cc48</string>
 
     <!-- String related to StopsActivity -->
     <string name="settings">Settings</string>

@@ -16,8 +16,11 @@
                 <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
         </activity>
-        <service android:name=".services.WatchListenerService"
-                 android:exported="false"/>
+        <receiver android:name=".services.DataReceiver">
+            <intent-filter>
+                <action android:name="com.getpebble.action.app.RECEIVE" />
+            </intent-filter>
+        </receiver>
     </application>
 
 </manifest>
