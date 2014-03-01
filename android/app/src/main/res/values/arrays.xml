@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="transits">
+        <item>Toronto Transit Commission (TTC)</item>
+        <item>Toronto, Canada</item>
+        <item>MiWay</item>
+        <item>Mississauga, Canada</item>
+    </string-array>
+</resources>

@@ -20,11 +20,13 @@
 
     <!-- Add transit -->
     <string name="title_activity_add_transit">Choose a transit</string>
+    <string name="action_cancel">Cancel</string>
     <string name="action_next">Next</string>
     <string name="filter_transit">Filter transit companies</string>
 
     <!-- Add route -->
     <string name="title_activity_add_route">Choose a route</string>
+    <string name="action_previous">Back</string>
     <string name="filter_routes">Filter routes</string>
 
     <!-- Add stop -->

@@ -2,6 +2,16 @@
     xmlns:tools="http://schemas.android.com/tools"
     tools:context="ca.cryptr.transit_watch.activities.AddStopActivity" >
 
+    <item android:id="@+id/action_route_cancel"
+        android:icon="@drawable/ic_action_cancel"
+        android:showAsAction="always|withText"
+        android:title="@string/action_cancel" />
+
+    <item android:id="@+id/action_route_previous"
+        android:icon="@drawable/ic_action_previous_item"
+        android:showAsAction="always|withText"
+        android:title="@string/action_previous" />
+
     <item android:id="@+id/action_route_next"
         android:icon="@drawable/ic_action_next_item"
         android:showAsAction="always|withText"
