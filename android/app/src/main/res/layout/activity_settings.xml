@@ -3,12 +3,23 @@
     android:id="@+id/container"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/actionbar"
+    android:fitsSystemWindows="true"
+    android:orientation="vertical"
     tools:context="ca.cryptr.transit_watch.activities.SettingsActivity"
     tools:ignore="MergeRootFrame" >
 
-    <fragment android:name="ca.cryptr.transit_watch.activities.SettingsFragment"
-        android:id="@+id/settings"
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_height="match_parent"
+        android:background="@color/background"
+        android:orientation="vertical" >
+
+        <fragment android:name="ca.cryptr.transit_watch.activities.SettingsFragment"
+            android:id="@+id/settings"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+
+    </LinearLayout>
 
 </FrameLayout>

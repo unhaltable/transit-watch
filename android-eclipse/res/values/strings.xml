@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-  <string name="app_name">Transit Watch</string>
+  <string name="app_name">Transit Watch [Eclipse]</string>
   <string name="action_settings">Settings</string>
   <string name="location_error">Your location couldn\'t be determined</string>
   <string name="location_error_check">Please check your locations settings</string>
