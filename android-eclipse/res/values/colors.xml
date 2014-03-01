@@ -13,4 +13,5 @@
   <color name="stop_orange">#FFF17C37</color>
   <color name="stop_green">#FF00BF76</color>
   <color name="list_divider">#FFD4D4D4</color>
+  <color name="overlay_bar">#880A0D0F</color>
 </resources>
