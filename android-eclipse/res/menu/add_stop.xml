@@ -1,0 +1,7 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android" >
+  <item
+    android:id="@+id/action_stop_done"
+    android:icon="@drawable/ic_action_accept"
+    android:showAsAction="always|withText"
+    android:title="@string/action_done"/>
+</menu>
