@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="ca.cryptr.transit_watch" >
+          package="ca.cryptr.transit_watch">
 
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
@@ -9,40 +9,23 @@
         android:allowBackup="true"
         android:icon="@drawable/ic_launcher"
         android:label="@string/app_name"
-        android:theme="@style/AppTheme" >
+        android:theme="@style/AppTheme">
 
         <activity
-            android:name="ca.cryptr.transit_watch.activities.StopsActivity"
-            android:label="@string/app_name" >
-        </activity>
-
-        <!--<service-->
-            <!--android:name="ca.cryptr.transit_watch.services.WatchListenerService"-->
-            <!--android:exported="false" />-->
-
-        <activity
-            android:name=".activities.SettingsActivity"
-            android:label="@string/title_activity_settings"
-            android:parentActivityName="ca.cryptr.transit_watch.activities.StopsActivity" >
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value="ca.cryptr.transit_watch.activities.StopsActivity" />
-        </activity>
-
-        <activity
-            android:name=".activities.AddStopActivity"
-            android:label="@string/title_activity_add_stop"
-            android:parentActivityName="ca.cryptr.transit_watch.activities.StopsActivity" >
+            android:name=".activities.StopsActivity"
+            android:label="@string/app_name">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value="ca.cryptr.transit_watch.activities.StopsActivity" />
         </activity>
 
-        <receiver android:name=".services.DataReceiver">
+        <activity
+            android:name=".activities.SettingsActivity"
+            android:label="@string/title_activity_settings"
+            android:parentActivityName=".activities.StopsActivity"/>
+        <receiver android:name=".services.DataReceiver"
+                  android:exported="false">
             <intent-filter>
                 <action android:name="com.getpebble.action.app.RECEIVE" />
             </intent-filter>

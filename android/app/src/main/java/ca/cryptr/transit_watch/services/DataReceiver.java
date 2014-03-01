@@ -32,8 +32,10 @@ public class DataReceiver extends PebbleKit.PebbleDataReceiver {
 
     @Override
     public void receiveData(Context context, int transactionId, PebbleDictionary data) {
-        if (mPreferencesDataSource == null)
+        if (mPreferencesDataSource == null) {
             mPreferencesDataSource = new PreferencesDataSource(context);
+            mPreferencesDataSource.open();
+        }
 
         long messageType = data.getInteger(MESSAGE_TYPE);
         if (messageType == APP_OPENED) {

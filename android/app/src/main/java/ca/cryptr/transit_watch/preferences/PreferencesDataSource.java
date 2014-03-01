@@ -100,7 +100,7 @@ public class PreferencesDataSource {
             stopValues.put(PreferencesSQLiteHelper.STOPS.COLUMN_TAG, stop.getTag());
             stopValues.put(PreferencesSQLiteHelper.STOPS.COLUMN_TITLE, stop.getTitle());
             stopValues.put(PreferencesSQLiteHelper.STOPS.COLUMN_SHORT_TITLE, stop.getShortTitle());
-            mDatabase.insertOrThrow(PreferencesSQLiteHelper.STOPS.TABLE, null, stopValues);
+            mDatabase.insertWithOnConflict(PreferencesSQLiteHelper.STOPS.TABLE, null, stopValues, SQLiteDatabase.CONFLICT_IGNORE);
 
             mDatabase.setTransactionSuccessful();
         } finally {

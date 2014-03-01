@@ -32,6 +32,7 @@ public class StopsActivity extends Activity {
 
         mNextbusService = new AndroidNextbusService();
         mPreferencesDataSource = new PreferencesDataSource(this);
+        mPreferencesDataSource.open();
 
 
         // TEMP
