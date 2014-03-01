@@ -6,8 +6,10 @@
   <string name="fav_stops">Favourite stops</string>
   <string name="add_stop">ADD</string>
   <string name="title_activity_add_transit">Choose a transit</string>
+  <string name="action_next">Next</string>
   <string name="title_activity_add_route">Choose a route</string>
   <string name="title_activity_add_stop">Choose a stop</string>
+  <string name="action_done">Done</string>
   <string name="title_activity_settings">Settings</string>
   <string name="get_pebble">Get it from the Pebble Appstore</string>
 </resources>

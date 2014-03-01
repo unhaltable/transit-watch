@@ -8,9 +8,7 @@
   <color name="grey_pane_light">#FF39464E</color>
   <color name="cards_shadow">#FFDFDFDF</color>
   <color name="cards_pressed">#FFEEEEEE</color>
-  <color name="gpa_green">#FF209b5b</color>
-  <color name="gpa_blue">#FF406398</color>
-  <color name="gpa_yellow">#FFF8C74C</color>
-  <color name="gpa_red">#FFD43F36</color>
-  <color name="gpa_fail">#FF6C1C17</color>
+  <color name="stop_red">#FFE9442B</color>
+  <color name="stop_orange">#FFF17C37</color>
+  <color name="stop_green">#FF00BF76</color>
 </resources>
