@@ -4,6 +4,7 @@
 #define NUM_FIRST_MENU_ITEMS 10
 
 static Window *window;
+static Window *menu_window;
 static BitmapLayer *image_layer;
 static GBitmap *image;
 int i; // Dummy variable so I can actually compile the thing...
@@ -36,6 +37,7 @@ static void down_click_handler(ClickRecognizerRef recognizer, void *context) {
 static void select_click_handler(ClickRecognizerRef recognizer, void *context) {
 	// TODO
 	if(on_splash) {
+		menu_window = window_create();
   		window_set_window_handlers(window, (WindowHandlers) {
     		.load = window_load,
     		.unload = window_unload,
@@ -120,11 +122,11 @@ static void window_load(Window *window) {
 		.items = first_menu_items,
 	};
 
-	main_menu = simple_menu_layer_create(bounds, window, menu_sections, NUM_MENU_SECTIONS, NULL);
+	main_menu = simple_menu_layer_create(bounds, menu_window, menu_sections, NUM_MENU_SECTIONS, NULL);
 	layer_add_child(window_layer, simple_menu_layer_get_layer(main_menu));
 }
 
-static void window_unload(Window *window) {
+void window_unload(Window *window) {
 	simple_menu_layer_destroy(main_menu);
 
 }
