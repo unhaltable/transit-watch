@@ -48,7 +48,6 @@ public abstract class SelectTransitItemFragment<T extends NextbusValueObject> ex
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
                 listAdapter.getFilter().filter(s);
-//                listAdapter.getFilter().filter("");
             }
 
             @Override
