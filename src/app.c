@@ -93,7 +93,7 @@ void initialize_stops_data(DictionaryIterator *received, void *context)
         stops_data[i] = (char**)malloc(num_fields_per_stop * sizeof(char*));
         for (unsigned int j = 0; j < num_fields_per_stop; j++)
         {
-            tuple = dict_find(received, i*j + IDX_BEGIN_STOPS_DATA);
+            tuple = dict_find(received, i*num_fields_per_stop + j + IDX_BEGIN_STOPS_DATA);
             if (tuple)
             {
                 char* data_str = tuple->value->cstring;
