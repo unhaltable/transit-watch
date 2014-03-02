@@ -57,7 +57,7 @@ static void special_select_callback(int index, void *ctx) {
 // This initializes the menu upon window load
 static void window_load(Window *window) {
   // We'll have to load the icon before we can use it
-  menu_icon_image = gbitmap_create_with_resource(RESOURCE_ID_IMAGE_MENU_ICON_1);
+  //menu_icon_image = gbitmap_create_with_resource(RESOURCE_ID_IMAGE_MENU_ICON_1);
 
   // Although we already defined NUM_FIRST_MENU_ITEMS, you can define
   // an int as such to easily change the order of menu items later
