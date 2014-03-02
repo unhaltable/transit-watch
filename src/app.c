@@ -125,7 +125,10 @@ void out_sent_handler(DictionaryIterator *sent, void *context){}
 // outgoing data failed
 void out_failed_handler(DictionaryIterator *failed, AppMessageResult reason, void *context){}
 // incoming data dropped
-void in_dropped_handler(AppMessageResult reason, void *context){}
+void in_dropped_handler(AppMessageResult reason, void *context)
+{
+    APP_LOG(APP_LOG_LEVEL_DEBUG, "Incoming message dropped (reason: %d)", reason);
+}
 
 // incoming data received
 void in_received_handler(DictionaryIterator *received, void *context)
