@@ -40,6 +40,9 @@ public class AddStopActivity extends Activity {
         FragmentTransaction ft = getFragmentManager().beginTransaction();
 
         switch (item.getItemId()) {
+            case android.R.id.home:
+                this.finish();
+                return true;
             case R.id.action_add_cancel:
                 startActivity(intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP));
                 return true;

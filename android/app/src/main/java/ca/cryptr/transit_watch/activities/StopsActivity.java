@@ -158,8 +158,10 @@ public class StopsActivity extends Activity {
     };
 
     private void removeStop() {
-        Toast.makeText(this,
-                String.valueOf(selectedItem), Toast.LENGTH_LONG).show();
+        favStops.remove(selectedItem);
+        adapter.notifyDataSetChanged();
+//        Toast.makeText(this,
+//                String.valueOf(selectedItem), Toast.LENGTH_LONG).show();
     }
 
     // TEMP
