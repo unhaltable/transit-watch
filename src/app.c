@@ -76,16 +76,16 @@ void initialize_stops_data(DictionaryIterator *received, void *context)
     if (tuple)
         num_stops = tuple->value->uint32;
     else
-        num_stops = -1;
+        num_stops = 0;
 
     // Get the number of data fields per stop
     tuple = dict_find(received, NUM_FIELDS_PER_STOP);
     if (tuple)
         num_fields_per_stop = tuple->value->uint32;
     else
-        num_fields_per_stop = -1;
+        num_fields_per_stop = 0;
 
-    if (num_stops == -1 || num_fields_per_stop == -1)
+    if (num_stops == 0 || num_fields_per_stop == 0)
     {
         APP_LOG(APP_LOG_LEVEL_DEBUG, "Malformed: NUM_STOPS: %d, NUM_FIELDS_PER_STOP: %d",
                 num_stops, num_fields_per_stop);
