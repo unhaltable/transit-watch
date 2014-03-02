@@ -42,6 +42,7 @@ static void select_click_handler(ClickRecognizerRef recognizer, void *context) {
     		.load = window_load,
     		.unload = window_unload,
   		});
+  		window_stack_push(menu_window, true);
 	}
 
 }
@@ -56,61 +57,61 @@ static void window_load(Window *window) {
 
 	int num_a_items = 0;
 
-	first_menu_item[num_a_items++] = (SimpleMenuItem) {
+	first_menu_items[num_a_items++] = (SimpleMenuItem) {
 		.title = "5 N Avenue Rd",
 		.subtitle = "Queen's Park @ Museum Station",
 		.callback = menu_select_callback,
 	};
 
-	first_menu_item[num_a_items++] = (SimpleMenuItem) {
+	first_menu_items[num_a_items++] = (SimpleMenuItem) {
 		.title = "43 N Kennedy Rd",
 		.subtitle = "Cardall Avenue",
 		.callback = menu_select_callback,
 	};
 
-	first_menu_item[num_a_items++] = (SimpleMenuItem) {
+	first_menu_items[num_a_items++] = (SimpleMenuItem) {
 		.title = "190 TranScarberia Express",
 		.subtitle = "Sheppard Avenue",
 		.callback = menu_select_callback,
 	};
 
-	first_menu_item[num_a_items++] = (SimpleMenuItem) {
+	first_menu_items[num_a_items++] = (SimpleMenuItem) {
 		.title = "510 Carlton Rd",
 		.subtitle = "UofT @ St. George Street",
 		.callback = menu_select_callback,
 	};
 
-	first_menu_item[num_a_items++] = (SimpleMenuItem) {
+	first_menu_items[num_a_items++] = (SimpleMenuItem) {
 		.title = "96 A Wilson",
 		.subtitle = "York Mills Station",
 		.callback = menu_select_callback,
 	};
 
-	first_menu_item[num_a_items++] = (SimpleMenuItem) {
+	first_menu_items[num_a_items++] = (SimpleMenuItem) {
 		.title = "69 S Fake Rd",
 		.subtitle = "Next stop @ Your Mom's House",
 		.callback = menu_select_callback,
 	};
 
-	first_menu_item[num_a_items++] = (SimpleMenuItem) {
+	first_menu_items[num_a_items++] = (SimpleMenuItem) {
 		.title = "1337 N Maturity Rd",
 		.subtitle = "Jokes on you @ there is none",
 		.callback = menu_select_callback,
 	};
 
-	first_menu_item[num_a_items++] = (SimpleMenuItem) {
+	first_menu_items[num_a_items++] = (SimpleMenuItem) {
 		.title = "49 W Dunbar Loop",
 		.subtitle = "UBC @ Pacific Spirit Park",
 		.callback = menu_select_callback,
 	};
 
-	first_menu_item[num_a_items++] = (SimpleMenuItem) {
+	first_menu_items[num_a_items++] = (SimpleMenuItem) {
 		.title = "100 E Marine Drive",
 		.subtitle = "Canada Line @ Marine Drive Station",
 		.callback = menu_select_callback,
 	};
 
-	first_menu_item[num_a_items++] = (SimpleMenuItem) {
+	first_menu_items[num_a_items++] = (SimpleMenuItem) {
 		.title = "41 W UBC",
 		.subtitle = "Joyce Station",
 		.callback = menu_select_callback,
@@ -122,7 +123,9 @@ static void window_load(Window *window) {
 		.items = first_menu_items,
 	};
 
-	main_menu = simple_menu_layer_create(bounds, menu_window, menu_sections, NUM_MENU_SECTIONS, NULL);
+	Layer *menu_layer = window_get_root_layer(menu_window);
+	GRect menu_bounds = layer_get_frame(menu_layer);
+	main_menu = simple_menu_layer_create(menu_bounds, menu_window, menu_sections, NUM_MENU_SECTIONS, NULL);
 	layer_add_child(window_layer, simple_menu_layer_get_layer(main_menu));
 }
 
