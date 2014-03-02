@@ -16,13 +16,12 @@ public class AgenciesAdapter extends NextbusListAdapter<Agency> {
     protected String getText1(int position) {
         Agency a = getItem(position);
         return String.format("%s%s",
-                             a.getTitle(),
-                             a.getShortTitle() != null ? String.format(" (%s)", a.getShortTitle()) : "");
+                a.getTitle(),
+                a.getShortTitle() != null ? String.format(" (%s)", a.getShortTitle()) : "");
     }
 
     @Override
     protected String getText2(int position) {
         return getItem(position).getRegionTitle();
     }
-
 }

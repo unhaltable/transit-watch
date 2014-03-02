@@ -4,8 +4,9 @@ import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
+import android.widget.BaseAdapter;
 import android.widget.Filter;
+import android.widget.Filterable;
 import android.widget.TextView;
 
 import net.sf.nextbus.publicxmlfeed.domain.Agency;
@@ -14,26 +15,29 @@ import net.sf.nextbus.publicxmlfeed.domain.Route;
 import net.sf.nextbus.publicxmlfeed.domain.Stop;
 
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
 
 import ca.cryptr.transit_watch.R;
 
-public abstract class NextbusListAdapter<T> extends ArrayAdapter<T> {
+public abstract class NextbusListAdapter<T> extends BaseAdapter implements Filterable {
+
+    private Context context;
+    private int resource;
 
     private Filter mFilter;
 
-    private List<T> items;
+    private List<T> mObjects;
     private List<T> itemsCopy;
-    private List<T> filteredItems;
+
+    private LayoutInflater inflater;
 
     private final Object mLock = new Object();
 
     public NextbusListAdapter(Context context, List<T> items) {
-        super(context, R.layout.nextbus_list_item, items);
-        this.items = items;
-        this.itemsCopy = items;
+        this.context = context;
+        this.inflater = (LayoutInflater)context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        this.resource = R.layout.nextbus_list_item;
+        this.mObjects = items;
     }
 
     @Override
@@ -42,7 +46,7 @@ public abstract class NextbusListAdapter<T> extends ArrayAdapter<T> {
         T item = getItem(position);
         // Check if an existing view is being reused, otherwise inflate the view
         if (convertView == null)
-            convertView = LayoutInflater.from(getContext()).inflate(R.layout.nextbus_list_item, null);
+            convertView = inflater.inflate(resource, parent, false);
 
         // Lookup view for data population
         @SuppressWarnings("ConstantConditions")
@@ -60,25 +64,40 @@ public abstract class NextbusListAdapter<T> extends ArrayAdapter<T> {
 
     protected abstract String getText2(int position);
 
+    public T getItem(int position) {
+        return mObjects.get(position);
+    }
+
+    public int getCount() {
+        return mObjects.size();
+    }
+
     public Filter getFilter() {
         if (mFilter == null)
             mFilter = new ArrayFilter();
         return mFilter;
     }
 
+    public long getItemId(int position) {
+        return position;
+    }
+
     private class ArrayFilter extends Filter {
 
+        private boolean filtered = false;
         @Override
         protected FilterResults performFiltering(CharSequence constraint) {
             FilterResults results = new FilterResults();
 
             if (itemsCopy == null) {
                 synchronized (mLock) {
-                    itemsCopy = new ArrayList<T>(items);
+                    itemsCopy = new ArrayList<T>(mObjects);
                 }
             }
 
             if (constraint == null || constraint.length() == 0) {
+                filtered = false;
+
                 ArrayList<T> list;
                 synchronized (mLock) {
                     list = new ArrayList<T>(itemsCopy);
@@ -86,6 +105,8 @@ public abstract class NextbusListAdapter<T> extends ArrayAdapter<T> {
                 results.values = list;
                 results.count = list.size();
             } else {
+                filtered = true;
+
                 String constraintText = constraint.toString().toLowerCase();
 
                 ArrayList<T> values;
@@ -125,9 +146,13 @@ public abstract class NextbusListAdapter<T> extends ArrayAdapter<T> {
                     top = top.toLowerCase();
                     bottom = bottom.toLowerCase();
 
+//                    System.out.println("Value: " + value);
+
                     if (top.contains(constraintText) || bottom.contains(constraintText))
                         newValues.add(value);
                 }
+
+//                System.out.println("New values: " + newValues);
 
                 results.values = newValues;
                 results.count = newValues.size();
@@ -139,9 +164,17 @@ public abstract class NextbusListAdapter<T> extends ArrayAdapter<T> {
         @Override
         protected void publishResults(CharSequence constraint, FilterResults results) {
             //noinspection unchecked
-            items = (List<T>) results.values;
+            if (filtered) {
+                System.out.println("Filtered");
+                System.out.println(results.values);
+                mObjects = (List<T>) results.values;
+            } else {
+                System.out.println("Not filtered");
+                System.out.println(itemsCopy);
+                mObjects = itemsCopy;
+            }
 
-//            System.out.println(items);
+//            System.out.println("Items: " + items);
 
             if (results.count > 0) {
                 notifyDataSetChanged();
@@ -150,17 +183,4 @@ public abstract class NextbusListAdapter<T> extends ArrayAdapter<T> {
             }
         }
     }
-
-    public void sort(Comparator<? super T> comparator) {
-        synchronized (mLock) {
-            if (itemsCopy != null) {
-                Collections.sort(itemsCopy, comparator);
-            }
-//            } else {
-//                Collections.sort(items, comparator);
-//            }
-        }
-//        if (mNotifyOnChange) notifyDataSetChanged();
-    }
-
 }
