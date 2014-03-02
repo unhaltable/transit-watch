@@ -3,21 +3,22 @@
 static Window *window; 
 static BitmapLayer *image_layer;
 static GBitmap *image;
+int i;
 
 
 static void up_click_handler(ClickRecognizerRef recognizer, void *context) {
 	// TODO
-	continue();
+	i = 0;
 }
 
 static void down_click_handler(ClickRecognizerRef recognizer, void *context) {
 	// TODO
-	continue();
+	i = 0;
 }
 
 static void select_click_handler(ClickRecognizerRef recognizer, void *context) {
 	// TODO
-	continue();
+	i = 0;
 }
 
 static void config_provider(void *context) { // gets the proper click handlers for each button
