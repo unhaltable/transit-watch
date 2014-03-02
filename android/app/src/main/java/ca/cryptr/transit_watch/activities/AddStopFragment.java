@@ -125,7 +125,7 @@ public class AddStopFragment extends Fragment {
 
                 item.put("1", s.getTitle());
                 item.put("2", String.format("%s: (%s, %s)", s.getTag(),
-                        s.getGeolocation().getLatitude(), s.getGeolocation().getLongitude());
+                        s.getGeolocation().getLatitude(), s.getGeolocation().getLongitude()));
                 data.add(item);
             }
 
