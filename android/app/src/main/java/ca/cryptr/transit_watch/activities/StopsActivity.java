@@ -57,7 +57,7 @@ public class StopsActivity extends Activity {
     private ListView listStops;
     private static StopListAdapter adapter;
 
-    private static ArrayList<FavStop> favStops = new ArrayList<FavStop>();
+    private static ArrayList<FavStop> favStops;
 
     protected Object mActionMode;
     public int selectedItem = -1;
@@ -77,17 +77,17 @@ public class StopsActivity extends Activity {
 //        mPreferencesDataSource = new PreferencesDataSource(this);
 //        mPreferencesDataSource.open();
 
+        // Load saved data
+        FILEPATH = new File(this.getFilesDir(), FILENAME).getPath();
+        try {
+            data = new FileIO(this.getFilesDir(), FILENAME);
+            data.save(FILEPATH);
+        } catch (IOException e) {
+            Toast.makeText(this, R.string.file_error, Toast.LENGTH_SHORT).show();
+        }
+
         // Fav stops
         setupFavStopsList();
-
-        // Load saved data
-//        FILEPATH = new File(this.getFilesDir(), FILENAME).getPath();
-//
-//        try {
-//            data = new FileIO(this.getFilesDir(), FILENAME);
-//        } catch (IOException e) {
-//            Toast.makeText(this, R.string.file_error, Toast.LENGTH_SHORT).show();
-//        }
 
         // Weather
         weather = new Weather();
@@ -130,7 +130,7 @@ public class StopsActivity extends Activity {
         return mNextbusService;
     }
 
-    public static List<FavStop> getFavStops() {
+    public static ArrayList<FavStop> getFavStops() {
         return favStops;
     }
 
@@ -142,23 +142,23 @@ public class StopsActivity extends Activity {
         favStops.add(stop);
         adapter.notifyDataSetChanged();
 
-//        try {
-//            data.save(FILEPATH);
-//        } catch (IOException e) {
-//
-//        }
+        try {
+            data.save(FILEPATH);
+        } catch (IOException e) {
+
+        }
     }
 
     private void removeStop() {
         favStops.remove(selectedItem);
         adapter.notifyDataSetChanged();
 
-//        try {
-//            data.save(FILEPATH);
-//        } catch (IOException e) {
-//            Toast.makeText(this,
-//                    R.string.file_error, Toast.LENGTH_SHORT).show();
-//        }
+        try {
+            data.save(FILEPATH);
+        } catch (IOException e) {
+            Toast.makeText(this,
+                    R.string.file_error, Toast.LENGTH_SHORT).show();
+        }
     }
 
     public void setupWeather() {
@@ -190,22 +190,22 @@ public class StopsActivity extends Activity {
 
         adapter = new StopListAdapter(this, favStops);
         listStops.setAdapter(adapter);
-//
-//        listStops.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
-//            @Override
-//            public boolean onItemLongClick(AdapterView<?> parent, View view, int pos, long id) {
-//                if (mActionMode != null)
-//                    return false;
-//
-//                selectedItem = pos;
-//
-//                // start the CAB using the ActionMode.Callback defined above
-//                mActionMode = StopsActivity.this.startActionMode(mActionModeCallback);
-//                view.setSelected(true);
-//
-//                return true;
-//            }
-//        });
+
+        listStops.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+            @Override
+            public boolean onItemLongClick(AdapterView<?> parent, View view, int pos, long id) {
+                if (mActionMode != null)
+                    return false;
+
+                selectedItem = pos;
+
+                // start the CAB using the ActionMode.Callback defined above
+                mActionMode = StopsActivity.this.startActionMode(mActionModeCallback);
+                view.setSelected(true);
+
+                return true;
+            }
+        });
     }
 
     private ActionMode.Callback mActionModeCallback = new ActionMode.Callback() {
