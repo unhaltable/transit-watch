@@ -4,11 +4,15 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.view.ActionMode;
 import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import net.sf.nextbus.publicxmlfeed.domain.Agency;
 import net.sf.nextbus.publicxmlfeed.domain.Direction;
@@ -95,6 +99,9 @@ public class StopsActivity extends Activity {
         startActivity(intent);
     }
 
+    protected Object mActionMode;
+    public int selectedItem = -1;
+
     private void setupFavStopsList() {
         listStops = (ListView) findViewById(R.id.stops);
 
@@ -103,6 +110,56 @@ public class StopsActivity extends Activity {
 
         adapter = new StopListAdapter(this, favStops);
         listStops.setAdapter(adapter);
+
+        listStops.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+            @Override
+            public boolean onItemLongClick(AdapterView<?> parent, View view, int pos, long id) {
+                if (mActionMode != null)
+                    return false;
+
+                selectedItem = pos;
+
+                // start the CAB using the ActionMode.Callback defined above
+                mActionMode = StopsActivity.this.startActionMode(mActionModeCallback);
+                view.setSelected(true);
+
+                return true;
+            }
+        });
+    }
+
+    private ActionMode.Callback mActionModeCallback = new ActionMode.Callback() {
+
+        public boolean onCreateActionMode(ActionMode mode, Menu menu) {
+            MenuInflater inflater = mode.getMenuInflater();
+            inflater.inflate(R.menu.context, menu);
+            return true;
+        }
+
+        public boolean onPrepareActionMode(ActionMode mode, Menu menu) {
+            return false;
+        }
+
+        public boolean onActionItemClicked(ActionMode mode, MenuItem item) {
+            switch (item.getItemId()) {
+                case R.id.action_remove:
+                    removeStop();
+                    mode.finish();
+                    return true;
+                default:
+                    return false;
+            }
+        }
+
+        public void onDestroyActionMode(ActionMode mode) {
+            mActionMode = null;
+            selectedItem = -1;
+        }
+    };
+
+    private void removeStop() {
+        Toast.makeText(this,
+                String.valueOf(selectedItem), Toast.LENGTH_LONG).show();
     }
 
     // TEMP
