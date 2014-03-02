@@ -166,6 +166,7 @@ static void menu_select_callback(int index, void *context) {
     // Set stop_window's fields to selected stop's data
     if (stops_data && index < (int)num_stops && num_fields_per_stop > 3)
     {
+        APP_LOG(APP_LOG_LEVEL_DEBUG, "Loading data for stop %d into stop_window", index);
         text_layer_set_text(stop_title, stops_data[index][0]);
         text_layer_set_text(stop_subtitle, stops_data[index][1]);
         text_layer_set_text(stop_weather, stops_data[index][2]);
@@ -201,6 +202,7 @@ static void config_provider(void *context) { // gets the proper click handlers f
 static void window_load(Window *window)
 {
     unsigned int i;
+    APP_LOG(APP_LOG_LEVEL_DEBUG, "Loading %d items into menu...", num_stops);
     for (i = 0; i < num_stops; i++)
     {
         first_menu_items[i] = (SimpleMenuItem) {
