@@ -329,10 +329,10 @@ void handle_init(void)
     // layer_set_update_proc(raw_layer, layer_update_callback);
     // layer_add_child(stop_root, raw_layer);
 
-    stop_ETA = text_layer_create(GRect(20, 100, 104, 148));
+    stop_ETA = text_layer_create(GRect(20, 110, 104, 48));
     text_layer_set_text(stop_ETA, "15 min");
     //text_layer_set_text(stop_ETA, foo) see above comment
-    text_layer_set_font(stop_ETA, fonts_get_system_font(FONT_KEY_BITHAM_42_BOLD));
+    text_layer_set_font(stop_ETA, fonts_get_system_font(FONT_KEY_BITHAM_30_BLACK));
     text_layer_set_text_alignment(stop_ETA, GTextAlignmentCenter);
     text_layer_set_overflow_mode(stop_ETA, GTextOverflowModeTrailingEllipsis);
     // text_color is by default black
