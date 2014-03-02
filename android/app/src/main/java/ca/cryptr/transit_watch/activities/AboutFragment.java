@@ -55,6 +55,8 @@ public class AboutFragment extends Fragment {
                         url =  "https://twitter.com/arkon";
                     else if (position == 2)
                         url =  "https://twitter.com/NickGoh_";
+                    else if (position == 3)
+                        url =  "https://github.com/hxhl95";
 
                     Intent i = new Intent(Intent.ACTION_VIEW);
                     i.setData(Uri.parse(url));
