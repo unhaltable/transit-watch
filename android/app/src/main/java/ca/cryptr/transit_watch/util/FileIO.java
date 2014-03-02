@@ -41,10 +41,12 @@ public class FileIO {
 
         String data = new String(rawData, "UTF-8");
 
-        StopsActivity.setFavStops(gson.fromJson(data, ArrayList.class));
+        Type listType = new TypeToken<ArrayList<FavStop>>() {}.getType();
+        ArrayList<FavStop> saved = gson.fromJson(data, listType);
+        StopsActivity.setFavStops(saved);
 
-        fis.close();
         in.close();
+        fis.close();
     }
 
     public void save(String filePath) throws IOException {

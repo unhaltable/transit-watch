@@ -14,12 +14,16 @@ public class LocationChecker {
 
     private Location getLocation(Context context) {
 
-        LocationManager locationManager = (LocationManager) context.getSystemService(Context.LOCATION_SERVICE);
+        LocationManager lm = (LocationManager) context.getSystemService(Context.LOCATION_SERVICE);
 
-        String locationProvider = LocationManager.NETWORK_PROVIDER;
-        // Or use LocationManager.GPS_PROVIDER
+//        Location lastKnownLocation = null;
+//
+//        if (lm.isProviderEnabled(LocationManager.GPS_PROVIDER))
+//            lastKnownLocation = lm.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+//        else if (lm.isProviderEnabled(LocationManager.NETWORK_PROVIDER))
+//            lastKnownLocation = lm.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
 
-        return locationManager.getLastKnownLocation(locationProvider);
+        return lm.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
     }
 
     public String getCity(Context context) throws IOException {
