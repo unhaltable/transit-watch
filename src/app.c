@@ -5,7 +5,7 @@
 
 static Window *window;
 static Window *menu_window;
-static Window *stop_window
+static Window *stop_window;
 
 static BitmapLayer *image_layer;
 static GBitmap *image;
@@ -19,6 +19,8 @@ static TextLayer *stop_title;
 static TextLayer *stop_subtitle;
 static TextLayer *stop_weather;
 static TextLayer *stop_ETA;
+
+static Layer *raw_layer;
 
 int i; // Dummy variable so I can actually compile the thing...
 bool on_splash;
@@ -241,6 +243,11 @@ void window_unload(Window *window) {
     simple_menu_layer_destroy(main_menu);
 }
 
+static void layer_update_callback(Layer *me, GContext *ctx) {
+    GRect myRect = image->bounds;
+    graphics_context_set_fill_color(ctx, GColorWhite);
+    graphics_draw_round_rect(ctx, myRect, 16);
+}
 
 void handle_init(void)
 {
@@ -274,55 +281,52 @@ void handle_init(void)
     GRect stop_bounds = layer_get_frame(stop_root);
 
     // Set stop_title
-    stop_title = text_layer_create(GRect(0, 0, stop_bounds.size.w, 32));
+    stop_title = text_layer_create(GRect(0, 0, stop_bounds.size.w, 28));
     text_layer_set_text(stop_title, "5 N Avenue Rd");
     //text_layer_set_text(stop_title, pointer to string) this is for when we implement non-dummy values
-    text_layer_set_font(stop_title, fonts_get_system_font(FONT_KEY_GOTHIC_32_BOLD));
+    text_layer_set_font(stop_title, fonts_get_system_font(FONT_KEY_GOTHIC_28_BOLD));
     text_layer_set_text_alignment(stop_title, GTextAlignmentCenter);
     text_layer_set_overflow_mode(stop_title, GTextOverflowModeTrailingEllipsis);
     text_layer_set_text_color(stop_title, GColorWhite);
-    text_layer_set_background_color(stop_title, GColorBlack);
+    text_layer_set_background_color(stop_title, GColorClear);
     layer_add_child(stop_root, text_layer_get_layer(stop_title));
 
     // Set stop_subtitle
-    stop_subtitle = text_layer_create(GRect(0, 32, stop_bounds.size.w, 56));
+    stop_subtitle = text_layer_create(GRect(0, 28, stop_bounds.size.w, 48));
     text_layer_set_text(stop_subtitle, "Queen's Park @ Museum Station");
     //text_layer_set_text(stop_title, foo) see above comment
-    text_layer_set_font(stop_subtitle, fonts_get_system_font(FONT_KEY_GOTHIC_28_BOLD));
-    text_layer_set_text_alignment(stop_subtitle, GTextAlignmentLeft);
+    text_layer_set_font(stop_subtitle, fonts_get_system_font(FONT_KEY_GOTHIC_24));
+    text_layer_set_text_alignment(stop_subtitle, GTextAlignmentCenter);
     text_layer_set_overflow_mode(stop_subtitle, GTextOverflowModeWordWrap);
     text_layer_set_text_color(stop_subtitle, GColorWhite);
-    text_layer_set_background_color(stop_subtitle, GColorBlack);
+    text_layer_set_background_color(stop_subtitle, GColorClear);
     layer_add_child(stop_root, text_layer_get_layer(stop_subtitle));
 
     // Set stop_weather
-    stop_weather = text_layer_create(GRect(0, 88, stop_bounds.w, 28));
-    text_layer_set_text(stop_weather, "5C, sunny");
+    stop_weather = text_layer_create(GRect(0, 76, stop_bounds.size.w, 18));
+    text_layer_set_text(stop_weather, "5C, Scattered Flurries");
     //text_layer_set_text(stop_weather, foo) see above comment
-    text_layer_set_font(stop_weather, fonts_get_system_font(FONT_KEY_GOTHIC_28_BOLD));
-    text_layer_set_text_alignment(stop_weather, GTextAlignmentLeft);
+    text_layer_set_font(stop_weather, fonts_get_system_font(FONT_KEY_GOTHIC_18_BOLD));
+    text_layer_set_text_alignment(stop_weather, GTextAlignmentCenter);
     text_layer_set_overflow_mode(stop_weather, GTextOverflowModeTrailingEllipsis);
     text_layer_set_text_color(stop_weather, GColorWhite);
-    text_layer_set_background_color(stop_weather, GColorBlack);
+    text_layer_set_background_color(stop_weather, GColorClear);
     layer_add_child(stop_root, text_layer_get_layer(stop_weather));
 
     // Set stop_ETA
-    myRect = GRect(0, 116, stop_bounds.w, stop_bounds.h);
-    graphics_context_set_fill_color(GColorWhite);
-    graphics_draw_round_rect(myRect, 16);
+    raw_layer = layer_create(stop_bounds);
+    layer_set_update_proc(raw_layer, layer_update_callback);
+    layer_add_child(stop_root, raw_layer);
 
-    stop_ETA = text_layer_create(myRect));
+    stop_ETA = text_layer_create(GRect(0, 116, stop_bounds.size.w, stop_bounds.size.h));
     text_layer_set_text(stop_ETA, "15 min");
     //text_layer_set_text(stop_ETA, foo) see above comment
-    text_layer_set_font(stop_ETA, fonts_get_system_font(FONT_KEY_GOTHIC_38_BOLD));
+    text_layer_set_font(stop_ETA, fonts_get_system_font(FONT_KEY_BITHAM_42_BOLD));
     text_layer_set_text_alignment(stop_ETA, GTextAlignmentCenter);
     text_layer_set_overflow_mode(stop_ETA, GTextOverflowModeTrailingEllipsis);
     // text_color is by default black
     text_layer_set_background_color(stop_ETA, GColorClear);
     layer_add_child(stop_root, text_layer_get_layer(stop_ETA));
-
-
-
 
 
     // Creation of Splash Screen
@@ -357,6 +361,12 @@ void handle_deinit(void)
     window_destroy(window);
 
     destroy_stops_data();
+    layer_destroy(raw_layer);
+    window_destroy(stop_window);
+    text_layer_destroy(stop_title);
+    text_layer_destroy(stop_subtitle);
+    text_layer_destroy(stop_weather);
+    text_layer_destroy(stop_ETA);
 }
 
 int main(void) {
