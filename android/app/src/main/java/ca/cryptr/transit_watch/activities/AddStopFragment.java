@@ -124,7 +124,8 @@ public class AddStopFragment extends Fragment {
                 Map<String, String> item = new HashMap<String, String>();
 
                 item.put("1", s.getTitle());
-                item.put("2", s.getTag() + ", " + s.getGeolocation());
+                item.put("2", String.format("%s: (%s, %s)", s.getTag(),
+                        s.getGeolocation().getLatitude(), s.getGeolocation().getLongitude());
                 data.add(item);
             }
 

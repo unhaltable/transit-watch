@@ -23,4 +23,6 @@ dependencies {
     compile 'com.android.support:support-v13:18.0.+'
     compile 'net.sf.nextbus.publicxmlfeed:nextbus-adapter:1.0.+'
     compile 'com.getpebble.android.kit:library:1.0-SNAPSHOT@aar'
+    compile files('libs/gson-2.2.4.jar')
+    compile files('src/main/libs/gson-2.2.4.jar')
 }
