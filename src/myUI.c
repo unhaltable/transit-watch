@@ -30,7 +30,7 @@ static void config_provider(void *context) { // gets the proper click handlers f
 static void init() {
 	window = window_create();
 	window_stack_push(window, true);
-	window_set_color_background_color(window, GColorBlack);
+	window_set_background_color(window, GColorBlack);
 
 	window_set_click_config_provider(window, config_provider);
 
