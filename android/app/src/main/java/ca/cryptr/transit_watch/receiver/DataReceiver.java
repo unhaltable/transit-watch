@@ -93,12 +93,14 @@ public class DataReceiver extends PebbleKit.PebbleDataReceiver {
         savedStops.addUint32(1, stopCount);
         savedStops.addUint32(2, 4);  // Four fields
 
-        Log.i(TAG, "Sending stop data");
+        Log.i(TAG, "Sending stop data: ");
         PebbleKit.sendDataToPebble(context, WATCHAPP_UUID, savedStops);
 
         // Test code:
-//        PebbleDictionary dictionary = new PebbleDictionary();
-//        dictionary.addString(0, "Hello");
+        PebbleDictionary dictionary = new PebbleDictionary();
+        dictionary.addString(0, "Hello");
+        dictionary.addString(2, "Goodbye");
+        dictionary.addString(1, "Blah");
 //        PebbleKit.sendDataToPebble(context, WATCHAPP_UUID, dictionary);
     }
 
