@@ -1,7 +1,4 @@
 #include "pebble.h"
-#include "pebble_os.h"
-#include "pebble_app.h"
-#include "pebble_fonts.h"
 
 static Window *window; 
 static BitmapLayer *image_layer;
@@ -10,14 +7,17 @@ static GBitmap *image;
 
 static void up_click_handler {
 	// TODO
+	continue();
 }
 
 static void down_click_handler {
 	// TODO
+	continue();
 }
 
 static void select_click_handler {
 	// TODO
+	continue();
 }
 
 static void config_provider(void *context) { // gets the proper click handlers for each button
