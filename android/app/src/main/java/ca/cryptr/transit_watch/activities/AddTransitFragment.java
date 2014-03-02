@@ -86,8 +86,8 @@ public class AddTransitFragment extends Fragment {
             public void onItemClick(AdapterView<?> parent, View view, int pos, long l) {
                 // Set the transit name
                 Agency a = agencies.get((int) parent.getItemIdAtPosition(pos));
-                AddStopActivity.setAgency(String.format("%s%s", a.getTitle(),
-                        a.getShortTitle() != null ? String.format(" (%s)", a.getShortTitle()) : ""));
+                AddStopActivity.setAgency(String.format("%s",
+                        a.getShortTitle() != null ? a.getShortTitle(): a.getTitle()));
                 AddStopActivity.setAgencyTag(a.getTag());
 
                 // Go to the next page

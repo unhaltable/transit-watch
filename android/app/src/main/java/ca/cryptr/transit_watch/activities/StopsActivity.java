@@ -46,7 +46,7 @@ public class StopsActivity extends Activity {
     private TextView city, temperature, summary;
 
     private ListView listStops;
-    private StopListAdapter adapter;
+    private static StopListAdapter adapter;
 
     private static ArrayList<FavStop> favStops = new ArrayList<FavStop>();
 
@@ -67,14 +67,11 @@ public class StopsActivity extends Activity {
         setupWeather();
 
         // Fav stops
-        favStops.add(new FavStop("TTC", "5 N Avenue Rd", "Queen's Park @ Museum Station"));
-        favStops.add(new FavStop("MiWay", "1 E Hurontario Rd", "Hurontario @ Eglinton"));
-        favStops.add(new FavStop("YRT", "56 S Highway 7", "Brantford @ Yonge"));
-        favStops.add(new FavStop("Some Random Agency", "552 W Burnhamthorpe Rd", "Burnhamthorpe @ College Station"));
+//        favStops.add(new FavStop("TTC", "5 N Avenue Rd", "Queen's Park @ Museum Station"));
+//        favStops.add(new FavStop("MiWay", "1 E Hurontario Rd", "Hurontario @ Eglinton"));
+//        favStops.add(new FavStop("YRT", "56 S Highway 7", "Brantford @ Yonge"));
+//        favStops.add(new FavStop("Some Random Agency", "552 W Burnhamthorpe Rd", "Burnhamthorpe @ College Station"));
         setupFavStopsList();
-
-        // TEMP
-//        new AddStopTask().execute();
     }
 
     @Override
@@ -105,6 +102,14 @@ public class StopsActivity extends Activity {
 
     public static void addFavStop(FavStop stop) {
         favStops.add(stop);
+        adapter.notifyDataSetChanged();
+    }
+
+    private void removeStop() {
+        favStops.remove(selectedItem);
+        adapter.notifyDataSetChanged();
+//        Toast.makeText(this,
+//                String.valueOf(selectedItem), Toast.LENGTH_LONG).show();
     }
 
     public void setupWeather() {
@@ -182,76 +187,4 @@ public class StopsActivity extends Activity {
             selectedItem = -1;
         }
     };
-
-    private void removeStop() {
-        favStops.remove(selectedItem);
-        adapter.notifyDataSetChanged();
-//        Toast.makeText(this,
-//                String.valueOf(selectedItem), Toast.LENGTH_LONG).show();
-    }
-
-    // TEMP
-    private class AddStopTask extends AsyncTask<Void, Void, Void> {
-        @Override
-        protected Void doInBackground(Void... params) {
-            // Get agencies
-            List<Agency> agencies = mNextbusService.getAgencies();
-
-            // Selected agency
-            String agencyTag = "ttc";
-
-            // Get routes
-            List<Route> routes = mNextbusService.getRoutes(mNextbusService.getAgency(agencyTag));
-
-            // Selected route
-            String routeTag = "506";
-            Route route = null;
-            for (Route r : routes)
-                if (r.getTag().equals(routeTag))
-                    route = r;
-
-            // Get route directions
-            List<Direction> directions = mNextbusService.getRouteConfiguration(route).getDirections();
-
-            // Selected direction
-            String dirTag = "East";
-            Direction routeDir = null;
-            for (Direction d : directions)
-                if (d.getName().equals(dirTag))
-                    routeDir = d;
-
-            // Get stops for route
-            List<Stop> stops = routeDir.getStops();
-
-            // Selected stop
-            String stopTag = "2748";
-            Stop stop = null;
-            for (Stop s : stops)
-                if (s.getTag().equals(stopTag))
-                    stop = s;
-
-            // Save stop
-            if (favStops.size() < LIMIT)
-                favStops.add(new FavStop(agencyTag, routeTag, stopTag));
-
-            System.out.println(String.format("%s, %s, %s", agencyTag, routeTag, stopTag));
-
-//            Agency ttc = mNextbusService.getAgency("ttc");
-//            Route carlton506 = null;
-//            for (Route route : mNextbusService.getRoutes(ttc))
-//                if (route.getTag().equals("506"))
-//                    carlton506 = route;
-//            Direction carlton506east = null;
-//            for (Direction direction : mNextbusService.getRouteConfiguration(carlton506).getDirections())
-//                if (direction.getName().equals("East"))
-//                    carlton506east = direction;
-//            Stop stGeorgeAndBeverly = null;
-//            for (Stop stop : carlton506east.getStops())
-//                if (stop.getTag().equals("2748"))
-//                    stGeorgeAndBeverly = stop;
-//            mPreferencesDataSource.insertStop(carlton506east, stGeorgeAndBeverly);
-
-            return null;
-        }
-    }
 }

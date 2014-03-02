@@ -15,6 +15,7 @@ import android.widget.AdapterView;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.SimpleAdapter;
+import android.widget.TextView;
 
 import net.sf.nextbus.publicxmlfeed.domain.Direction;
 import net.sf.nextbus.publicxmlfeed.domain.Stop;
@@ -32,6 +33,7 @@ public class AddStopFragment extends Fragment {
 
     private ListView stopsList;
     private EditText filter;
+    private TextView routeDirName;
     private SimpleAdapter adapter;
     private View view;
 
@@ -46,6 +48,10 @@ public class AddStopFragment extends Fragment {
         // Change title, menu items
         getActivity().getActionBar().setTitle(R.string.title_activity_add_stop);
         setHasOptionsMenu(true);
+
+        // Display transit name
+        routeDirName = (TextView) view.findViewById(R.id.stop_route_name);
+        routeDirName.setText(AddStopActivity.getRoute());
 
         // Display the ca.cryptr.transit_watch.stops in the list
         setupStopsList();
@@ -118,7 +124,7 @@ public class AddStopFragment extends Fragment {
                 Map<String, String> item = new HashMap<String, String>();
 
                 item.put("1", s.getTitle());
-                item.put("2", s.getTag() + ", " + s.getStopId());
+                item.put("2", s.getTag() + ", " + s.getGeolocation());
                 data.add(item);
             }
 
