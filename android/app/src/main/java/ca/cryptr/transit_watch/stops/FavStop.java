@@ -1,10 +1,10 @@
 package ca.cryptr.transit_watch.stops;
 
-public class Stop {
+public class FavStop {
 
     private String agency, route, stop;
 
-    public Stop (String agency, String route, String stop) {
+    public FavStop(String agency, String route, String stop) {
         this.agency = agency;
         this.route = route;
         this.stop = stop;

@@ -16,7 +16,7 @@ import android.widget.ListView;
 import android.widget.SimpleAdapter;
 
 import ca.cryptr.transit_watch.R;
-import ca.cryptr.transit_watch.stops.Stop;
+import ca.cryptr.transit_watch.stops.FavStop;
 
 public class AddStopFragment extends Fragment {
 
@@ -80,7 +80,7 @@ public class AddStopFragment extends Fragment {
 //                stopActivity.setStop(companies[2 * (int) parent.getItemIdAtPosition(pos)]);
 
                 // Create the Stop
-                Stop stop = new Stop(stopActivity.getTransit(), stopActivity.getRoute(), stopActivity.getStop());
+                FavStop stop = new FavStop(stopActivity.getTransit(), stopActivity.getRoute(), stopActivity.getStop());
 //                ca.cryptr.transit_watch.stops.add(stop);
 
                 // Return to the main screen

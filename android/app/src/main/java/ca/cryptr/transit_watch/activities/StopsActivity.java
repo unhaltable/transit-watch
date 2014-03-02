@@ -12,11 +12,11 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import net.sf.nextbus.publicxmlfeed.domain.Agency;
 import net.sf.nextbus.publicxmlfeed.domain.Direction;
 import net.sf.nextbus.publicxmlfeed.domain.Route;
+import net.sf.nextbus.publicxmlfeed.domain.Stop;
 import net.sf.nextbus.publicxmlfeed.impl.NextbusService;
 
 import java.io.IOException;
@@ -25,29 +25,30 @@ import java.util.List;
 
 import ca.cryptr.transit_watch.R;
 import ca.cryptr.transit_watch.preferences.PreferencesDataSource;
-import ca.cryptr.transit_watch.stops.Stop;
+import ca.cryptr.transit_watch.stops.FavStop;
 import ca.cryptr.transit_watch.stops.StopListAdapter;
 import ca.cryptr.transit_watch.util.AndroidNextbusService;
-import ca.cryptr.transit_watch.weather.Cities;
 import ca.cryptr.transit_watch.weather.LocationChecker;
 import ca.cryptr.transit_watch.weather.SiteListParser;
 import ca.cryptr.transit_watch.weather.Weather;
 
 public class StopsActivity extends Activity {
 
+    private int LIMIT = 10;
+
     private static final String TAG = StopsActivity.class.getSimpleName();
 
-    private NextbusService mNextbusService;
+    private static NextbusService mNextbusService;
     private PreferencesDataSource mPreferencesDataSource;
 
-    public static Weather weather;
+    private static Weather weather;
 
     private TextView city, temperature, summary;
 
     private ListView listStops;
     private StopListAdapter adapter;
 
-    private ArrayList<Stop> favStops = new ArrayList<Stop>();
+    private ArrayList<FavStop> favStops = new ArrayList<FavStop>();
 
     protected Object mActionMode;
     public int selectedItem = -1;
@@ -66,10 +67,10 @@ public class StopsActivity extends Activity {
         setupWeather();
 
         // Fav stops
-        favStops.add(new Stop("TTC", "5 N Avenue Rd", "Queen's Park @ Museum Station"));
-        favStops.add(new Stop("MiWay", "1 E Hurontario Rd", "Hurontario @ Eglinton"));
-        favStops.add(new Stop("YRT", "56 S Highway 7", "Brantford @ Yonge"));
-        favStops.add(new Stop("Some Random Agency", "552 W Burnhamthorpe Rd", "Burnhamthorpe @ College Station"));
+        favStops.add(new FavStop("TTC", "5 N Avenue Rd", "Queen's Park @ Museum Station"));
+        favStops.add(new FavStop("MiWay", "1 E Hurontario Rd", "Hurontario @ Eglinton"));
+        favStops.add(new FavStop("YRT", "56 S Highway 7", "Brantford @ Yonge"));
+        favStops.add(new FavStop("Some Random Agency", "552 W Burnhamthorpe Rd", "Burnhamthorpe @ College Station"));
         setupFavStopsList();
 
         // TEMP
@@ -96,6 +97,10 @@ public class StopsActivity extends Activity {
 
     public static Weather getWeather() {
         return weather;
+    }
+
+    public static NextbusService getmNextbusService() {
+        return mNextbusService;
     }
 
     public void setupWeather() {
@@ -185,9 +190,47 @@ public class StopsActivity extends Activity {
     private class AddStopTask extends AsyncTask<Void, Void, Void> {
         @Override
         protected Void doInBackground(Void... params) {
+            // Get agencies
             List<Agency> agencies = mNextbusService.getAgencies();
-            for (int i = 0; i < agencies.size(); i++)
-                System.out.println(agencies.get(i));
+
+            // Selected agency
+            String agencyTag = "ttc";
+
+            // Get routes
+            List<Route> routes = mNextbusService.getRoutes(mNextbusService.getAgency(agencyTag));
+
+            // Selected route
+            String routeTag = "506";
+            Route route = null;
+            for (Route r : routes)
+                if (r.getTag().equals(routeTag))
+                    route = r;
+
+            // Get route directions
+            List<Direction> directions = mNextbusService.getRouteConfiguration(route).getDirections();
+
+            // Selected direction
+            String dirTag = "East";
+            Direction routeDir = null;
+            for (Direction d : directions)
+                if (d.getName().equals(dirTag))
+                    routeDir = d;
+
+            // Get stops for route
+            List<Stop> stops = routeDir.getStops();
+
+            // Selected stop
+            String stopTag = "2748";
+            Stop stop = null;
+            for (Stop s : stops)
+                if (s.getTag().equals(stopTag))
+                    stop = s;
+
+            // Save stop
+            if (favStops.size() < LIMIT)
+                favStops.add(new FavStop(agencyTag, routeTag, stopTag));
+
+            System.out.println(String.format("%s, %s, %s", agencyTag, routeTag, stopTag));
 
 //            Agency ttc = mNextbusService.getAgency("ttc");
 //            Route carlton506 = null;
@@ -207,5 +250,4 @@ public class StopsActivity extends Activity {
             return null;
         }
     }
-
 }

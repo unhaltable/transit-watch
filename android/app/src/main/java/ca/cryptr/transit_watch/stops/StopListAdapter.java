@@ -17,10 +17,10 @@ import ca.cryptr.transit_watch.R;
 public class StopListAdapter extends BaseAdapter {
 
     private Activity activity;
-    private ArrayList<Stop> data;
+    private ArrayList<FavStop> data;
     private static LayoutInflater inflater = null;
 
-    public StopListAdapter(Activity a, ArrayList<Stop> d) {
+    public StopListAdapter(Activity a, ArrayList<FavStop> d) {
         activity = a;
         data = d;
         inflater = (LayoutInflater)activity.getSystemService(Context.LAYOUT_INFLATER_SERVICE);;
@@ -52,7 +52,7 @@ public class StopListAdapter extends BaseAdapter {
         TextView route = (TextView) vi.findViewById(R.id.route);
         TextView stop = (TextView) vi.findViewById(R.id.stop);
 
-        Stop stopInfo = data.get(position);
+        FavStop stopInfo = data.get(position);
 
         // ETA
         Random generator = new Random();

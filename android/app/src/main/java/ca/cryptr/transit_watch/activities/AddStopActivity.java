@@ -36,7 +36,7 @@ public class AddStopActivity extends Activity {
      */
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        Intent intent = new Intent(this, StopsActivity.class);
+//        Intent intent = new Intent(this, StopsActivity.class);
         FragmentTransaction ft = getFragmentManager().beginTransaction();
 
         switch (item.getItemId()) {
@@ -44,7 +44,7 @@ public class AddStopActivity extends Activity {
                 this.finish();
                 return true;
             case R.id.action_add_cancel:
-                startActivity(intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP));
+                this.finish();
                 return true;
             case R.id.action_add_previous_transit:
                 AddTransitFragment prevTransit = new AddTransitFragment();
@@ -59,7 +59,10 @@ public class AddStopActivity extends Activity {
                 ft.commit();
                 return true;
             case R.id.action_add_done:
-                startActivity(intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP));
+//                startActivity(intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP));
+                // Save stop
+
+                this.finish();
                 return true;
             default:
                 return super.onOptionsItemSelected(item);

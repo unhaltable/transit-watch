@@ -12,7 +12,8 @@
     <string name="location_error">Your location couldn\'t be determined</string>
     <string name="location_error_check">Please check your locations settings</string>
 
-    <!-- Saved ca.cryptr.transit_watch.stops -->
+    <!-- Saved stops -->
+    <string name="weather">Weather forecast</string>
     <string name="fav_stops">Favourite stops</string>
     <string name="add_stop">ADD</string>
     <string name="empty_stops_list">Stops will show up here</string>
@@ -40,7 +41,7 @@
     <string name="get_pebble">Get it from the Pebble Appstore</string>
     <string name="devs_by">Created by:</string>
 
-    <!-- -->
+    <!-- Context menu -->
     <string name="action_remove">Remove</string>
 
 </resources>

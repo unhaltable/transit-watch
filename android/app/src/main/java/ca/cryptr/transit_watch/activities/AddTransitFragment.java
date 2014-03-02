@@ -2,6 +2,7 @@ package ca.cryptr.transit_watch.activities;
 
 import android.app.Fragment;
 import android.app.FragmentTransaction;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -14,6 +15,9 @@ import android.widget.AdapterView;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.SimpleAdapter;
+
+import net.sf.nextbus.publicxmlfeed.domain.Agency;
+import net.sf.nextbus.publicxmlfeed.impl.NextbusService;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -28,6 +32,10 @@ public class AddTransitFragment extends Fragment {
     private EditText filter;
     private SimpleAdapter adapter;
     private View view;
+
+    private static NextbusService nbs = StopsActivity.getmNextbusService();
+
+    private List<Agency> agencies;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -69,14 +77,17 @@ public class AddTransitFragment extends Fragment {
     public void setupTransitList() {
         transits = (ListView) view.findViewById(R.id.add_transit_list);
 
-        final String[] companies = getResources().getStringArray(R.array.transits);
+        (new GetAgencies()).execute();
 
         transits.setClickable(true);
         transits.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int pos, long l) {
                 // Set the transit name
-                ((AddStopActivity) getActivity()).setTransit(companies[2 * (int) parent.getItemIdAtPosition(pos)]);
+                Agency a = agencies.get((int) parent.getItemIdAtPosition(pos));
+                ((AddStopActivity) getActivity()).setTransit(String.format("%s%s",
+                        a.getTitle(),
+                        a.getShortTitle() != null ? String.format(" (%s)", a.getShortTitle()) : ""));
 
                 // Go to the next page
                 FragmentTransaction ft = getFragmentManager().beginTransaction();
@@ -86,21 +97,35 @@ public class AddTransitFragment extends Fragment {
                 ft.commit();
             }
         });
+    }
 
-        List<Map<String, String>> data = new ArrayList<Map<String, String>>();
-
-        for (int i = 0; i < companies.length; i+=2) {
-            Map<String, String> item = new HashMap<String, String>();
-            item.put("1", companies[i]);
-            item.put("2", companies[i+1]);
-            data.add(item);
+    private class GetAgencies extends AsyncTask<Void, Void, Void> {
+        @Override
+        protected Void doInBackground(Void... params) {
+            agencies = nbs.getAgencies();
+            return null;
         }
 
-        adapter = new SimpleAdapter(getActivity(), data,
-                R.layout.add_list_item,
-                new String[] {"1", "2"},
-                new int[] {R.id.text1, R.id.text2});
+        @Override
+        protected void onPostExecute(Void voids) {
+            List<Map<String, String>> data = new ArrayList<Map<String, String>>();
 
-        transits.setAdapter(adapter);
+            for (int i = 0; i < agencies.size(); i++) {
+                Agency a = agencies.get(i);
+                Map<String, String> item = new HashMap<String, String>();
+                item.put("1", String.format("%s%s",
+                        a.getTitle(),
+                        a.getShortTitle() != null ? String.format(" (%s)", a.getShortTitle()) : ""));
+                item.put("2", a.getRegionTitle());
+                data.add(item);
+            }
+
+            adapter = new SimpleAdapter(getActivity(), data,
+                    R.layout.add_list_item,
+                    new String[] {"1", "2"},
+                    new int[] {R.id.text1, R.id.text2});
+
+            transits.setAdapter(adapter);
+        }
     }
 }

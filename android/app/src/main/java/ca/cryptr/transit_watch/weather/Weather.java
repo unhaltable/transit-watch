@@ -2,16 +2,9 @@ package ca.cryptr.transit_watch.weather;
 
 public class Weather {
 
-    private String cityName;
-    private String forecastTime;
-    private String tempValue;
-    private String tempUnit;
-    private String forecastSummary;
-    private String shortSummary;
+    private String cityName, forecastTime, tempValue, tempUnit, forecastSummary, shortSummary;
 
-    public Weather() {
-
-    }
+    public Weather() { }
 
     public String getCityName() {
         return cityName;

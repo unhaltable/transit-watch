@@ -23,8 +23,8 @@ import ca.cryptr.transit_watch.activities.StopsActivity;
 
 public class CityParser extends AsyncTask<Void, Void, Void> {
 
-
     public static Weather weather = StopsActivity.getWeather();
+
     private String url, forecast, summary, shortSummary, tempunits, temp;
     private TextView cityText, tempText, summaryText;
 
