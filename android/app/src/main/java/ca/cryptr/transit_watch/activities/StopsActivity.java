@@ -30,6 +30,7 @@ import ca.cryptr.transit_watch.util.AndroidNextbusService;
 import ca.cryptr.transit_watch.weather.Cities;
 import ca.cryptr.transit_watch.weather.LocationChecker;
 import ca.cryptr.transit_watch.weather.SiteListParser;
+import ca.cryptr.transit_watch.weather.Weather;
 
 public class StopsActivity extends Activity {
 
@@ -37,6 +38,8 @@ public class StopsActivity extends Activity {
 //
 //    private NextbusService mNextbusService;
 //    private PreferencesDataSource mPreferencesDataSource;
+
+    public static Weather weather;
 
     private TextView city, temperature, summary;
 
@@ -57,18 +60,8 @@ public class StopsActivity extends Activity {
 //        mPreferencesDataSource = new PreferencesDataSource(this);
 //        mPreferencesDataSource.open();
 
-        // Weather
-        city = (TextView) findViewById(R.id.forecast_city);
-        temperature = (TextView) findViewById(R.id.forecast_temperature);
-        summary = (TextView) findViewById(R.id.forecast_summary);
-
-        try {
-            LocationChecker lc = new LocationChecker();
-            new SiteListParser(lc.getCity(this), city, temperature, summary).execute();
-        } catch (IOException e) {
-            city.setText(R.string.location_error);
-            summary.setText(R.string.location_error_check);
-        }
+        weather = new Weather();
+        setupWeather();
 
         // Fav stops
         favStops.add(new Stop("TTC", "5 N Avenue Rd", "Queen's Park @ Museum Station"));
@@ -96,6 +89,26 @@ public class StopsActivity extends Activity {
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
+        }
+    }
+
+    public static Weather getWeather() {
+        return weather;
+    }
+
+    public void setupWeather() {
+        // Weather
+        city = (TextView) findViewById(R.id.forecast_city);
+        temperature = (TextView) findViewById(R.id.forecast_temperature);
+        summary = (TextView) findViewById(R.id.forecast_summary);
+
+        try {
+            LocationChecker lc = new LocationChecker();
+            getWeather().setCityName(lc.getCity(this));
+            new SiteListParser(city, temperature, summary).execute();
+        } catch (IOException e) {
+            city.setText(R.string.location_error);
+            summary.setText(R.string.location_error_check);
         }
     }
 

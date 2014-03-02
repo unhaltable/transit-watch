@@ -9,15 +9,17 @@ import java.io.InputStreamReader;
 import java.net.MalformedURLException;
 import java.net.URL;
 
+import ca.cryptr.transit_watch.activities.StopsActivity;
+
 public class SiteListParser extends AsyncTask<Void, Void, Cities> {
 
     private static Cities cities;
-    private String cityName;
     private TextView city, temp, summary;
 
-    public SiteListParser(String cityName, TextView city, TextView temp, TextView summary) {
+    public static Weather weather = StopsActivity.getWeather();
+
+    public SiteListParser(TextView city, TextView temp, TextView summary) {
         cities = new Cities();
-        this.cityName = cityName;
         this.city = city;
         this.temp = temp;
         this.summary = summary;
@@ -84,13 +86,13 @@ public class SiteListParser extends AsyncTask<Void, Void, Cities> {
      */
     @Override
     protected void onPostExecute(Cities cities) {
-        String[] cityInfo = cities.getCity(cityName);
+        String[] cityInfo = cities.getCity(weather.getCityName());
 
         String url =
                 String.format("http://dd.weather.gc.ca/citypage_weather/xml/%s/%s_e.xml",
                         cityInfo[1], cityInfo[0]);
 
         // Get weather info
-        new CityParser(url, cityName, city, temp, summary).execute();
+        new CityParser(url, city, temp, summary).execute();
     }
 }

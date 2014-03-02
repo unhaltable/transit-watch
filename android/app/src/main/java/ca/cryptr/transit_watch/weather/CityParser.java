@@ -19,14 +19,17 @@ import javax.xml.xpath.XPathFactory;
 import org.w3c.dom.Document;
 import org.xml.sax.SAXException;
 
+import ca.cryptr.transit_watch.activities.StopsActivity;
+
 public class CityParser extends AsyncTask<Void, Void, Void> {
 
-    private String url, cityName, forecast, summary, tempunits, temp;
+
+    public static Weather weather = StopsActivity.getWeather();
+    private String url, forecast, summary, tempunits, temp;
     private TextView cityText, tempText, summaryText;
 
-    public CityParser(String url, String cityName, TextView city, TextView temp, TextView summary) {
+    public CityParser(String url, TextView city, TextView temp, TextView summary) {
         this.url = url;
-        this.cityName = cityName;
         this.cityText = city;
         this.tempText = temp;
         this.summaryText = summary;
@@ -49,6 +52,11 @@ public class CityParser extends AsyncTask<Void, Void, Void> {
             tempunits = (String) xpath.evaluate("/siteData/forecastGroup/forecast/temperatures/temperature/@units", xmlDoc, XPathConstants.STRING);
             temp = (String) xpath.evaluate("/siteData/forecastGroup/forecast/temperatures/temperature", xmlDoc, XPathConstants.STRING);
 
+            weather.setForecastTime(forecast.toLowerCase());
+            weather.setTempValue(temp);
+            weather.setTempUnit(tempunits);
+            weather.setForecastSummary(summary.replaceAll("\n", " "));
+
         } catch (MalformedURLException e) {
         } catch (IOException e) {
         } catch (ParserConfigurationException e) {
@@ -64,8 +72,8 @@ public class CityParser extends AsyncTask<Void, Void, Void> {
      */
     @Override
     protected void onPostExecute(Void voids) {
-        cityText.setText(String.format("%s %s", cityName, forecast.toLowerCase()));
-        tempText.setText(String.format("%s°%s", temp, tempunits));
-        summaryText.setText(summary.replaceAll("\n", " "));
+        cityText.setText(String.format("%s %s", weather.getCityName(), weather.getForecastTime()));
+        tempText.setText(String.format("%s°%s", weather.getTempValue(), weather.getTempUnit()));
+        summaryText.setText(weather.getForecastSummary());
     }
 }
