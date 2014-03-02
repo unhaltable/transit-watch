@@ -44,17 +44,17 @@ public class AboutFragment extends Fragment {
             public void onItemClick(AdapterView<?> parent, View view, int pos, long l) {
                 long position = parent.getItemIdAtPosition(pos);
 
-                if (position == 0 || position == 1 || position == 2) {
+                if (position >= 0 && position < 4) {
                     String url = "";
 
                     if (position == 0)
-                        url =  "https://twitter.com/spe_";
+                        url =  "https://www.twitter.com/spe_";
                     else if (position == 1)
-                        url =  "https://twitter.com/arkon";
+                        url =  "https://www.twitter.com/arkon";
                     else if (position == 2)
-                        url =  "https://twitter.com/NickGoh_";
+                        url =  "https://www.twitter.com/NickGoh_";
                     else if (position == 3)
-                        url =  "https://github.com/hxhl95";
+                        url =  "https://www.github.com/hxhl95";
 
                     Intent i = new Intent(Intent.ACTION_VIEW);
                     i.setData(Uri.parse(url));

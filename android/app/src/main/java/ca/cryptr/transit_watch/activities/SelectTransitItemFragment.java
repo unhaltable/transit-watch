@@ -40,7 +40,7 @@ public abstract class SelectTransitItemFragment<T extends NextbusValueObject> ex
         setHasOptionsMenu(true);
 
         // Display the routes in the list
-        setupDirectionList(rootView);
+        setupList(rootView);
 
         // Set up the filter box
         EditText filter = (EditText) rootView.findViewById(R.id.filter);
@@ -62,7 +62,7 @@ public abstract class SelectTransitItemFragment<T extends NextbusValueObject> ex
         return rootView;
     }
 
-    private void setupDirectionList(View rootView) {
+    private void setupList(View rootView) {
         itemList = (ListView) rootView.findViewById(android.R.id.list);
 
         new GetItems().execute();
@@ -91,7 +91,6 @@ public abstract class SelectTransitItemFragment<T extends NextbusValueObject> ex
     protected abstract NextbusListAdapter<T> getNewListAdapter(List<T> items);
 
     protected class GetItems extends AsyncTask<Void, Void, List<T>> {
-
         @Override
         protected List<T> doInBackground(Void... params) {
             List<T> itemList;
@@ -115,5 +114,4 @@ public abstract class SelectTransitItemFragment<T extends NextbusValueObject> ex
             Toast.makeText(getActivity(), "Could not load data.", Toast.LENGTH_SHORT).show();
         }
     }
-
 }

@@ -1,5 +1,4 @@
-<menu xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    tools:context="ca.cryptr.transit_watch.activities.SettingsActivity" >
+<menu xmlns:tools="http://schemas.android.com/tools"
+    tools:context="ca.cryptr.transit_watch.activities.SettingsActivity">
 
 </menu>

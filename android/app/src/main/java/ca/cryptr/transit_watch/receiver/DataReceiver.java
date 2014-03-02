@@ -89,7 +89,7 @@ public class DataReceiver extends PebbleKit.PebbleDataReceiver {
             }
         }
 
-        savedStops.addUint32(MESSAGE_TYPE, 0);
+        savedStops.addUint32(0, 0); // 0 is MESSAGE_STOP_DATA in app.c
         savedStops.addUint32(1, stopCount);
         savedStops.addUint32(2, 4);  // Four fields
 

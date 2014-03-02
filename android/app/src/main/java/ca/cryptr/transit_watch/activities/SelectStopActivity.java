@@ -70,11 +70,6 @@ public class SelectStopActivity extends Activity {
                 ft.addToBackStack(null);
                 ft.commit();
                 return true;
-            case R.id.action_add_done:
-                // Save stop
-
-                finish();
-                return true;
             default:
                 return super.onOptionsItemSelected(item);
         }

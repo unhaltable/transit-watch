@@ -69,19 +69,17 @@ public class SelectStopFragment extends SelectTransitItemFragment<Stop> {
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         menu.findItem(R.id.action_add_cancel).setVisible(false);
         menu.findItem(R.id.action_add_previous_transit).setVisible(false);
-        menu.findItem(R.id.action_add_previous_route).setVisible(true);
-        menu.findItem(R.id.action_add_previous_dir).setVisible(false);
-        menu.findItem(R.id.action_add_done).setVisible(false);
+        menu.findItem(R.id.action_add_previous_route).setVisible(false);
+        menu.findItem(R.id.action_add_previous_dir).setVisible(true);
     }
 
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
         Stop s = (Stop) getListView().getItemAtPosition(position);
 
-        mPreferencesDataSource.saveStop(((SelectStopActivity) getActivity()).getDirection(), s);
+        mPreferencesDataSource.saveStop(mParent.getDirection(), s);
 
         // Return to the main screen
         getActivity().finish();
     }
-
 }

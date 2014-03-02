@@ -180,7 +180,6 @@ public class StopsActivity extends Activity {
     }
 
     private ActionMode.Callback mActionModeCallback = new ActionMode.Callback() {
-
         public boolean onCreateActionMode(ActionMode mode, Menu menu) {
             MenuInflater inflater = mode.getMenuInflater();
             inflater.inflate(R.menu.context, menu);
