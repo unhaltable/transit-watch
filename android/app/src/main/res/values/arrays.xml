@@ -6,4 +6,14 @@
         <item>MiWay</item>
         <item>Mississauga, Canada</item>
     </string-array>
+    <string-array name="devs">
+        <item>Spencer Elliott</item>
+        <item>Developer</item>
+        <item>Eugene Cheung</item>
+        <item>Developer, Designer</item>
+        <item>Nicholas Goh</item>
+        <item>Developer</item>
+        <item>Henry Liu</item>
+        <item>Developer</item>
+    </string-array>
 </resources>
