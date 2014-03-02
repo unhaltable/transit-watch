@@ -22,7 +22,6 @@ public class AddStopActivity extends Activity {
 
         AddTransitFragment transit = new AddTransitFragment();
         ft.add(R.id.fragment_add, transit);
-//        ft.addToBackStack(null);
         ft.commit();
     }
 
@@ -44,21 +43,9 @@ public class AddStopActivity extends Activity {
             case R.id.action_add_cancel:
                 startActivity(intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP));
                 return true;
-            case R.id.action_add_next_route:
-                AddRouteFragment nextRoute = new AddRouteFragment();
-                ft.replace(R.id.fragment_add, nextRoute);
-                ft.addToBackStack(null);
-                ft.commit();
-                return true;
             case R.id.action_add_previous_transit:
                 AddTransitFragment prevTransit = new AddTransitFragment();
                 ft.replace(R.id.fragment_add, prevTransit);
-                ft.addToBackStack(null);
-                ft.commit();
-                return true;
-            case R.id.action_add_next_stop:
-                AddStopFragment nextStop = new AddStopFragment();
-                ft.replace(R.id.fragment_add, nextStop);
                 ft.addToBackStack(null);
                 ft.commit();
                 return true;

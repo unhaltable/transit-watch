@@ -1,0 +1,10 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context="ca.cryptr.transit_watch.activities.AddStopActivity" >
+
+    <item android:id="@+id/action_remove"
+        android:icon="@drawable/ic_action_discard"
+        android:showAsAction="always|withText"
+        android:title="@string/action_remove" />
+
+</menu>

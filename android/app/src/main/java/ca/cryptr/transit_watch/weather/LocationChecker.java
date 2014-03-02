@@ -25,15 +25,16 @@ public class LocationChecker {
     public String getCity(Context context) throws IOException {
         Location loc = getLocation(context);
 
-        if (loc != null) {
-            Geocoder gcd = new Geocoder(context, Locale.getDefault());
-            List<Address> addresses = gcd.getFromLocation(loc.getLatitude(), loc.getLongitude(), 1);
+        if (loc == null)
+            throw new IOException();
 
-            if (addresses.size() > 0)
-                return addresses.get(0).getLocality();
-        }
+        Geocoder gcd = new Geocoder(context, Locale.getDefault());
+        List<Address> addresses = gcd.getFromLocation(loc.getLatitude(), loc.getLongitude(), 1);
 
-        return "Error";
+        if (addresses.size() > 0)
+            return addresses.get(0).getLocality();
+        else
+            throw new IOException();
     }
 
 }

@@ -69,9 +69,7 @@ public class AddRouteFragment extends Fragment {
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         menu.findItem(R.id.action_add_cancel).setVisible(false);
-        menu.findItem(R.id.action_add_next_route).setVisible(false);
         menu.findItem(R.id.action_add_previous_transit).setVisible(true);
-        menu.findItem(R.id.action_add_next_stop).setVisible(true);
         menu.findItem(R.id.action_add_previous_route).setVisible(false);
         menu.findItem(R.id.action_add_done).setVisible(false);
     }
