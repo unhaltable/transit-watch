@@ -16,11 +16,11 @@ import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.SimpleAdapter;
 import android.widget.TextView;
+import android.widget.Toast;
 
-import net.sf.nextbus.publicxmlfeed.domain.Agency;
-import net.sf.nextbus.publicxmlfeed.domain.Direction;
 import net.sf.nextbus.publicxmlfeed.domain.Route;
 import net.sf.nextbus.publicxmlfeed.impl.NextbusService;
+import net.sf.nextbus.publicxmlfeed.service.TransientServiceException;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -111,7 +111,11 @@ public class AddRouteFragment extends Fragment {
     private class GetRoutes extends AsyncTask<Void, Void, Void> {
         @Override
         protected Void doInBackground(Void... params) {
-            routes = nbs.getRoutes(nbs.getAgency(AddStopActivity.getAgencyTag()));
+            try {
+                routes = nbs.getRoutes(nbs.getAgency(AddStopActivity.getAgencyTag()));
+            } catch (TransientServiceException e) {
+                cancel(true);
+            }
             return null;
         }
 
@@ -134,5 +138,13 @@ public class AddRouteFragment extends Fragment {
 
             routesList.setAdapter(adapter);
         }
+
+        @Override
+        protected void onCancelled() {
+            Toast.makeText(getActivity(), "Could not retrieve routes.", Toast.LENGTH_SHORT).show();
+            // Go to previous page
+            getFragmentManager().popBackStack();
+        }
+
     }
 }
