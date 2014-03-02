@@ -4,7 +4,7 @@ public class City {
 
     private String code, nameEn, province;
 
-    public City() { }
+    public City() {}
 
     public City(String code, String nameEn,String province) {
         this.code = code;
@@ -27,6 +27,7 @@ public class City {
     public void setNameEn(String nameEn) {
         this.nameEn = nameEn;
     }
+
     public String getProvince() {
         return province;
     }

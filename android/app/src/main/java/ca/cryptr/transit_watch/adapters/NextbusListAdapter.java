@@ -146,13 +146,9 @@ public abstract class NextbusListAdapter<T> extends BaseAdapter implements Filte
                     top = top.toLowerCase();
                     bottom = bottom.toLowerCase();
 
-//                    System.out.println("Value: " + value);
-
                     if (top.contains(constraintText) || bottom.contains(constraintText))
                         newValues.add(value);
                 }
-
-//                System.out.println("New values: " + newValues);
 
                 results.values = newValues;
                 results.count = newValues.size();
@@ -173,8 +169,6 @@ public abstract class NextbusListAdapter<T> extends BaseAdapter implements Filte
                 System.out.println(itemsCopy);
                 mObjects = itemsCopy;
             }
-
-//            System.out.println("Items: " + items);
 
             if (results.count > 0) {
                 notifyDataSetChanged();
