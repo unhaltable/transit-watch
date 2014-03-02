@@ -37,11 +37,6 @@ static void down_click_handler(ClickRecognizerRef recognizer, void *context) {
 static void select_click_handler(ClickRecognizerRef recognizer, void *context) {
 	// TODO
 	if(on_splash) {
-		menu_window = window_create();
-  		window_set_window_handlers(window, (WindowHandlers) {
-    		.load = window_load,
-    		.unload = window_unload,
-  		});
   		window_stack_push(menu_window, true);
 	}
 
@@ -123,10 +118,10 @@ static void window_load(Window *window) {
 		.items = first_menu_items,
 	};
 
-	Layer *menu_layer = window_get_root_layer(menu_window);
+	Layer *menu_layer = window_get_root_layer(window);
 	GRect menu_bounds = layer_get_frame(menu_layer);
-	main_menu = simple_menu_layer_create(menu_bounds, menu_window, menu_sections, NUM_MENU_SECTIONS, NULL);
-	layer_add_child(window_layer, simple_menu_layer_get_layer(main_menu));
+	main_menu = simple_menu_layer_create(menu_bounds, window, menu_sections, NUM_MENU_SECTIONS, NULL);
+	layer_add_child(menu_layer, simple_menu_layer_get_layer(main_menu));
 }
 
 void window_unload(Window *window) {
@@ -136,6 +131,14 @@ void window_unload(Window *window) {
 
 static void init() {
 	on_splash = true;
+
+	// Creation of Main Menu
+	menu_window = window_create();
+  	window_set_window_handlers(menu_window, (WindowHandlers) {
+    	.load = window_load,
+    	.unload = window_unload,
+  	});
+
 	window = window_create();
 	window_stack_push(window, true);
 	window_set_background_color(window, GColorBlack);
