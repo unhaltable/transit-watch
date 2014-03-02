@@ -30,12 +30,13 @@
             android:label="@string/title_activity_add_transit"
             android:parentActivityName=".activities.StopsActivity"/>
 
-        <!--<receiver android:name=".services.DataReceiver"-->
-            <!--android:exported="false">-->
-            <!--<intent-filter>-->
-                <!--<action android:name="com.getpebble.action.app.RECEIVE" />-->
-            <!--</intent-filter>-->
-        <!--</receiver>-->
+        <receiver
+            android:name=".services.DataReceiver"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="com.getpebble.action.app.RECEIVE" />
+            </intent-filter>
+        </receiver>
 
     </application>
 

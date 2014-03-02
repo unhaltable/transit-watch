@@ -155,6 +155,7 @@ public class PreferencesDataSource {
         SQLiteQueryBuilder queryBuilder = new SQLiteQueryBuilder();
         queryBuilder.setTables(PreferencesSQLiteHelper.AGENCIES.TABLE + ", " +
                                PreferencesSQLiteHelper.ROUTES.TABLE + ", " +
+                               PreferencesSQLiteHelper.DIRECTIONS.TABLE + ", " +
                                PreferencesSQLiteHelper.STOPS.TABLE);
         queryBuilder.appendWhere(PreferencesSQLiteHelper.STOPS.COLUMN_DIRECTION + " = " +
                                  PreferencesSQLiteHelper.DIRECTIONS.COLUMN_TAG);

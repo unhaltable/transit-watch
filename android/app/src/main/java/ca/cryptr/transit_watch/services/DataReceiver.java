@@ -35,6 +35,8 @@ public class DataReceiver extends PebbleKit.PebbleDataReceiver {
 
     @Override
     public void receiveData(Context context, int transactionId, PebbleDictionary data) {
+        Log.i(TAG, "Received broadcast from Pebble watchapp.");
+
         if (mPreferencesDataSource == null) {
             mPreferencesDataSource = new PreferencesDataSource(context);
             mPreferencesDataSource.open();
@@ -63,8 +65,6 @@ public class DataReceiver extends PebbleKit.PebbleDataReceiver {
      * etc
      */
     private void onAppOpened(Context context) {
-        Log.i(TAG, "Received broadcast from Pebble watchapp.");
-
         // Sync saved ca.cryptr.transit_watch.stops
         PebbleDictionary savedStops = new PebbleDictionary();
         int stopCount = 0;
