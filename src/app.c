@@ -137,7 +137,10 @@ static void select_click_handler(ClickRecognizerRef recognizer, void *context) {
     if(on_splash) {
         on_splash = false;
         window_stack_push(menu_window, true);
+        APP_LOG(APP_LOG_LEVEL_DEBUG, "Just pushed a window!");
+
         window_stack_remove(window, true);
+        APP_LOG(APP_LOG_LEVEL_DEBUG, "Just removed a window!");
     }
 
 }
@@ -254,6 +257,7 @@ void handle_init(void)
         .unload = window_unload,
     });
 
+    // Creation of Splash Screen
     window = window_create();
     window_stack_push(window, true);
     window_set_background_color(window, GColorBlack);
@@ -269,6 +273,7 @@ void handle_init(void)
     // Don't forget to deinit this
     image = gbitmap_create_with_resource(RESOURCE_ID_IMAGE_LOGO);
     
+    // Creation of image layer
     image_layer = bitmap_layer_create(bounds);
     bitmap_layer_set_bitmap(image_layer, image);
     bitmap_layer_set_alignment(image_layer, GAlignCenter);
