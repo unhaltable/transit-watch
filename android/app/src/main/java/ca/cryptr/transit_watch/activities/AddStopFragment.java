@@ -51,7 +51,7 @@ public class AddStopFragment extends Fragment {
 
         // Display transit name
         routeDirName = (TextView) view.findViewById(R.id.stop_route_name);
-        routeDirName.setText(AddStopActivity.getRoute());
+        routeDirName.setText(AddStopActivity.getDirTag());
 
         // Display the ca.cryptr.transit_watch.stops in the list
         setupStopsList();
@@ -124,7 +124,7 @@ public class AddStopFragment extends Fragment {
                 Map<String, String> item = new HashMap<String, String>();
 
                 item.put("1", s.getTitle());
-                item.put("2", String.format("%s: (%s, %s)", s.getTag(),
+                item.put("2", String.format("ID %s: (%s, %s)", s.getTag(),
                         s.getGeolocation().getLatitude(), s.getGeolocation().getLongitude()));
                 data.add(item);
             }

@@ -16,7 +16,8 @@
     <string name="weather">Weather forecast</string>
     <string name="fav_stops">Favourite stops</string>
     <string name="add_stop">ADD</string>
-    <string name="empty_stops_list">Stops will show up here</string>
+    <string name="empty_stops_list">Your favourite stops will show up here</string>
+    <string name="add_stop_button">Tap here to add a stop</string>
     <string name="minutes">min</string>
 
     <!-- Add agency -->
