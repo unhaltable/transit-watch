@@ -164,7 +164,7 @@ static void menu_select_callback(int index, void *context) {
     //layer_mark_dirty(simple_menu_layer_get_layer(main_menu));
 
     // Set stop_window's fields to selected stop's data
-    if (stops_data && (unsigned)index < num_stops && num_fields_per_stop > 3)
+    if (stops_data && index < (int)num_stops && num_fields_per_stop > 3)
     {
         text_layer_set_text(stop_title, stops_data[index][0]);
         text_layer_set_text(stop_subtitle, stops_data[index][1]);
