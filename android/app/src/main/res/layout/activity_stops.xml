@@ -46,7 +46,6 @@
                 android:layout_gravity="center"
                 android:fontFamily="sans-serif-light"
                 android:lineSpacingExtra="4dp"
-                android:text="A few clouds. Increasing cloudiness near midnight then 60 percent chance of flurries overnight."
                 android:textColor="@android:color/white"
                 android:textSize="20sp" />
 

@@ -27,7 +27,9 @@ import ca.cryptr.transit_watch.preferences.PreferencesDataSource;
 import ca.cryptr.transit_watch.stops.Stop;
 import ca.cryptr.transit_watch.stops.StopListAdapter;
 import ca.cryptr.transit_watch.util.AndroidNextbusService;
+import ca.cryptr.transit_watch.weather.Cities;
 import ca.cryptr.transit_watch.weather.LocationChecker;
+import ca.cryptr.transit_watch.weather.SiteListParser;
 
 public class StopsActivity extends Activity {
 
@@ -42,6 +44,9 @@ public class StopsActivity extends Activity {
     private StopListAdapter adapter;
 
     private ArrayList<Stop> favStops = new ArrayList<Stop>();
+
+    protected Object mActionMode;
+    public int selectedItem = -1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -61,6 +66,10 @@ public class StopsActivity extends Activity {
         try {
             String cityName = lc.getCity(this);
             city.setText(cityName);
+
+            // Get code
+            SiteListParser slp = new SiteListParser(cityName, temperature, summary);
+            slp.execute();
         } catch (IOException e) {
             city.setText(R.string.location_error);
             summary.setText(R.string.location_error_check);
@@ -98,9 +107,6 @@ public class StopsActivity extends Activity {
         Intent intent = new Intent(this, AddStopActivity.class);
         startActivity(intent);
     }
-
-    protected Object mActionMode;
-    public int selectedItem = -1;
 
     private void setupFavStopsList() {
         listStops = (ListView) findViewById(R.id.stops);
