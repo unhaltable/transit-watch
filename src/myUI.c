@@ -5,17 +5,17 @@ static BitmapLayer *image_layer;
 static GBitmap *image;
 
 
-static void up_click_handler {
+static void up_click_handler(ClickRecognizerRef recognizer, void *context) {
 	// TODO
 	continue();
 }
 
-static void down_click_handler {
+static void down_click_handler(ClickRecognizerRef recognizer, void *context) {
 	// TODO
 	continue();
 }
 
-static void select_click_handler {
+static void select_click_handler(ClickRecognizerRef recognizer, void *context) {
 	// TODO
 	continue();
 }
@@ -26,7 +26,7 @@ static void config_provider(void *context) { // gets the proper click handlers f
 	window_single_click_subscribe(BUTTON_ID_SELECT, select_click_handler);
 	}
 
-static void init {
+static void init() {
 	window = window_create();
 	window_stack_push(window, true);
 	window_set_color_background_color(window, GColorBlack);
@@ -46,7 +46,7 @@ static void init {
 
 }
 
-static void deinit {
+static void deinit() {
 	gbitmap_destroy(image);
   	bitmap_layer_destroy(image_layer);
   	window_destroy(window);
