@@ -5,15 +5,23 @@
 
 static Window *window;
 static Window *menu_window;
+static Window *stop_window
+
 static BitmapLayer *image_layer;
 static GBitmap *image;
-int i; // Dummy variable so I can actually compile the thing...
-bool on_splash;
 
 // Begin SimpleMenuLayer
 static SimpleMenuLayer *main_menu;
 static SimpleMenuSection menu_sections[NUM_MENU_SECTIONS];
 static SimpleMenuItem first_menu_items[NUM_FIRST_MENU_ITEMS];
+
+static TextLayer *stop_title;
+static TextLayer *stop_subtitle;
+static TextLayer *stop_weather;
+static TextLayer *stop_ETA;
+
+int i; // Dummy variable so I can actually compile the thing...
+bool on_splash;
 
 // stops_data[i][j] is the j-th field of the i-th stop
 char*** stops_data = NULL;
@@ -256,6 +264,14 @@ void handle_init(void)
         .load = window_load,
         .unload = window_unload,
     });
+
+    // Creation of stop_window
+    stop_window = window_create();
+    window_set_background_color(stop_window, GColorBlack);
+    Layer *stop_root = window_get_root_layer(stop_window);
+    GRect stop_bounds = layer_get_frame(stop_root);
+
+
 
     // Creation of Splash Screen
     window = window_create();
