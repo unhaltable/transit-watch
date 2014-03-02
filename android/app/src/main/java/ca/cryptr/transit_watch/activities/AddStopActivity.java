@@ -22,7 +22,7 @@ public class AddStopActivity extends Activity {
 
         AddTransitFragment transit = new AddTransitFragment();
         ft.add(R.id.fragment_add, transit);
-        ft.addToBackStack(null);
+//        ft.addToBackStack(null);
         ft.commit();
     }
 

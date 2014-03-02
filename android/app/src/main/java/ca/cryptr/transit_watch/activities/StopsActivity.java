@@ -8,12 +8,14 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ListView;
+import android.widget.TextView;
 
 import net.sf.nextbus.publicxmlfeed.domain.Agency;
 import net.sf.nextbus.publicxmlfeed.domain.Direction;
 import net.sf.nextbus.publicxmlfeed.domain.Route;
 import net.sf.nextbus.publicxmlfeed.impl.NextbusService;
 
+import java.io.IOException;
 import java.util.ArrayList;
 
 import ca.cryptr.transit_watch.R;
@@ -21,6 +23,7 @@ import ca.cryptr.transit_watch.preferences.PreferencesDataSource;
 import ca.cryptr.transit_watch.stops.Stop;
 import ca.cryptr.transit_watch.stops.StopListAdapter;
 import ca.cryptr.transit_watch.util.AndroidNextbusService;
+import ca.cryptr.transit_watch.weather.LocationChecker;
 
 public class StopsActivity extends Activity {
 
@@ -28,6 +31,8 @@ public class StopsActivity extends Activity {
 //
 //    private NextbusService mNextbusService;
 //    private PreferencesDataSource mPreferencesDataSource;
+
+    private TextView city, temperature, summary;
 
     private ListView listStops;
     private StopListAdapter adapter;
@@ -43,8 +48,24 @@ public class StopsActivity extends Activity {
 //        mPreferencesDataSource = new PreferencesDataSource(this);
 //        mPreferencesDataSource.open();
 
+        // Weather
+        city = (TextView) findViewById(R.id.forecast_city);
+        temperature = (TextView) findViewById(R.id.forecast_temperature);
+        summary = (TextView) findViewById(R.id.forecast_summary);
+
+        LocationChecker lc = new LocationChecker();
+        try {
+            String cityName = lc.getCity(this);
+            city.setText(cityName);
+        } catch (IOException e) {
+            city.setText(R.string.location_error);
+            summary.setText(R.string.location_error_check);
+        }
+
+        // Fav stops
         favStops.add(new Stop("TTC", "5 N Avenue Rd", "Queen's Park @ Museum Station"));
         favStops.add(new Stop("MiWay", "1 E Hurontario Rd", "Hurontario @ Eglinton"));
+        favStops.add(new Stop("YRT", "56 S Highway 7", "Brantford @ Yonge"));
         setupFavStopsList();
 
         // TEMP
