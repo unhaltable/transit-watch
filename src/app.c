@@ -75,13 +75,22 @@ void initialize_stops_data(DictionaryIterator *received, void *context)
     Tuple *tuple = dict_find(received, NUM_STOPS);
     if (tuple)
         num_stops = tuple->value->uint32;
-    else return;
+    else
+        num_stops = -1;
 
     // Get the number of data fields per stop
     tuple = dict_find(received, NUM_FIELDS_PER_STOP);
     if (tuple)
         num_fields_per_stop = tuple->value->uint32;
-    else return;
+    else
+        num_fields_per_stop = -1;
+
+    if (num_stops == -1 || num_fields_per_stop == -1)
+    {
+        APP_LOG(APP_LOG_LEVEL_DEBUG, "Malformed: NUM_STOPS: %d, NUM_FIELDS_PER_STOP: %d",
+                num_stops, num_fields_per_stop);
+        return;
+    }
 
     // Allocate stops_data according to these sizes
     stops_data = (char***)malloc(num_stops * sizeof(char**));
@@ -99,6 +108,9 @@ void initialize_stops_data(DictionaryIterator *received, void *context)
                 char* data_str = tuple->value->cstring;
                 stops_data[i][j] = (char*)malloc((strlen(data_str)+1) * sizeof(char));
                 strcpy(stops_data[i][j], data_str);
+
+                APP_LOG(APP_LOG_LEVEL_DEBUG, "Stops data (stop %d, field %d): %s",
+                        i, j, stops_data[i][j]);
             }
             else
                 APP_LOG(APP_LOG_LEVEL_DEBUG, "Missing data (stop %d, field %d)!", i, j);
@@ -129,6 +141,7 @@ void in_received_handler(DictionaryIterator *received, void *context)
     switch(message_type)
     {
     case MESSAGE_STOPS_DATA:
+        APP_LOG(APP_LOG_LEVEL_DEBUG, "Received a MESSAGE_STOPS_DATA. Syncing...");
         initialize_stops_data(received, context);
         if (on_splash)
         {
