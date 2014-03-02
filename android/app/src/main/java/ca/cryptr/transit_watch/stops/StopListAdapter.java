@@ -54,7 +54,7 @@ public class StopListAdapter extends BaseAdapter {
 
         // Setting all values in listview
         minutes.setText("0");
-        route.setText(stopInfo.getRoute() + " " + stopInfo.getTransit());
+        route.setText(String.format("%s (%s)", stopInfo.getRoute(), stopInfo.getTransit()));
         stop.setText(stopInfo.getStop());
 
         return vi;
