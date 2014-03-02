@@ -6,9 +6,11 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import java.util.ArrayList;
+import java.util.Random;
 
 import ca.cryptr.transit_watch.R;
 
@@ -45,14 +47,27 @@ public class StopListAdapter extends BaseAdapter {
         if (view == null)
             vi = inflater.inflate(R.layout.stop_list_item, null);
 
-        TextView minutes = (TextView)vi.findViewById(R.id.minutes);
-        TextView route = (TextView)vi.findViewById(R.id.route);
-        TextView stop = (TextView)vi.findViewById(R.id.stop);
+        LinearLayout eta = (LinearLayout) vi.findViewById(R.id.eta);
+        TextView minutes = (TextView) vi.findViewById(R.id.minutes);
+        TextView route = (TextView) vi.findViewById(R.id.route);
+        TextView stop = (TextView) vi.findViewById(R.id.stop);
 
         Stop stopInfo = data.get(position);
 
-        // Setting all values in listview
-        minutes.setText("0");
+        // ETA
+        Random generator = new Random();
+        int i = generator.nextInt(30) + 1;
+
+        int eta_min = i; // get the actual eta
+        minutes.setText(String.valueOf(eta_min));
+        if (eta_min > 10)
+            eta.setBackgroundColor(activity.getResources().getColor(R.color.stop_green));
+        else if (eta_min > 5)
+            eta.setBackgroundColor(activity.getResources().getColor(R.color.stop_orange));
+        else
+            eta.setBackgroundColor(activity.getResources().getColor(R.color.stop_red));
+
+        // Route info
         route.setText(String.format("%s (%s)", stopInfo.getRoute(), stopInfo.getAgency()));
         stop.setText(stopInfo.getStop());
 

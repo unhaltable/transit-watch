@@ -62,14 +62,9 @@ public class StopsActivity extends Activity {
         temperature = (TextView) findViewById(R.id.forecast_temperature);
         summary = (TextView) findViewById(R.id.forecast_summary);
 
-        LocationChecker lc = new LocationChecker();
         try {
-            String cityName = lc.getCity(this);
-            city.setText(cityName);
-
-            // Get code
-            SiteListParser slp = new SiteListParser(cityName, temperature, summary);
-            slp.execute();
+            LocationChecker lc = new LocationChecker();
+            new SiteListParser(lc.getCity(this), city, temperature, summary).execute();
         } catch (IOException e) {
             city.setText(R.string.location_error);
             summary.setText(R.string.location_error_check);
@@ -79,6 +74,7 @@ public class StopsActivity extends Activity {
         favStops.add(new Stop("TTC", "5 N Avenue Rd", "Queen's Park @ Museum Station"));
         favStops.add(new Stop("MiWay", "1 E Hurontario Rd", "Hurontario @ Eglinton"));
         favStops.add(new Stop("YRT", "56 S Highway 7", "Brantford @ Yonge"));
+        favStops.add(new Stop("Some Random Agency", "552 W Burnhamthorpe Rd", "Burnhamthorpe @ College Station"));
         setupFavStopsList();
 
         // TEMP

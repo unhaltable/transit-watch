@@ -13,19 +13,19 @@ public class SiteListParser extends AsyncTask<Void, Void, Cities> {
 
     private static Cities cities;
     private String cityName;
-    private TextView temp, summary;
+    private TextView city, temp, summary;
 
-    public SiteListParser(String cityName, TextView temp, TextView summary) {
+    public SiteListParser(String cityName, TextView city, TextView temp, TextView summary) {
         cities = new Cities();
         this.cityName = cityName;
+        this.city = city;
         this.temp = temp;
         this.summary = summary;
     }
 
-    public static Cities getCities() {
-        return cities;
-    }
-
+    /**
+     * Read the siteList.xml file and store it into a HashMap.
+     */
     @Override
     protected Cities doInBackground(Void... voids) {
         try {
@@ -36,6 +36,7 @@ public class SiteListParser extends AsyncTask<Void, Void, Cities> {
             in.readLine(); // xml declaration
             in.readLine(); // siteList tag
 
+            // Go through the rest of the file and map the cities
             String str;
             int i = 1;
             City city = new City();
@@ -45,18 +46,19 @@ public class SiteListParser extends AsyncTask<Void, Void, Cities> {
                 if (str.equals("</siteList>"))
                     break;
 
+                // Construct and store a City
                 switch (i) {
-                    case 1:
+                    case 1: // code
                         city = new City();
                         city.setCode(str.trim().substring(12, 20));
                         break;
-                    case 2:
+                    case 2: // nameEn
                         city.setNameEn(str.replaceAll("\\<.*?\\>", "").trim());
                         break;
-                    case 4:
+                    case 4: // province
                         city.setProvince(str.replaceAll("\\<.*?\\>", "").trim());
                         break;
-                    case 5:
+                    case 5: // finish constructing and store City
                         i = 0;
                         cities.addCity(city);
                         break;
@@ -77,14 +79,18 @@ public class SiteListParser extends AsyncTask<Void, Void, Cities> {
         return null;
     }
 
+    /**
+     * Build a URL based on the city info, and retrieve the weather data for that city.
+     */
     @Override
     protected void onPostExecute(Cities cities) {
-        summary.setText(cities.getCode(cityName));
+        String[] cityInfo = cities.getCity(cityName);
 
         String url =
                 String.format("http://dd.weather.gc.ca/citypage_weather/xml/%s/%s_e.xml",
-                        cities.getProvince("Toronto"), cities.getCode("Toronto"));
+                        cityInfo[1], cityInfo[0]);
 
         // Get weather info
+        new CityParser(url, cityName, city, temp, summary).execute();
     }
 }
