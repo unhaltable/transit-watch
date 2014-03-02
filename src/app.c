@@ -126,8 +126,10 @@ void in_received_handler(DictionaryIterator *received, void *context)
 static void menu_select_callback(int index, void *context) {
     // TODO
     // This will open up each individual stop's windows...
-    first_menu_items[index].subtitle = "Nope.";
-    layer_mark_dirty(simple_menu_layer_get_layer(main_menu));
+    //first_menu_items[index].subtitle = "Nope.";
+    //layer_mark_dirty(simple_menu_layer_get_layer(main_menu));
+    window_stack_push(stop_window, true);
+    APP_LOG(APP_LOG_LEVEL_DEBUG, "Just pushed a window!");
 }
 
 static void up_click_handler(ClickRecognizerRef recognizer, void *context) {
@@ -270,6 +272,56 @@ void handle_init(void)
     window_set_background_color(stop_window, GColorBlack);
     Layer *stop_root = window_get_root_layer(stop_window);
     GRect stop_bounds = layer_get_frame(stop_root);
+
+    // Set stop_title
+    stop_title = text_layer_create(GRect(0, 0, stop_bounds.size.w, 32));
+    text_layer_set_text(stop_title, "5 N Avenue Rd");
+    //text_layer_set_text(stop_title, pointer to string) this is for when we implement non-dummy values
+    text_layer_set_font(stop_title, fonts_get_system_font(FONT_KEY_GOTHIC_32_BOLD));
+    text_layer_set_text_alignment(stop_title, GTextAlignmentCenter);
+    text_layer_set_overflow_mode(stop_title, GTextOverflowModeTrailingEllipsis);
+    text_layer_set_text_color(stop_title, GColorWhite);
+    text_layer_set_background_color(stop_title, GColorBlack);
+    layer_add_child(stop_root, text_layer_get_layer(stop_title));
+
+    // Set stop_subtitle
+    stop_subtitle = text_layer_create(GRect(0, 32, stop_bounds.size.w, 56));
+    text_layer_set_text(stop_subtitle, "Queen's Park @ Museum Station");
+    //text_layer_set_text(stop_title, foo) see above comment
+    text_layer_set_font(stop_subtitle, fonts_get_system_font(FONT_KEY_GOTHIC_28_BOLD));
+    text_layer_set_text_alignment(stop_subtitle, GTextAlignmentLeft);
+    text_layer_set_overflow_mode(stop_subtitle, GTextOverflowModeWordWrap);
+    text_layer_set_text_color(stop_subtitle, GColorWhite);
+    text_layer_set_background_color(stop_subtitle, GColorBlack);
+    layer_add_child(stop_root, text_layer_get_layer(stop_subtitle));
+
+    // Set stop_weather
+    stop_weather = text_layer_create(GRect(0, 88, stop_bounds.w, 28));
+    text_layer_set_text(stop_weather, "5C, sunny");
+    //text_layer_set_text(stop_weather, foo) see above comment
+    text_layer_set_font(stop_weather, fonts_get_system_font(FONT_KEY_GOTHIC_28_BOLD));
+    text_layer_set_text_alignment(stop_weather, GTextAlignmentLeft);
+    text_layer_set_overflow_mode(stop_weather, GTextOverflowModeTrailingEllipsis);
+    text_layer_set_text_color(stop_weather, GColorWhite);
+    text_layer_set_background_color(stop_weather, GColorBlack);
+    layer_add_child(stop_root, text_layer_get_layer(stop_weather));
+
+    // Set stop_ETA
+    myRect = GRect(0, 116, stop_bounds.w, stop_bounds.h);
+    graphics_context_set_fill_color(GColorWhite);
+    graphics_draw_round_rect(myRect, 16);
+
+    stop_ETA = text_layer_create(myRect));
+    text_layer_set_text(stop_ETA, "15 min");
+    //text_layer_set_text(stop_ETA, foo) see above comment
+    text_layer_set_font(stop_ETA, fonts_get_system_font(FONT_KEY_GOTHIC_38_BOLD));
+    text_layer_set_text_alignment(stop_ETA, GTextAlignmentCenter);
+    text_layer_set_overflow_mode(stop_ETA, GTextOverflowModeTrailingEllipsis);
+    // text_color is by default black
+    text_layer_set_background_color(stop_ETA, GColorClear);
+    layer_add_child(stop_root, text_layer_get_layer(stop_ETA));
+
+
 
 
 
