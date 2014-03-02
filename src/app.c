@@ -1,7 +1,6 @@
 #include <pebble.h>
 
 #define NUM_MENU_SECTIONS 1 // Some arbitrary number....
-#define NUM_FIRST_MENU_ITEMS 10
 
 static Window *window;
 static Window *menu_window;
@@ -13,7 +12,7 @@ static GBitmap *image;
 // Begin SimpleMenuLayer
 static SimpleMenuLayer *main_menu;
 static SimpleMenuSection menu_sections[NUM_MENU_SECTIONS];
-static SimpleMenuItem first_menu_items[NUM_FIRST_MENU_ITEMS];
+static SimpleMenuItem* first_menu_items;
 
 static TextLayer *stop_title;
 static TextLayer *stop_subtitle;
@@ -42,6 +41,14 @@ enum {
     IDX_BEGIN_STOPS_DATA
 };
 
+// Data fields per stop
+enum {
+    ROUTE_TAG,
+    ROUTE_TITLE,
+    DIRECTION_NAME,
+    STOP_TITLE
+};
+
 void destroy_stops_data()
 {
     // Deallocate existing stops_data
@@ -54,6 +61,8 @@ void destroy_stops_data()
     }
     if (stops_data)
         free(stops_data);
+    if (first_menu_items)
+        free(first_menu_items);
     num_stops = 0;
     num_fields_per_stop = 0;
 }
@@ -95,6 +104,8 @@ void initialize_stops_data(DictionaryIterator *received, void *context)
                 APP_LOG(APP_LOG_LEVEL_DEBUG, "Missing data (stop %d, field %d)!", i, j);
         }
     }
+
+    first_menu_items = malloc(num_stops * sizeof(SimpleMenuItem));
 }
 
 // outgoing data was delivered
@@ -119,6 +130,14 @@ void in_received_handler(DictionaryIterator *received, void *context)
     {
     case MESSAGE_STOPS_DATA:
         initialize_stops_data(received, context);
+        if (on_splash)
+        {
+            on_splash = false;
+            window_stack_push(menu_window, true);
+            APP_LOG(APP_LOG_LEVEL_DEBUG, "Just pushed a window!");
+            window_stack_remove(window, true);
+            APP_LOG(APP_LOG_LEVEL_DEBUG, "Just removed a window!");
+        }
         break;
     default:
         APP_LOG(APP_LOG_LEVEL_DEBUG, "Unknown message type %d", message_type);
@@ -132,7 +151,7 @@ static void menu_select_callback(int index, void *context) {
     //layer_mark_dirty(simple_menu_layer_get_layer(main_menu));
 
     // Set stop_window's fields to selected stop's data
-    if (stops_data && index < num_stops && num_fields_per_stop > 3)
+    if (stops_data && (unsigned)index < num_stops && num_fields_per_stop > 3)
     {
         text_layer_set_text(stop_title, stops_data[index][0]);
         text_layer_set_text(stop_subtitle, stops_data[index][1]);
@@ -157,90 +176,30 @@ static void down_click_handler(ClickRecognizerRef recognizer, void *context) {
 
 static void select_click_handler(ClickRecognizerRef recognizer, void *context) {
     // TODO
-    if(on_splash) {
-        on_splash = false;
-        window_stack_push(menu_window, true);
-        APP_LOG(APP_LOG_LEVEL_DEBUG, "Just pushed a window!");
-
-        window_stack_remove(window, true);
-        APP_LOG(APP_LOG_LEVEL_DEBUG, "Just removed a window!");
-    }
-
+    i = 0; // ??
 }
 
 static void config_provider(void *context) { // gets the proper click handlers for each button
     window_single_click_subscribe(BUTTON_ID_UP, up_click_handler);
     window_single_click_subscribe(BUTTON_ID_DOWN, down_click_handler);
     window_single_click_subscribe(BUTTON_ID_SELECT, select_click_handler);
+}
+
+static void window_load(Window *window)
+{
+    unsigned int i;
+    for (i = 0; i < num_stops; i++)
+    {
+        first_menu_items[i] = (SimpleMenuItem) {
+            .title = stops_data[i][ROUTE_TITLE],
+            .subtitle = stops_data[i][STOP_TITLE],
+            .callback = menu_select_callback,
+        };
     }
-
-static void window_load(Window *window) {
-
-    int num_a_items = 0;
-
-    first_menu_items[num_a_items++] = (SimpleMenuItem) {
-        .title = "5 N Avenue Rd",
-        .subtitle = "Queen's Park @ Museum Station",
-        .callback = menu_select_callback,
-    };
-
-    first_menu_items[num_a_items++] = (SimpleMenuItem) {
-        .title = "43 N Kennedy Rd",
-        .subtitle = "Cardall Avenue",
-        .callback = menu_select_callback,
-    };
-
-    first_menu_items[num_a_items++] = (SimpleMenuItem) {
-        .title = "190 TranScarberia Express",
-        .subtitle = "Sheppard Avenue",
-        .callback = menu_select_callback,
-    };
-
-    first_menu_items[num_a_items++] = (SimpleMenuItem) {
-        .title = "510 Carlton Rd",
-        .subtitle = "UofT @ St. George Street",
-        .callback = menu_select_callback,
-    };
-
-    first_menu_items[num_a_items++] = (SimpleMenuItem) {
-        .title = "96 A Wilson",
-        .subtitle = "York Mills Station",
-        .callback = menu_select_callback,
-    };
-
-    first_menu_items[num_a_items++] = (SimpleMenuItem) {
-        .title = "69 S Fake Rd",
-        .subtitle = "Next stop @ Your Mom's House",
-        .callback = menu_select_callback,
-    };
-
-    first_menu_items[num_a_items++] = (SimpleMenuItem) {
-        .title = "1337 N Maturity Rd",
-        .subtitle = "Jokes on you @ there is none",
-        .callback = menu_select_callback,
-    };
-
-    first_menu_items[num_a_items++] = (SimpleMenuItem) {
-        .title = "49 W Dunbar Loop",
-        .subtitle = "UBC @ Pacific Spirit Park",
-        .callback = menu_select_callback,
-    };
-
-    first_menu_items[num_a_items++] = (SimpleMenuItem) {
-        .title = "100 E Marine Drive",
-        .subtitle = "Canada Line @ Marine Drive Station",
-        .callback = menu_select_callback,
-    };
-
-    first_menu_items[num_a_items++] = (SimpleMenuItem) {
-        .title = "41 W UBC",
-        .subtitle = "Joyce Station",
-        .callback = menu_select_callback,
-    };
 
     menu_sections[0] = (SimpleMenuSection) {
         .title = "Favorited Stops",
-        .num_items = NUM_FIRST_MENU_ITEMS,
+        .num_items = num_stops,
         .items = first_menu_items,
     };
 
