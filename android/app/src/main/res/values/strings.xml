@@ -18,11 +18,11 @@
     <string name="empty_stops_list">Stops will show up here</string>
     <string name="minutes">min</string>
 
-    <!-- Add transit -->
-    <string name="title_activity_add_transit">Choose a transit</string>
+    <!-- Add agency -->
+    <string name="title_activity_add_transit">Choose a agency</string>
     <string name="action_cancel">Cancel</string>
     <string name="action_next">Next</string>
-    <string name="filter_transit">Filter transit companies</string>
+    <string name="filter_transit">Filter transit agencies</string>
 
     <!-- Add route -->
     <string name="title_activity_add_route">Choose a route</string>
@@ -38,7 +38,9 @@
     <string name="title_activity_settings">Settings</string>
     <string name="pebble">Pebble Smartwatch</string>
     <string name="get_pebble">Get it from the Pebble Appstore</string>
-    <string name="hello_world">Hello world!</string>
     <string name="action_settings">Settings</string>
+
+    <!-- -->
+    <string name="action_remove">Remove</string>
 
 </resources>

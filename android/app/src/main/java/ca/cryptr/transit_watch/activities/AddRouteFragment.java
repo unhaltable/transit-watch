@@ -14,6 +14,7 @@ import android.widget.AdapterView;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.SimpleAdapter;
+import android.widget.TextView;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -26,6 +27,7 @@ public class AddRouteFragment extends Fragment {
 
     private ListView routes;
     private EditText filter;
+    private TextView transitName;
     private SimpleAdapter adapter;
     private View view;
 
@@ -36,6 +38,10 @@ public class AddRouteFragment extends Fragment {
         // Change title, menu items
         getActivity().getActionBar().setTitle(R.string.title_activity_add_route);
         setHasOptionsMenu(true);
+
+        // Display transit name
+        transitName = (TextView) view.findViewById(R.id.stop_transit_name);
+        transitName.setText(((AddStopActivity) getActivity()).getTransit());
 
         // Get the routes from the selected transit
 
@@ -63,9 +69,7 @@ public class AddRouteFragment extends Fragment {
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         menu.findItem(R.id.action_add_cancel).setVisible(false);
-        menu.findItem(R.id.action_add_next_route).setVisible(false);
         menu.findItem(R.id.action_add_previous_transit).setVisible(true);
-        menu.findItem(R.id.action_add_next_stop).setVisible(true);
         menu.findItem(R.id.action_add_previous_route).setVisible(false);
         menu.findItem(R.id.action_add_done).setVisible(false);
     }

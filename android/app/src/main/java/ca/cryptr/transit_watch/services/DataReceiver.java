@@ -91,7 +91,7 @@ public class DataReceiver extends PebbleKit.PebbleDataReceiver {
 
     private void onStopSelected(Context context, long stopIndex) {
         // Send vehicle predictions and weather
-        
+
     }
 
 }

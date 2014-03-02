@@ -2,20 +2,20 @@ package ca.cryptr.transit_watch.stops;
 
 public class Stop {
 
-    private String transit, route, stop;
+    private String agency, route, stop;
 
-    public Stop (String transit, String route, String stop) {
-        this.transit = transit;
+    public Stop (String agency, String route, String stop) {
+        this.agency = agency;
         this.route = route;
         this.stop = stop;
     }
 
-    public String getTransit() {
-        return transit;
+    public String getAgency() {
+        return agency;
     }
 
-    public void setTransit(String transit) {
-        this.transit = transit;
+    public void setAgency(String agency) {
+        this.agency = agency;
     }
 
     public String getRoute() {

@@ -9,7 +9,6 @@ import android.widget.BaseAdapter;
 import android.widget.TextView;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 
 import ca.cryptr.transit_watch.R;
 
@@ -54,7 +53,7 @@ public class StopListAdapter extends BaseAdapter {
 
         // Setting all values in listview
         minutes.setText("0");
-        route.setText(String.format("%s (%s)", stopInfo.getRoute(), stopInfo.getTransit()));
+        route.setText(String.format("%s (%s)", stopInfo.getRoute(), stopInfo.getAgency()));
         stop.setText(stopInfo.getStop());
 
         return vi;
