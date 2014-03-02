@@ -1,11 +1,10 @@
 #include <pebble.h>
 
 #define NUM_MENU_SECTIONS 1 // Some arbitrary number....
-#define NUM_FIRST_MENU_ITEMS 10
 
 static Window *window;
 static Window *menu_window;
-static Window *stop_window
+static Window *stop_window;
 
 static BitmapLayer *image_layer;
 static GBitmap *image;
@@ -13,12 +12,14 @@ static GBitmap *image;
 // Begin SimpleMenuLayer
 static SimpleMenuLayer *main_menu;
 static SimpleMenuSection menu_sections[NUM_MENU_SECTIONS];
-static SimpleMenuItem first_menu_items[NUM_FIRST_MENU_ITEMS];
+static SimpleMenuItem* first_menu_items;
 
 static TextLayer *stop_title;
 static TextLayer *stop_subtitle;
 static TextLayer *stop_weather;
 static TextLayer *stop_ETA;
+
+static Layer *raw_layer;
 
 int i; // Dummy variable so I can actually compile the thing...
 bool on_splash;
@@ -40,6 +41,14 @@ enum {
     IDX_BEGIN_STOPS_DATA
 };
 
+// Data fields per stop
+enum {
+    ROUTE_TAG,
+    ROUTE_TITLE,
+    DIRECTION_NAME,
+    STOP_TITLE
+};
+
 void destroy_stops_data()
 {
     // Deallocate existing stops_data
@@ -52,6 +61,8 @@ void destroy_stops_data()
     }
     if (stops_data)
         free(stops_data);
+    if (first_menu_items)
+        free(first_menu_items);
     num_stops = 0;
     num_fields_per_stop = 0;
 }
@@ -93,6 +104,8 @@ void initialize_stops_data(DictionaryIterator *received, void *context)
                 APP_LOG(APP_LOG_LEVEL_DEBUG, "Missing data (stop %d, field %d)!", i, j);
         }
     }
+
+    first_menu_items = malloc(num_stops * sizeof(SimpleMenuItem));
 }
 
 // outgoing data was delivered
@@ -117,6 +130,14 @@ void in_received_handler(DictionaryIterator *received, void *context)
     {
     case MESSAGE_STOPS_DATA:
         initialize_stops_data(received, context);
+        if (on_splash)
+        {
+            on_splash = false;
+            window_stack_push(menu_window, true);
+            APP_LOG(APP_LOG_LEVEL_DEBUG, "Just pushed a window!");
+            window_stack_remove(window, true);
+            APP_LOG(APP_LOG_LEVEL_DEBUG, "Just removed a window!");
+        }
         break;
     default:
         APP_LOG(APP_LOG_LEVEL_DEBUG, "Unknown message type %d", message_type);
@@ -128,6 +149,17 @@ static void menu_select_callback(int index, void *context) {
     // This will open up each individual stop's windows...
     //first_menu_items[index].subtitle = "Nope.";
     //layer_mark_dirty(simple_menu_layer_get_layer(main_menu));
+
+    // Set stop_window's fields to selected stop's data
+    if (stops_data && (unsigned)index < num_stops && num_fields_per_stop > 3)
+    {
+        text_layer_set_text(stop_title, stops_data[index][0]);
+        text_layer_set_text(stop_subtitle, stops_data[index][1]);
+        text_layer_set_text(stop_weather, stops_data[index][2]);
+        text_layer_set_text(stop_ETA, stops_data[index][3]);
+    }
+
+    // Show the window
     window_stack_push(stop_window, true);
     APP_LOG(APP_LOG_LEVEL_DEBUG, "Just pushed a window!");
 }
@@ -144,90 +176,30 @@ static void down_click_handler(ClickRecognizerRef recognizer, void *context) {
 
 static void select_click_handler(ClickRecognizerRef recognizer, void *context) {
     // TODO
-    if(on_splash) {
-        on_splash = false;
-        window_stack_push(menu_window, true);
-        APP_LOG(APP_LOG_LEVEL_DEBUG, "Just pushed a window!");
-
-        window_stack_remove(window, true);
-        APP_LOG(APP_LOG_LEVEL_DEBUG, "Just removed a window!");
-    }
-
+    i = 0; // ??
 }
 
 static void config_provider(void *context) { // gets the proper click handlers for each button
     window_single_click_subscribe(BUTTON_ID_UP, up_click_handler);
     window_single_click_subscribe(BUTTON_ID_DOWN, down_click_handler);
     window_single_click_subscribe(BUTTON_ID_SELECT, select_click_handler);
+}
+
+static void window_load(Window *window)
+{
+    unsigned int i;
+    for (i = 0; i < num_stops; i++)
+    {
+        first_menu_items[i] = (SimpleMenuItem) {
+            .title = stops_data[i][ROUTE_TITLE],
+            .subtitle = stops_data[i][STOP_TITLE],
+            .callback = menu_select_callback,
+        };
     }
-
-static void window_load(Window *window) {
-
-    int num_a_items = 0;
-
-    first_menu_items[num_a_items++] = (SimpleMenuItem) {
-        .title = "5 N Avenue Rd",
-        .subtitle = "Queen's Park @ Museum Station",
-        .callback = menu_select_callback,
-    };
-
-    first_menu_items[num_a_items++] = (SimpleMenuItem) {
-        .title = "43 N Kennedy Rd",
-        .subtitle = "Cardall Avenue",
-        .callback = menu_select_callback,
-    };
-
-    first_menu_items[num_a_items++] = (SimpleMenuItem) {
-        .title = "190 TranScarberia Express",
-        .subtitle = "Sheppard Avenue",
-        .callback = menu_select_callback,
-    };
-
-    first_menu_items[num_a_items++] = (SimpleMenuItem) {
-        .title = "510 Carlton Rd",
-        .subtitle = "UofT @ St. George Street",
-        .callback = menu_select_callback,
-    };
-
-    first_menu_items[num_a_items++] = (SimpleMenuItem) {
-        .title = "96 A Wilson",
-        .subtitle = "York Mills Station",
-        .callback = menu_select_callback,
-    };
-
-    first_menu_items[num_a_items++] = (SimpleMenuItem) {
-        .title = "69 S Fake Rd",
-        .subtitle = "Next stop @ Your Mom's House",
-        .callback = menu_select_callback,
-    };
-
-    first_menu_items[num_a_items++] = (SimpleMenuItem) {
-        .title = "1337 N Maturity Rd",
-        .subtitle = "Jokes on you @ there is none",
-        .callback = menu_select_callback,
-    };
-
-    first_menu_items[num_a_items++] = (SimpleMenuItem) {
-        .title = "49 W Dunbar Loop",
-        .subtitle = "UBC @ Pacific Spirit Park",
-        .callback = menu_select_callback,
-    };
-
-    first_menu_items[num_a_items++] = (SimpleMenuItem) {
-        .title = "100 E Marine Drive",
-        .subtitle = "Canada Line @ Marine Drive Station",
-        .callback = menu_select_callback,
-    };
-
-    first_menu_items[num_a_items++] = (SimpleMenuItem) {
-        .title = "41 W UBC",
-        .subtitle = "Joyce Station",
-        .callback = menu_select_callback,
-    };
 
     menu_sections[0] = (SimpleMenuSection) {
         .title = "Favorited Stops",
-        .num_items = NUM_FIRST_MENU_ITEMS,
+        .num_items = num_stops,
         .items = first_menu_items,
     };
 
@@ -241,6 +213,11 @@ void window_unload(Window *window) {
     simple_menu_layer_destroy(main_menu);
 }
 
+// static void layer_update_callback(Layer *me, GContext *ctx) {
+//     GRect myRect = image->bounds;
+//     graphics_context_set_fill_color(ctx, GColorWhite);
+//     graphics_draw_round_rect(ctx, myRect, 16);
+// }
 
 void handle_init(void)
 {
@@ -274,56 +251,52 @@ void handle_init(void)
     GRect stop_bounds = layer_get_frame(stop_root);
 
     // Set stop_title
-    stop_title = text_layer_create(GRect(0, 0, stop_bounds.size.w, 32));
+    stop_title = text_layer_create(GRect(0, 0, stop_bounds.size.w, 28));
     text_layer_set_text(stop_title, "5 N Avenue Rd");
     //text_layer_set_text(stop_title, pointer to string) this is for when we implement non-dummy values
-    text_layer_set_font(stop_title, fonts_get_system_font(FONT_KEY_GOTHIC_32_BOLD));
+    text_layer_set_font(stop_title, fonts_get_system_font(FONT_KEY_GOTHIC_28_BOLD));
     text_layer_set_text_alignment(stop_title, GTextAlignmentCenter);
     text_layer_set_overflow_mode(stop_title, GTextOverflowModeTrailingEllipsis);
     text_layer_set_text_color(stop_title, GColorWhite);
-    text_layer_set_background_color(stop_title, GColorBlack);
+    text_layer_set_background_color(stop_title, GColorClear);
     layer_add_child(stop_root, text_layer_get_layer(stop_title));
 
     // Set stop_subtitle
-    stop_subtitle = text_layer_create(GRect(0, 32, stop_bounds.size.w, 56));
+    stop_subtitle = text_layer_create(GRect(0, 28, stop_bounds.size.w, 48));
     text_layer_set_text(stop_subtitle, "Queen's Park @ Museum Station");
     //text_layer_set_text(stop_title, foo) see above comment
-    text_layer_set_font(stop_subtitle, fonts_get_system_font(FONT_KEY_GOTHIC_28_BOLD));
-    text_layer_set_text_alignment(stop_subtitle, GTextAlignmentLeft);
+    text_layer_set_font(stop_subtitle, fonts_get_system_font(FONT_KEY_GOTHIC_24));
+    text_layer_set_text_alignment(stop_subtitle, GTextAlignmentCenter);
     text_layer_set_overflow_mode(stop_subtitle, GTextOverflowModeWordWrap);
     text_layer_set_text_color(stop_subtitle, GColorWhite);
-    text_layer_set_background_color(stop_subtitle, GColorBlack);
+    text_layer_set_background_color(stop_subtitle, GColorClear);
     layer_add_child(stop_root, text_layer_get_layer(stop_subtitle));
 
     // Set stop_weather
-    stop_weather = text_layer_create(GRect(0, 88, stop_bounds.w, 28));
-    text_layer_set_text(stop_weather, "5C, sunny");
+    stop_weather = text_layer_create(GRect(0, 82, stop_bounds.size.w, 18));
+    text_layer_set_text(stop_weather, "5°C, Scattered Flurries");
     //text_layer_set_text(stop_weather, foo) see above comment
-    text_layer_set_font(stop_weather, fonts_get_system_font(FONT_KEY_GOTHIC_28_BOLD));
-    text_layer_set_text_alignment(stop_weather, GTextAlignmentLeft);
+    text_layer_set_font(stop_weather, fonts_get_system_font(FONT_KEY_GOTHIC_18_BOLD));
+    text_layer_set_text_alignment(stop_weather, GTextAlignmentCenter);
     text_layer_set_overflow_mode(stop_weather, GTextOverflowModeTrailingEllipsis);
     text_layer_set_text_color(stop_weather, GColorWhite);
-    text_layer_set_background_color(stop_weather, GColorBlack);
+    text_layer_set_background_color(stop_weather, GColorClear);
     layer_add_child(stop_root, text_layer_get_layer(stop_weather));
 
     // Set stop_ETA
-    myRect = GRect(0, 116, stop_bounds.w, stop_bounds.h);
-    graphics_context_set_fill_color(GColorWhite);
-    graphics_draw_round_rect(myRect, 16);
+    // raw_layer = layer_create(stop_bounds);
+    // layer_set_update_proc(raw_layer, layer_update_callback);
+    // layer_add_child(stop_root, raw_layer);
 
-    stop_ETA = text_layer_create(myRect));
+    stop_ETA = text_layer_create(GRect(0, 110, stop_bounds.size.w, stop_bounds.size.h));
     text_layer_set_text(stop_ETA, "15 min");
     //text_layer_set_text(stop_ETA, foo) see above comment
-    text_layer_set_font(stop_ETA, fonts_get_system_font(FONT_KEY_GOTHIC_38_BOLD));
+    text_layer_set_font(stop_ETA, fonts_get_system_font(FONT_KEY_BITHAM_30_BLACK));
     text_layer_set_text_alignment(stop_ETA, GTextAlignmentCenter);
     text_layer_set_overflow_mode(stop_ETA, GTextOverflowModeTrailingEllipsis);
     // text_color is by default black
-    text_layer_set_background_color(stop_ETA, GColorClear);
+    text_layer_set_background_color(stop_ETA, GColorWhite);
     layer_add_child(stop_root, text_layer_get_layer(stop_ETA));
-
-
-
-
 
     // Creation of Splash Screen
     window = window_create();
@@ -355,6 +328,14 @@ void handle_deinit(void)
     gbitmap_destroy(image);
     bitmap_layer_destroy(image_layer);
     window_destroy(window);
+
+    text_layer_destroy(stop_title);
+    text_layer_destroy(stop_subtitle);
+    text_layer_destroy(stop_weather);
+    text_layer_destroy(stop_ETA);
+
+    layer_destroy(raw_layer);
+    window_destroy(stop_window);
 
     destroy_stops_data();
 }
