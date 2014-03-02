@@ -112,6 +112,13 @@ void handle_init(void)
     app_message_register_outbox_sent(out_sent_handler);    
     app_message_register_outbox_failed(out_failed_handler);
     app_message_open(app_message_inbox_size_maximum(), app_message_outbox_size_maximum());
+
+    // Send initial message to notify the app has started
+    DictionaryIterator *iter;
+    app_message_outbox_begin(&iter);
+    Tuplet value = TupletInteger(MESSAGE_TYPE, 1);
+    dict_write_tuplet(iter, &value);
+    app_message_outbox_send();
     
     // Create a window and text layer
     window = window_create();
