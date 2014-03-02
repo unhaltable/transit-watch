@@ -2,6 +2,7 @@ package ca.cryptr.transit_watch.activities;
 
 import android.app.Fragment;
 import android.content.Intent;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -15,15 +16,28 @@ import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.SimpleAdapter;
 
+import net.sf.nextbus.publicxmlfeed.domain.Direction;
+import net.sf.nextbus.publicxmlfeed.domain.Stop;
+import net.sf.nextbus.publicxmlfeed.impl.NextbusService;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 import ca.cryptr.transit_watch.R;
 import ca.cryptr.transit_watch.stops.FavStop;
 
 public class AddStopFragment extends Fragment {
 
-    private ListView stops;
+    private ListView stopsList;
     private EditText filter;
     private SimpleAdapter adapter;
     private View view;
+
+    private static NextbusService nbs = StopsActivity.getmNextbusService();
+
+    List<Stop> stops;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -32,8 +46,6 @@ public class AddStopFragment extends Fragment {
         // Change title, menu items
         getActivity().getActionBar().setTitle(R.string.title_activity_add_stop);
         setHasOptionsMenu(true);
-
-        // Get the ca.cryptr.transit_watch.stops from the selected route
 
         // Display the ca.cryptr.transit_watch.stops in the list
         setupStopsList();
@@ -62,47 +74,60 @@ public class AddStopFragment extends Fragment {
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         menu.findItem(R.id.action_add_cancel).setVisible(false);
         menu.findItem(R.id.action_add_previous_transit).setVisible(false);
-        menu.findItem(R.id.action_add_previous_route).setVisible(true);
+        menu.findItem(R.id.action_add_previous_route).setVisible(false);
+        menu.findItem(R.id.action_add_previous_dir).setVisible(true);
         menu.findItem(R.id.action_add_done).setVisible(true);
     }
 
     private void setupStopsList() {
-        stops = (ListView) view.findViewById(R.id.add_stop_list);
+        stopsList = (ListView) view.findViewById(R.id.add_stop_list);
 
-//        final String[] companies = getResources().getStringArray(R.array.transits);
+        (new GetStops()).execute();
 
-        stops.setClickable(true);
-        stops.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+        stopsList.setClickable(true);
+        stopsList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int pos, long l) {
-                AddStopActivity stopActivity = (AddStopActivity) getActivity();
+                AddStopActivity asa = (AddStopActivity) getActivity();
+                Stop s = stops.get((int) parent.getItemIdAtPosition(pos));
                 // Set the stop name
-//                stopActivity.setStop(companies[2 * (int) parent.getItemIdAtPosition(pos)]);
+                asa.setStop(s.getTitle());
 
                 // Create the Stop
-                FavStop stop = new FavStop(stopActivity.getTransit(), stopActivity.getRoute(), stopActivity.getStop());
-//                ca.cryptr.transit_watch.stops.add(stop);
+                FavStop stop = new FavStop(asa.getAgency(), asa.getRoute(), asa.getStop());
+                StopsActivity.addFavStop(stop);
 
                 // Return to the main screen
-                Intent intent = new Intent(getActivity(), StopsActivity.class);
-                startActivity(intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP));
+                getActivity().finish();
             }
         });
+    }
 
-//        List<Map<String, String>> data = new ArrayList<Map<String, String>>();
-//
-//        for (int i = 0; i < companies.length; i+=2) {
-//            Map<String, String> item = new HashMap<String, String>();
-//            item.put("1", companies[i]);
-//            item.put("2", companies[i+1]);
-//            data.add(item);
-//        }
-//
-//        adapter = new SimpleAdapter(getActivity(), data,
-//                R.layout.add_list_item,
-//                new String[] {"1", "2"},
-//                new int[] {R.id.text1, R.id.text2});
+    private class GetStops extends AsyncTask<Void, Void, Void> {
+        @Override
+        protected Void doInBackground(Void... params) {
+            stops = AddStopActivity.getDirObj().getStops();
+            return null;
+        }
 
-        stops.setAdapter(adapter);
+        @Override
+        protected void onPostExecute(Void voids) {
+            List<Map<String, String>> data = new ArrayList<Map<String, String>>();
+
+            for (Stop s : stops) {
+                Map<String, String> item = new HashMap<String, String>();
+
+                item.put("1", s.getTitle());
+                item.put("2", s.getTag() + ", " + s.getStopId());
+                data.add(item);
+            }
+
+            adapter = new SimpleAdapter(getActivity(), data,
+                    R.layout.add_list_item,
+                    new String[] {"1", "2"},
+                    new int[] {R.id.text1, R.id.text2});
+
+            stopsList.setAdapter(adapter);
+        }
     }
 }

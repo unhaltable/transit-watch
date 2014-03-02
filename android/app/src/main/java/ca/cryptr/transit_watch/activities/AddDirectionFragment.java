@@ -15,8 +15,11 @@ import android.widget.AdapterView;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.SimpleAdapter;
+import android.widget.TextView;
 
 import net.sf.nextbus.publicxmlfeed.domain.Agency;
+import net.sf.nextbus.publicxmlfeed.domain.Direction;
+import net.sf.nextbus.publicxmlfeed.domain.Route;
 import net.sf.nextbus.publicxmlfeed.impl.NextbusService;
 
 import java.util.ArrayList;
@@ -26,30 +29,35 @@ import java.util.Map;
 
 import ca.cryptr.transit_watch.R;
 
-public class AddTransitFragment extends Fragment {
+public class AddDirectionFragment extends Fragment {
 
-    private ListView transits;
+    private ListView dirList;
     private EditText filter;
+    private TextView routeName;
     private SimpleAdapter adapter;
     private View view;
 
     private static NextbusService nbs = StopsActivity.getmNextbusService();
 
-    private List<Agency> agencies;
+    private List<Direction> directions;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        view = inflater.inflate(R.layout.fragment_add_transit, container, false);
+        view = inflater.inflate(R.layout.fragment_add_direction, container, false);
 
         // Change title, menu items
-        getActivity().getActionBar().setTitle(R.string.title_activity_add_transit);
+        getActivity().getActionBar().setTitle(R.string.title_activity_add_direction);
         setHasOptionsMenu(true);
 
-        // Display the transit companies in the list
-        setupTransitList();
+        // Display transit name
+        routeName = (TextView) view.findViewById(R.id.direction_route_name);
+        routeName.setText(AddStopActivity.getRoute());
+
+        // Display the routes in the list
+        setupDirectionList();
 
         // Set up the filter box
-        filter = (EditText) view.findViewById(R.id.filter_transit);
+        filter = (EditText) view.findViewById(R.id.filter_route);
         filter.addTextChangedListener(new TextWatcher() {
             @Override
             public void onTextChanged(CharSequence s, int start, int before,
@@ -68,42 +76,41 @@ public class AddTransitFragment extends Fragment {
     }
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        menu.findItem(R.id.action_add_cancel).setVisible(true);
+        menu.findItem(R.id.action_add_cancel).setVisible(false);
         menu.findItem(R.id.action_add_previous_transit).setVisible(false);
-        menu.findItem(R.id.action_add_previous_route).setVisible(false);
+        menu.findItem(R.id.action_add_previous_route).setVisible(true);
         menu.findItem(R.id.action_add_previous_dir).setVisible(false);
         menu.findItem(R.id.action_add_done).setVisible(false);
     }
 
-    public void setupTransitList() {
-        transits = (ListView) view.findViewById(R.id.add_transit_list);
+    private void setupDirectionList() {
+        dirList = (ListView) view.findViewById(R.id.add_route_list);
 
-        (new GetAgencies()).execute();
+        (new GetDirections()).execute();
 
-        transits.setClickable(true);
-        transits.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+        dirList.setClickable(true);
+        dirList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int pos, long l) {
-                // Set the transit name
-                Agency a = agencies.get((int) parent.getItemIdAtPosition(pos));
-                AddStopActivity.setAgency(String.format("%s%s", a.getTitle(),
-                        a.getShortTitle() != null ? String.format(" (%s)", a.getShortTitle()) : ""));
-                AddStopActivity.setAgencyTag(a.getTag());
+                // Set the direction
+                Direction d = directions.get((int) parent.getItemIdAtPosition(pos));
+                AddStopActivity.setDirTag(d.getTitle());
+                AddStopActivity.setDirObj(d);
 
                 // Go to the next page
                 FragmentTransaction ft = getFragmentManager().beginTransaction();
-                AddRouteFragment nextRoute = new AddRouteFragment();
-                ft.replace(R.id.fragment_add, nextRoute);
+                AddStopFragment nextStop = new AddStopFragment();
+                ft.replace(R.id.fragment_add, nextStop);
                 ft.addToBackStack(null);
                 ft.commit();
             }
         });
     }
 
-    private class GetAgencies extends AsyncTask<Void, Void, Void> {
+    private class GetDirections extends AsyncTask<Void, Void, Void> {
         @Override
         protected Void doInBackground(Void... params) {
-            agencies = nbs.getAgencies();
+            directions = nbs.getRouteConfiguration(AddStopActivity.getRouteObj()).getDirections();
             return null;
         }
 
@@ -111,12 +118,11 @@ public class AddTransitFragment extends Fragment {
         protected void onPostExecute(Void voids) {
             List<Map<String, String>> data = new ArrayList<Map<String, String>>();
 
-            for (Agency a : agencies) {
+            for (Direction d : directions) {
                 Map<String, String> item = new HashMap<String, String>();
-                item.put("1", String.format("%s%s",
-                        a.getTitle(),
-                        a.getShortTitle() != null ? String.format(" (%s)", a.getShortTitle()) : ""));
-                item.put("2", a.getRegionTitle());
+
+                item.put("1", d.getTitle());
+                item.put("2", d.getName());
                 data.add(item);
             }
 
@@ -125,7 +131,7 @@ public class AddTransitFragment extends Fragment {
                     new String[] {"1", "2"},
                     new int[] {R.id.text1, R.id.text2});
 
-            transits.setAdapter(adapter);
+            dirList.setAdapter(adapter);
         }
     }
 }

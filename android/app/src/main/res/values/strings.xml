@@ -22,13 +22,16 @@
     <!-- Add agency -->
     <string name="title_activity_add_transit">Choose a agency</string>
     <string name="action_cancel">Cancel</string>
-    <string name="action_next">Next</string>
     <string name="filter_transit">Filter transit agencies</string>
 
     <!-- Add route -->
     <string name="title_activity_add_route">Choose a route</string>
     <string name="action_previous">Back</string>
     <string name="filter_routes">Filter routes</string>
+
+    <!-- Add direction -->
+    <string name="title_activity_add_direction">Choose a direction</string>
+    <string name="filter_direction">Filter directions</string>
 
     <!-- Add stop -->
     <string name="title_activity_add_stop">Choose a stop</string>

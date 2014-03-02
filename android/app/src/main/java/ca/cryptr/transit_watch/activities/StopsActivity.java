@@ -48,7 +48,7 @@ public class StopsActivity extends Activity {
     private ListView listStops;
     private StopListAdapter adapter;
 
-    private ArrayList<FavStop> favStops = new ArrayList<FavStop>();
+    private static ArrayList<FavStop> favStops = new ArrayList<FavStop>();
 
     protected Object mActionMode;
     public int selectedItem = -1;
@@ -74,7 +74,7 @@ public class StopsActivity extends Activity {
         setupFavStopsList();
 
         // TEMP
-        new AddStopTask().execute();
+//        new AddStopTask().execute();
     }
 
     @Override
@@ -101,6 +101,10 @@ public class StopsActivity extends Activity {
 
     public static NextbusService getmNextbusService() {
         return mNextbusService;
+    }
+
+    public static void addFavStop(FavStop stop) {
+        favStops.add(stop);
     }
 
     public void setupWeather() {

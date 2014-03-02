@@ -2,6 +2,7 @@ package ca.cryptr.transit_watch.activities;
 
 import android.app.Fragment;
 import android.app.FragmentTransaction;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -16,6 +17,11 @@ import android.widget.ListView;
 import android.widget.SimpleAdapter;
 import android.widget.TextView;
 
+import net.sf.nextbus.publicxmlfeed.domain.Agency;
+import net.sf.nextbus.publicxmlfeed.domain.Direction;
+import net.sf.nextbus.publicxmlfeed.domain.Route;
+import net.sf.nextbus.publicxmlfeed.impl.NextbusService;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -25,11 +31,15 @@ import ca.cryptr.transit_watch.R;
 
 public class AddRouteFragment extends Fragment {
 
-    private ListView routes;
+    private ListView routesList;
     private EditText filter;
     private TextView transitName;
     private SimpleAdapter adapter;
     private View view;
+
+    private static NextbusService nbs = StopsActivity.getmNextbusService();
+
+    private List<Route> routes;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -41,9 +51,7 @@ public class AddRouteFragment extends Fragment {
 
         // Display transit name
         transitName = (TextView) view.findViewById(R.id.stop_transit_name);
-        transitName.setText(((AddStopActivity) getActivity()).getTransit());
-
-        // Get the routes from the selected transit
+        transitName.setText(((AddStopActivity) getActivity()).getAgency());
 
         // Display the routes in the list
         setupRoutesList();
@@ -71,44 +79,60 @@ public class AddRouteFragment extends Fragment {
         menu.findItem(R.id.action_add_cancel).setVisible(false);
         menu.findItem(R.id.action_add_previous_transit).setVisible(true);
         menu.findItem(R.id.action_add_previous_route).setVisible(false);
+        menu.findItem(R.id.action_add_previous_dir).setVisible(false);
         menu.findItem(R.id.action_add_done).setVisible(false);
     }
 
     private void setupRoutesList() {
-        routes = (ListView) view.findViewById(R.id.add_route_list);
+        routesList = (ListView) view.findViewById(R.id.add_route_list);
 
-//        final String[] companies = getResources().getStringArray(R.array.transits);
+        (new GetRoutes()).execute();
 
-        routes.setClickable(true);
-        routes.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+        routesList.setClickable(true);
+        routesList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int pos, long l) {
                 // Set the route name
-//                ((AddStopActivity) getActivity()).setRoute(companies[2 * (int) parent.getItemIdAtPosition(pos)]);
+                Route r = routes.get((int) parent.getItemIdAtPosition(pos));
+                AddStopActivity.setRoute(r.getTitle());
+                AddStopActivity.setRouteTag(r.getTag());
+                AddStopActivity.setRouteObj(r);
 
                 // Go to the next page
                 FragmentTransaction ft = getFragmentManager().beginTransaction();
-                AddStopFragment nextStop = new AddStopFragment();
-                ft.replace(R.id.fragment_add, nextStop);
+                AddDirectionFragment nextDir = new AddDirectionFragment();
+                ft.replace(R.id.fragment_add, nextDir);
                 ft.addToBackStack(null);
                 ft.commit();
             }
         });
+    }
 
-//        List<Map<String, String>> data = new ArrayList<Map<String, String>>();
-//
-//        for (int i = 0; i < companies.length; i+=2) {
-//            Map<String, String> item = new HashMap<String, String>();
-//            item.put("1", companies[i]);
-//            item.put("2", companies[i+1]);
-//            data.add(item);
-//        }
-//
-//        adapter = new SimpleAdapter(getActivity(), data,
-//                R.layout.add_list_item,
-//                new String[] {"1", "2"},
-//                new int[] {R.id.text1, R.id.text2});
+    private class GetRoutes extends AsyncTask<Void, Void, Void> {
+        @Override
+        protected Void doInBackground(Void... params) {
+            routes = nbs.getRoutes(nbs.getAgency(AddStopActivity.getAgencyTag()));
+            return null;
+        }
 
-        routes.setAdapter(adapter);
+        @Override
+        protected void onPostExecute(Void voids) {
+            List<Map<String, String>> data = new ArrayList<Map<String, String>>();
+
+            for (Route r : routes) {
+                Map<String, String> item = new HashMap<String, String>();
+
+                item.put("1", r.getTitle());
+                item.put("2", r.getTag());
+                data.add(item);
+            }
+
+            adapter = new SimpleAdapter(getActivity(), data,
+                    R.layout.add_list_item,
+                    new String[] {"1", "2"},
+                    new int[] {R.id.text1, R.id.text2});
+
+            routesList.setAdapter(adapter);
+        }
     }
 }
