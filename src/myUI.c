@@ -37,7 +37,9 @@ static void down_click_handler(ClickRecognizerRef recognizer, void *context) {
 static void select_click_handler(ClickRecognizerRef recognizer, void *context) {
 	// TODO
 	if(on_splash) {
+		on_splash = false;
   		window_stack_push(menu_window, true);
+  		window_stack_remove(window, true);
 	}
 
 }
