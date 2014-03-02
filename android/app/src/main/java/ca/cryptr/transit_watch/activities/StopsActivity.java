@@ -21,6 +21,7 @@ import net.sf.nextbus.publicxmlfeed.impl.NextbusService;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.List;
 
 import ca.cryptr.transit_watch.R;
 import ca.cryptr.transit_watch.preferences.PreferencesDataSource;
@@ -34,10 +35,10 @@ import ca.cryptr.transit_watch.weather.Weather;
 
 public class StopsActivity extends Activity {
 
-//    private static final String TAG = StopsActivity.class.getSimpleName();
-//
-//    private NextbusService mNextbusService;
-//    private PreferencesDataSource mPreferencesDataSource;
+    private static final String TAG = StopsActivity.class.getSimpleName();
+
+    private NextbusService mNextbusService;
+    private PreferencesDataSource mPreferencesDataSource;
 
     public static Weather weather;
 
@@ -56,10 +57,11 @@ public class StopsActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_stops);
 
-//        mNextbusService = new AndroidNextbusService();
-//        mPreferencesDataSource = new PreferencesDataSource(this);
-//        mPreferencesDataSource.open();
+        mNextbusService = new AndroidNextbusService();
+        mPreferencesDataSource = new PreferencesDataSource(this);
+        mPreferencesDataSource.open();
 
+        // Weather
         weather = new Weather();
         setupWeather();
 
@@ -71,7 +73,7 @@ public class StopsActivity extends Activity {
         setupFavStopsList();
 
         // TEMP
-//        new AddStopTask().execute();
+        new AddStopTask().execute();
     }
 
     @Override
@@ -180,9 +182,13 @@ public class StopsActivity extends Activity {
     }
 
     // TEMP
-//    private class AddStopTask extends AsyncTask<Void, Void, Void> {
-//        @Override
-//        protected Void doInBackground(Void... params) {
+    private class AddStopTask extends AsyncTask<Void, Void, Void> {
+        @Override
+        protected Void doInBackground(Void... params) {
+            List<Agency> agencies = mNextbusService.getAgencies();
+            for (int i = 0; i < agencies.size(); i++)
+                System.out.println(agencies.get(i));
+
 //            Agency ttc = mNextbusService.getAgency("ttc");
 //            Route carlton506 = null;
 //            for (Route route : mNextbusService.getRoutes(ttc))
@@ -197,8 +203,9 @@ public class StopsActivity extends Activity {
 //                if (stop.getTag().equals("2748"))
 //                    stGeorgeAndBeverly = stop;
 //            mPreferencesDataSource.insertStop(carlton506east, stGeorgeAndBeverly);
-//            return null;
-//        }
-//    }
+
+            return null;
+        }
+    }
 
 }

@@ -25,7 +25,7 @@ public class CityParser extends AsyncTask<Void, Void, Void> {
 
 
     public static Weather weather = StopsActivity.getWeather();
-    private String url, forecast, summary, tempunits, temp;
+    private String url, forecast, summary, shortSummary, tempunits, temp;
     private TextView cityText, tempText, summaryText;
 
     public CityParser(String url, TextView city, TextView temp, TextView summary) {
@@ -49,6 +49,7 @@ public class CityParser extends AsyncTask<Void, Void, Void> {
 
             forecast = (String) xpath.evaluate("/siteData/forecastGroup/forecast/period/@textForecastName", xmlDoc, XPathConstants.STRING);
             summary = (String) xpath.evaluate("/siteData/forecastGroup/forecast/cloudPrecip/textSummary", xmlDoc, XPathConstants.STRING);
+            shortSummary = (String) xpath.evaluate("/siteData/forecastGroup/forecast/abbreviatedForecast/textSummary", xmlDoc, XPathConstants.STRING);
             tempunits = (String) xpath.evaluate("/siteData/forecastGroup/forecast/temperatures/temperature/@units", xmlDoc, XPathConstants.STRING);
             temp = (String) xpath.evaluate("/siteData/forecastGroup/forecast/temperatures/temperature", xmlDoc, XPathConstants.STRING);
 
@@ -56,6 +57,7 @@ public class CityParser extends AsyncTask<Void, Void, Void> {
             weather.setTempValue(temp);
             weather.setTempUnit(tempunits);
             weather.setForecastSummary(summary.replaceAll("\n", " "));
+            weather.setShortSummary(shortSummary);
 
         } catch (MalformedURLException e) {
         } catch (IOException e) {

@@ -2,7 +2,12 @@ package ca.cryptr.transit_watch.weather;
 
 public class Weather {
 
-    private String cityName, forecastTime, tempValue, tempUnit, forecastSummary;
+    private String cityName;
+    private String forecastTime;
+    private String tempValue;
+    private String tempUnit;
+    private String forecastSummary;
+    private String shortSummary;
 
     public Weather() {
 
@@ -46,5 +51,13 @@ public class Weather {
 
     public void setForecastSummary(String forecastSummary) {
         this.forecastSummary = forecastSummary;
+    }
+
+    public String getShortSummary() {
+        return shortSummary;
+    }
+
+    public void setShortSummary(String shortSummary) {
+        this.shortSummary = shortSummary;
     }
 }

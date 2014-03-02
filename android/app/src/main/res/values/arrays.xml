@@ -1,11 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+
     <string-array name="transits">
         <item>Toronto Transit Commission (TTC)</item>
         <item>Toronto, Canada</item>
         <item>MiWay</item>
         <item>Mississauga, Canada</item>
     </string-array>
+
     <string-array name="devs">
         <item>Spencer Elliott</item>
         <item>Twitter: @spe_</item>
@@ -16,4 +18,5 @@
         <item>Henry Liu</item>
         <item>GitHub: hxhl65</item>
     </string-array>
+
 </resources>
