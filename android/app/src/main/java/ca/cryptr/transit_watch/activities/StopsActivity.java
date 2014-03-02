@@ -14,7 +14,6 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import net.sf.nextbus.publicxmlfeed.domain.Direction;
 import net.sf.nextbus.publicxmlfeed.domain.Stop;
@@ -158,12 +157,12 @@ public class StopsActivity extends Activity {
         mPreferencesDataSource.deleteStop(stops.get(selectedItem));
         setupFavStopsList();
 
-        try {
-            data.save(FILEPATH);
-        } catch (IOException e) {
-            Toast.makeText(this,
-                    R.string.file_error, Toast.LENGTH_SHORT).show();
-        }
+//        try {
+//            data.save(FILEPATH);
+//        } catch (IOException e) {
+//            Toast.makeText(this,
+//                    R.string.file_error, Toast.LENGTH_SHORT).show();
+//        }
     }
 
     public void setupWeather() {
