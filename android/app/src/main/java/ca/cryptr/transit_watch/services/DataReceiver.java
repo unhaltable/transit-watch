@@ -5,13 +5,13 @@ import android.content.Context;
 import com.getpebble.android.kit.PebbleKit;
 import com.getpebble.android.kit.util.PebbleDictionary;
 
+import net.sf.nextbus.publicxmlfeed.domain.Direction;
 import net.sf.nextbus.publicxmlfeed.domain.Route;
 import net.sf.nextbus.publicxmlfeed.domain.Stop;
 
 import java.util.UUID;
 
 import ca.cryptr.transit_watch.preferences.PreferencesDataSource;
-import ca.cryptr.transit_watch.preferences.RouteStopTuple;
 
 public class DataReceiver extends PebbleKit.PebbleDataReceiver {
 
@@ -49,28 +49,49 @@ public class DataReceiver extends PebbleKit.PebbleDataReceiver {
         }
     }
 
+    /**
+     * Send saved stop data to watchapp. In the sent dictionary:
+     *
+     * 0: total number of stops
+     * 1: number of data fields per stop
+     * say the number of data fields per stop is n
+     * 2 to n+2: first stop data
+     * n+3 to 2n+2: second stop data
+     * etc
+     */
     private void onAppOpened(Context context) {
         // Sync saved ca.cryptr.transit_watch.stops
         PebbleDictionary savedStops = new PebbleDictionary();
-        for (RouteStopTuple routeStop : mPreferencesDataSource.getStops()) {
-            Route route = routeStop.getRoute();
-            Stop stop = routeStop.getStop();
+        int stopCount = 0;
+        int dictionaryIndex = 2;
+        for (Direction direction : mPreferencesDataSource.getStops()) {
+            Route route = direction.getRoute();
 
             String routeTag = route.getTag();
             String routeTitle = route.getShortTitle() != null ? route.getShortTitle() : route.getTitle();
-            String stopTitle = stop.getShortTitle() != null ? stop.getShortTitle() : stop.getTitle();
+            String directionName = direction.getName();
 
-            // We can only send primitive data to Pebble
-            // TODO: figure out in what format to send the data
+            for (Stop stop : direction.getStops()) {
+                String stopTitle = stop.getShortTitle() != null ? stop.getShortTitle() : stop.getTitle();
 
+                savedStops.addString(dictionaryIndex++, routeTag);
+                savedStops.addString(dictionaryIndex++, routeTitle);
+                savedStops.addString(dictionaryIndex++, directionName);
+                savedStops.addString(dictionaryIndex++, stopTitle);
+
+                stopCount++;
+            }
         }
+
+        savedStops.addUint32(0, stopCount);
+        savedStops.addUint32(1, 4);  // Four fields
 
         PebbleKit.sendDataToPebble(context, WATCHAPP_UUID, savedStops);
     }
 
     private void onStopSelected(Context context, long stopIndex) {
-        // Send vehicle predictions
-
+        // Send vehicle predictions and weather
+        
     }
 
 }

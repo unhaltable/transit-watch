@@ -101,7 +101,7 @@ public class StopsActivity extends Activity {
 //            for (Stop stop : carlton506east.getStops())
 //                if (stop.getTag().equals("2748"))
 //                    stGeorgeAndBeverly = stop;
-//            mPreferencesDataSource.saveStop(carlton506east, stGeorgeAndBeverly);
+//            mPreferencesDataSource.insertStop(carlton506east, stGeorgeAndBeverly);
 //            return null;
 //        }
 //    }

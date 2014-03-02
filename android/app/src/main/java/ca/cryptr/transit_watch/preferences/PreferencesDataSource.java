@@ -66,7 +66,7 @@ public class PreferencesDataSource {
      *
      * @param stop a transit stop
      */
-    public void saveStop(Direction direction, Stop stop) {
+    public void insertStop(Direction direction, Stop stop) {
         mDatabase.beginTransaction();
         try {
             // Insert the agency
@@ -149,8 +149,8 @@ public class PreferencesDataSource {
      *
      * @return all ca.cryptr.transit_watch.stops from the database
      */
-    public List<RouteStopTuple> getStops() {
-        List<RouteStopTuple> routeStops = new ArrayList<RouteStopTuple>();
+    public List<Direction> getStops() {
+        List<Direction> directions = new ArrayList<Direction>();
 
         SQLiteQueryBuilder queryBuilder = new SQLiteQueryBuilder();
         queryBuilder.setTables(PreferencesSQLiteHelper.AGENCIES.TABLE + ", " +
@@ -166,27 +166,48 @@ public class PreferencesDataSource {
                                  PreferencesSQLiteHelper.AGENCIES.COLUMN_TAG);
         Cursor cursor = queryBuilder.query(mDatabase,
                                            Util.concatAll(AGENCIES_COLUMNS, ROUTES_COLUMNS, DIRECTIONS_COLUMNS, STOPS_COLUMNS),
-                                           null, null, null, null, null);
+                                           null, null, null, null,
+                                           PreferencesSQLiteHelper.DIRECTIONS.COLUMN_TAG);
 
         // Keep references to the column positions of each property
         AgencyCursorColumns agencyCursorColumns = AgencyCursorColumns.fromCursor(cursor);
         RouteCursorColumns routeCursorColumns = RouteCursorColumns.fromCursor(cursor);
+        DirectionCursorColumns directionCursorColumns = DirectionCursorColumns.fromCursor(cursor);
         StopCursorColumns stopCursorColumns = StopCursorColumns.fromCursor(cursor);
+
+
+        List<Stop> directionStops = new ArrayList<Stop>();
+        String directionTag = null;
+        Agency agency = null;
+        Route route = null;
+        Direction direction = null;
 
         // Iterate over the cursor to build the list of ca.cryptr.transit_watch.stops
         //noinspection ConstantConditions
         cursor.moveToFirst();
         while(!cursor.isAfterLast()) {
-            Agency agency = agencyFromCursor(cursor, agencyCursorColumns);
-            Route route = routeFromCursor(cursor, routeCursorColumns, agency);
-            Stop stop = stopFromCursor(cursor, stopCursorColumns, agency);
-            routeStops.add(new RouteStopTuple(route, stop));
+            if (directionTag == null || !directionTag.equals(cursor.getString(directionCursorColumns.getTagColumn()))) {
+                // Direction has changed; append the direction to the result set
+                if (!directionStops.isEmpty()) {
+                    cursor.moveToLast();
+                    directions.add(directionFromCursor(cursor, directionCursorColumns, route, directionStops));
+                    cursor.moveToNext();
+                }
+
+                // Save the agency, route, direction tag for the next group of stops
+                agency = agencyFromCursor(cursor, agencyCursorColumns);
+                route = routeFromCursor(cursor, routeCursorColumns, agency);
+                directionTag = cursor.getString(directionCursorColumns.getTagColumn());
+            }
+
+            // Add the current stop to the current direction
+            directionStops.add(stopFromCursor(cursor, stopCursorColumns, agency));
 
             cursor.moveToNext();
         }
         cursor.close();
 
-        return routeStops;
+        return directions;
     }
 
     private Agency agencyFromCursor(Cursor cursor, AgencyCursorColumns agencyCursorColumns) {
@@ -201,6 +222,14 @@ public class PreferencesDataSource {
                          cursor.getString(routeCursorColumns.getTagColumn()),
                          cursor.getString(routeCursorColumns.getTitleColumn()),
                          cursor.getString(routeCursorColumns.getShortTitleColumn()), null);
+    }
+
+    private Direction directionFromCursor(Cursor cursor, DirectionCursorColumns directionCursorColumns, Route route, List<Stop> stops) {
+        return new Direction(route,
+                             cursor.getString(directionCursorColumns.getTagColumn()),
+                             cursor.getString(directionCursorColumns.getTitleColumn()),
+                             cursor.getString(directionCursorColumns.getNameColumn()),
+                             stops, null);
     }
 
     private Stop stopFromCursor(Cursor cursor, StopCursorColumns stopCursorColumns, Agency agency) {
