@@ -1,6 +1,6 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    tools:context="ca.cryptr.transit_watch.activities.AddStopActivity" >
+    tools:context="ca.cryptr.transit_watch.activities.SelectStopActivity" >
 
     <item android:id="@+id/action_remove"
         android:icon="@drawable/ic_action_discard"

@@ -66,7 +66,7 @@ public class PreferencesDataSource {
      *
      * @param stop a transit stop
      */
-    public void insertStop(Direction direction, Stop stop) {
+    public void saveStop(Direction direction, Stop stop) {
         mDatabase.beginTransaction();
         try {
             // Insert the agency
@@ -190,7 +190,7 @@ public class PreferencesDataSource {
             if (directionTag == null || !directionTag.equals(cursor.getString(directionCursorColumns.getTagColumn()))) {
                 // Direction has changed; append the direction to the result set
                 if (!directionStops.isEmpty()) {
-                    cursor.moveToLast();
+                    cursor.moveToPrevious();
                     directions.add(directionFromCursor(cursor, directionCursorColumns, route, directionStops));
                     cursor.moveToNext();
                 }

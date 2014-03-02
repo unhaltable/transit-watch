@@ -29,13 +29,13 @@
             android:parentActivityName=".activities.StopsActivity"/>
 
         <activity
-            android:name=".activities.AddStopActivity"
+            android:name=".activities.SelectStopActivity"
             android:configChanges="orientation|screenSize"
             android:label="@string/title_activity_add_transit"
             android:parentActivityName=".activities.StopsActivity"/>
 
         <receiver
-            android:name=".services.DataReceiver"
+            android:name=".receiver.DataReceiver"
             android:exported="true">
             <intent-filter>
                 <action android:name="com.getpebble.action.app.RECEIVE" />

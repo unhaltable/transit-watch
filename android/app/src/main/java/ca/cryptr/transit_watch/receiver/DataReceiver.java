@@ -1,4 +1,4 @@
-package ca.cryptr.transit_watch.services;
+package ca.cryptr.transit_watch.receiver;
 
 import android.content.Context;
 import android.util.Log;
@@ -57,18 +57,19 @@ public class DataReceiver extends PebbleKit.PebbleDataReceiver {
     /**
      * Send saved stop data to watchapp. In the sent dictionary:
      *
-     * 0: total number of stops
-     * 1: number of data fields per stop
+     * 0: message type
+     * 1: total number of stops
+     * 2: number of data fields per stop
      * say the number of data fields per stop is n
-     * 2 to n+2: first stop data
-     * n+3 to 2n+2: second stop data
+     * 3 to n+3: first stop data
+     * n+4 to 2n+4: second stop data
      * etc
      */
     private void onAppOpened(Context context) {
         // Sync saved ca.cryptr.transit_watch.stops
         PebbleDictionary savedStops = new PebbleDictionary();
-        int stopCount = 0;
-        int dictionaryIndex = 2;
+        int stopCount = 1;
+        int dictionaryIndex = 3;
         for (Direction direction : mPreferencesDataSource.getStops()) {
             Route route = direction.getRoute();
 
@@ -88,7 +89,8 @@ public class DataReceiver extends PebbleKit.PebbleDataReceiver {
             }
         }
 
-        savedStops.addUint32(0, stopCount);
+        savedStops.addUint32(MESSAGE_TYPE, 0);
+        savedStops.addUint32(1, stopCount);
         savedStops.addUint32(1, 4);  // Four fields
 
         PebbleKit.sendDataToPebble(context, WATCHAPP_UUID, savedStops);

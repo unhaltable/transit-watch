@@ -2,27 +2,23 @@ package ca.cryptr.transit_watch.activities;
 
 import android.app.Activity;
 import android.app.FragmentTransaction;
-import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 
+import net.sf.nextbus.publicxmlfeed.domain.Agency;
 import net.sf.nextbus.publicxmlfeed.domain.Direction;
 import net.sf.nextbus.publicxmlfeed.domain.Route;
+import net.sf.nextbus.publicxmlfeed.domain.Stop;
 
 import ca.cryptr.transit_watch.R;
 
-public class AddStopActivity extends Activity {
+public class SelectStopActivity extends Activity {
 
-    private static String agency;
-    private static String route;
-    private static String stop;
-    private static String agencyTag;
-    private static String routeTag;
-    private static Route routeObj;
-    private static String dirTag;
-    private static Direction dirObj;
-    private static String stopTag;
+    private Agency agency;
+    private Route route;
+    private Direction direction;
+    private Stop stop;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -31,7 +27,7 @@ public class AddStopActivity extends Activity {
 
         FragmentTransaction ft = getFragmentManager().beginTransaction();
 
-        AddTransitFragment transit = new AddTransitFragment();
+        SelectAgencyFragment transit = new SelectAgencyFragment();
         ft.add(R.id.fragment_add, transit);
         ft.commit();
     }
@@ -57,19 +53,19 @@ public class AddStopActivity extends Activity {
                 this.finish();
                 return true;
             case R.id.action_add_previous_transit:
-                AddTransitFragment prevTransit = new AddTransitFragment();
+                SelectAgencyFragment prevTransit = new SelectAgencyFragment();
                 ft.replace(R.id.fragment_add, prevTransit);
                 ft.addToBackStack(null);
                 ft.commit();
                 return true;
             case R.id.action_add_previous_route:
-                AddRouteFragment prevRoute = new AddRouteFragment();
+                SelectRouteFragment prevRoute = new SelectRouteFragment();
                 ft.replace(R.id.fragment_add, prevRoute);
                 ft.addToBackStack(null);
                 ft.commit();
                 return true;
             case R.id.action_add_previous_dir:
-                AddDirectionFragment prevDir = new AddDirectionFragment();
+                SelectDirectionFragment prevDir = new SelectDirectionFragment();
                 ft.replace(R.id.fragment_add, prevDir);
                 ft.addToBackStack(null);
                 ft.commit();
@@ -77,7 +73,7 @@ public class AddStopActivity extends Activity {
             case R.id.action_add_done:
                 // Save stop
 
-                this.finish();
+                finish();
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
@@ -90,81 +86,42 @@ public class AddStopActivity extends Activity {
     @Override
     public void onBackPressed() {
         if (getFragmentManager().getBackStackEntryCount() == 0) {
-            this.finish();
+            finish();
         } else {
             getFragmentManager().popBackStack();
         }
     }
 
-    public static String getAgency() {
+    public Agency getAgency() {
         return agency;
     }
 
-    public static void setAgency(String agency) {
-        AddStopActivity.agency = agency;
+    public void setAgency(Agency agency) {
+        this.agency = agency;
     }
 
-    public static String getRoute() {
+    public Route getRoute() {
         return route;
     }
 
-    public static void setRoute(String route) {
-        AddStopActivity.route = route;
+    public void setRoute(Route route) {
+        this.route = route;
     }
 
-    public static String getStop() {
+    public Direction getDirection() {
+        return direction;
+    }
+
+    public void setDirection(Direction direction) {
+        this.direction = direction;
+    }
+
+    public Stop getStop() {
         return stop;
     }
 
-    public static void setStop(String stop) {
-        AddStopActivity.stop = stop;
+    public void setStop(Stop stop) {
+        this.stop = stop;
     }
 
-    public static String getStopTag() {
-        return stopTag;
-    }
-
-    public static void setStopTag(String stopTag) {
-        AddStopActivity.stopTag = stopTag;
-    }
-
-    public static String getAgencyTag() {
-        return agencyTag;
-    }
-
-    public static void setAgencyTag(String agencyTag) {
-        AddStopActivity.agencyTag = agencyTag;
-    }
-
-    public static String getRouteTag() {
-        return routeTag;
-    }
-
-    public static void setRouteTag(String routeTag) {
-        AddStopActivity.routeTag = routeTag;
-    }
-
-    public static Route getRouteObj() {
-        return routeObj;
-    }
-
-    public static void setRouteObj(Route routeObj) {
-        AddStopActivity.routeObj = routeObj;
-    }
-
-    public static String getDirTag() {
-        return dirTag;
-    }
-
-    public static Direction getDirObj() {
-        return dirObj;
-    }
-
-    public static void setDirObj(Direction dirObj) {
-        AddStopActivity.dirObj = dirObj;
-    }
-
-    public static void setDirTag(String dirTag) {
-        AddStopActivity.dirTag = dirTag;
-    }
 }

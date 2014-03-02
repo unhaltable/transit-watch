@@ -5,7 +5,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.ActionMode;
 import android.view.Menu;
@@ -17,13 +16,10 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import net.sf.nextbus.publicxmlfeed.domain.Agency;
 import net.sf.nextbus.publicxmlfeed.domain.Direction;
-import net.sf.nextbus.publicxmlfeed.domain.Route;
 import net.sf.nextbus.publicxmlfeed.domain.Stop;
 import net.sf.nextbus.publicxmlfeed.impl.NextbusService;
 
-import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -52,10 +48,11 @@ public class StopsActivity extends Activity {
     private TextView city, temperature, summary;
 
     private static NextbusService mNextbusService;
-    //    private PreferencesDataSource mPreferencesDataSource;
+    private PreferencesDataSource mPreferencesDataSource;
 
     private ListView listStops;
-    private static StopListAdapter adapter;
+    private StopListAdapter adapter;
+    private List<Stop> stops;
 
     private static ArrayList<FavStop> favStops;
 
@@ -73,18 +70,21 @@ public class StopsActivity extends Activity {
             findViewById(R.id.add_stop).setVisibility(View.GONE);
         }
 
-        mNextbusService = new AndroidNextbusService();
-//        mPreferencesDataSource = new PreferencesDataSource(this);
-//        mPreferencesDataSource.open();
+        stops = new ArrayList<Stop>();
+        favStops = new ArrayList<FavStop>();
 
-        // Load saved data
-        FILEPATH = new File(this.getFilesDir(), FILENAME).getPath();
-        try {
-            data = new FileIO(this.getFilesDir(), FILENAME);
-            data.save(FILEPATH);
-        } catch (IOException e) {
-            Toast.makeText(this, R.string.file_error, Toast.LENGTH_SHORT).show();
-        }
+        mNextbusService = new AndroidNextbusService();
+        mPreferencesDataSource = new PreferencesDataSource(this);
+        mPreferencesDataSource.open();
+
+//        // Load saved data
+//        FILEPATH = new File(this.getFilesDir(), FILENAME).getPath();
+//        try {
+//            data = new FileIO(this.getFilesDir(), FILENAME);
+//            data.save(FILEPATH);
+//        } catch (IOException e) {
+//            Toast.makeText(this, R.string.file_error, Toast.LENGTH_SHORT).show();
+//        }
 
         // Fav stops
         setupFavStopsList();
@@ -112,6 +112,12 @@ public class StopsActivity extends Activity {
         }
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        setupFavStopsList();
+    }
+
     /**
      * Checks if there's an Internet connection.
      */
@@ -126,7 +132,7 @@ public class StopsActivity extends Activity {
         return weather;
     }
 
-    public static NextbusService getmNextbusService() {
+    public static NextbusService getNextbusService() {
         return mNextbusService;
     }
 
@@ -140,7 +146,6 @@ public class StopsActivity extends Activity {
 
     public static void addFavStop(FavStop stop) {
         favStops.add(stop);
-        adapter.notifyDataSetChanged();
 
         try {
             data.save(FILEPATH);
@@ -150,8 +155,8 @@ public class StopsActivity extends Activity {
     }
 
     private void removeStop() {
-        favStops.remove(selectedItem);
-        adapter.notifyDataSetChanged();
+        mPreferencesDataSource.deleteStop(stops.get(selectedItem));
+        setupFavStopsList();
 
         try {
             data.save(FILEPATH);
@@ -178,7 +183,7 @@ public class StopsActivity extends Activity {
     }
 
     public void addStopButton(View view) {
-        Intent intent = new Intent(this, AddStopActivity.class);
+        Intent intent = new Intent(this, SelectStopActivity.class);
         startActivity(intent);
     }
 
@@ -187,6 +192,14 @@ public class StopsActivity extends Activity {
 
         // Display a message if there's no stops saved
         listStops.setEmptyView(findViewById(R.id.empty_list));
+
+        for (Direction d : mPreferencesDataSource.getStops())
+            for (Stop s : d.getStops()) {
+                stops.add(s);
+                favStops.add(new FavStop(s.getAgency().getTitle(),
+                                     (d.getRoute().getShortTitle() != null ? d.getRoute().getShortTitle() : d.getRoute().getTitle()),
+                                     (s.getShortTitle()) != null ? s.getShortTitle() : s.getTitle()));
+            }
 
         adapter = new StopListAdapter(this, favStops);
         listStops.setAdapter(adapter);

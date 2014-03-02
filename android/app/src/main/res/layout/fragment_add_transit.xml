@@ -5,7 +5,7 @@
     android:background="@color/actionbar"
     android:fitsSystemWindows="true"
     android:orientation="vertical"
-    tools:context="ca.cryptr.transit_watch.activities.AddStopActivity">
+    tools:context="ca.cryptr.transit_watch.activities.SelectStopActivity">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -23,7 +23,7 @@
             android:padding="@dimen/activity_vertical_margin" >
 
             <EditText
-                android:id="@+id/filter_transit"
+                android:id="@+id/filter"
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
                 android:hint="@string/filter_transit"
@@ -34,7 +34,7 @@
         </LinearLayout>
 
         <ListView
-            android:id="@+id/add_transit_list"
+            android:id="@android:id/list"
             android:layout_width="match_parent"
             android:layout_height="fill_parent"
             android:clipToPadding="false"
