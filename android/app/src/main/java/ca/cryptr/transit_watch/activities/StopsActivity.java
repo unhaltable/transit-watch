@@ -145,24 +145,11 @@ public class StopsActivity extends Activity {
 
     public static void addFavStop(FavStop stop) {
         favStops.add(stop);
-
-//        try {
-//            data.save(FILEPATH);
-//        } catch (IOException e) {
-//
-//        }
     }
 
     private void removeStop() {
         mPreferencesDataSource.deleteStop(stops.get(selectedItem));
         setupFavStopsList();
-
-//        try {
-//            data.save(FILEPATH);
-//        } catch (IOException e) {
-//            Toast.makeText(this,
-//                    R.string.file_error, Toast.LENGTH_SHORT).show();
-//        }
     }
 
     public void setupWeather() {
@@ -192,11 +179,14 @@ public class StopsActivity extends Activity {
         // Display a message if there's no stops saved
         listStops.setEmptyView(findViewById(R.id.empty_list));
 
+        stops.clear();
+        favStops.clear();
+
         for (Direction d : mPreferencesDataSource.getStops())
             for (Stop s : d.getStops()) {
                 stops.add(s);
-                favStops.add(new FavStop(s.getAgency().getTitle(),
-                                     (d.getRoute().getShortTitle() != null ? d.getRoute().getShortTitle() : d.getRoute().getTitle()),
+                favStops.add(new FavStop(s.getAgency().getShortTitle() != null? s.getAgency().getShortTitle() : s.getAgency().getTitle(),
+                                     d.getRoute().getTitle(),
                                      (s.getShortTitle()) != null ? s.getShortTitle() : s.getTitle()));
             }
 

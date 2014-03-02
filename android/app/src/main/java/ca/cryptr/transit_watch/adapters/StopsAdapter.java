@@ -23,6 +23,4 @@ public class StopsAdapter extends NextbusListAdapter<Stop> {
         return String.format("ID %s: (%s, %s)", s.getTag(),
                              s.getGeolocation().getLatitude(), s.getGeolocation().getLongitude());
     }
-
-
 }

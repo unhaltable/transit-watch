@@ -48,7 +48,7 @@ public class AboutFragment extends Fragment {
                     String url = "";
 
                     if (position == 0)
-                        url =  "https://www.www.twitter.com/spe_";
+                        url =  "https://www.twitter.com/spe_";
                     else if (position == 1)
                         url =  "https://www.twitter.com/arkon";
                     else if (position == 2)

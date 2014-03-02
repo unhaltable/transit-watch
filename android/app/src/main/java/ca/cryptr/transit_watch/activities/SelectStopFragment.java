@@ -77,10 +77,9 @@ public class SelectStopFragment extends SelectTransitItemFragment<Stop> {
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
         Stop s = (Stop) getListView().getItemAtPosition(position);
 
-        mPreferencesDataSource.saveStop(((SelectStopActivity) getActivity()).getDirection(), s);
+        mPreferencesDataSource.saveStop(mParent.getDirection(), s);
 
         // Return to the main screen
         getActivity().finish();
     }
-
 }
