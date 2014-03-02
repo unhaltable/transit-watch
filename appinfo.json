@@ -1,16 +1,15 @@
 {
-    "versionLabel": "1.0",
-    "uuid": "615d4c5b-46cc-460a-adc3-8fb2a0e4eb1b",
-    "appKeys": {},
+    "uuid": "f407f26b-2d3c-4de5-b7fb-71c9eeaaf261",
+    "shortName": "Transit",
     "longName": "Transit Watch",
-    "versionCode": 1,
-    "capabilities": [
-        ""
-    ],
-    "shortName": "Transit Watch",
     "companyName": "Cryptr",
+    "versionCode": 1,
+    "versionLabel": "1.0.0",
     "watchapp": {
         "watchface": false
+    },
+    "appKeys": {
+        "dummy": 0
     },
     "resources": {
         "media": [

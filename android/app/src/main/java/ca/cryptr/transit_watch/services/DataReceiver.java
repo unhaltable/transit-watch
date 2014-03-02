@@ -25,7 +25,7 @@ public class DataReceiver extends PebbleKit.PebbleDataReceiver {
 
     public static final int STOP_INDEX = 3;
 
-    private static final UUID WATCHAPP_UUID = UUID.fromString("454d46ec-0647-4ef4-8df8-53e1e378cc48");
+    private static final UUID WATCHAPP_UUID = UUID.fromString("f407f26b-2d3c-4de5-b7fb-71c9eeaaf261");
 
     private PreferencesDataSource mPreferencesDataSource = null;
 

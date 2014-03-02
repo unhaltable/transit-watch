@@ -38,3 +38,5 @@ ehthumbs.db
 Thumbs.db
 .gradle
 PebbleKit/library/build
+build
+.lock-waf_darwin_build
