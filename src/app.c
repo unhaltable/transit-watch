@@ -130,6 +130,17 @@ static void menu_select_callback(int index, void *context) {
     // This will open up each individual stop's windows...
     //first_menu_items[index].subtitle = "Nope.";
     //layer_mark_dirty(simple_menu_layer_get_layer(main_menu));
+
+    // Set stop_window's fields to selected stop's data
+    if (stops_data && index < num_stops && num_fields_per_stop > 3)
+    {
+        text_layer_set_text(stop_title, stops_data[index][0]);
+        text_layer_set_text(stop_subtitle, stops_data[index][1]);
+        text_layer_set_text(stop_weather, stops_data[index][2]);
+        text_layer_set_text(stop_ETA, stops_data[index][3]);
+    }
+
+    // Show the window
     window_stack_push(stop_window, true);
     APP_LOG(APP_LOG_LEVEL_DEBUG, "Just pushed a window!");
 }
@@ -328,7 +339,6 @@ void handle_init(void)
     text_layer_set_background_color(stop_ETA, GColorClear);
     layer_add_child(stop_root, text_layer_get_layer(stop_ETA));
 
-
     // Creation of Splash Screen
     window = window_create();
     window_stack_push(window, true);
@@ -360,13 +370,15 @@ void handle_deinit(void)
     bitmap_layer_destroy(image_layer);
     window_destroy(window);
 
-    destroy_stops_data();
-    layer_destroy(raw_layer);
-    window_destroy(stop_window);
     text_layer_destroy(stop_title);
     text_layer_destroy(stop_subtitle);
     text_layer_destroy(stop_weather);
     text_layer_destroy(stop_ETA);
+
+    layer_destroy(raw_layer);
+    window_destroy(stop_window);
+
+    destroy_stops_data();
 }
 
 int main(void) {
