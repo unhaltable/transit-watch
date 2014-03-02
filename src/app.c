@@ -243,11 +243,11 @@ void window_unload(Window *window) {
     simple_menu_layer_destroy(main_menu);
 }
 
-static void layer_update_callback(Layer *me, GContext *ctx) {
-    GRect myRect = image->bounds;
-    graphics_context_set_fill_color(ctx, GColorWhite);
-    graphics_draw_round_rect(ctx, myRect, 16);
-}
+// static void layer_update_callback(Layer *me, GContext *ctx) {
+//     GRect myRect = image->bounds;
+//     graphics_context_set_fill_color(ctx, GColorWhite);
+//     graphics_draw_round_rect(ctx, myRect, 16);
+// }
 
 void handle_init(void)
 {
@@ -303,7 +303,7 @@ void handle_init(void)
     layer_add_child(stop_root, text_layer_get_layer(stop_subtitle));
 
     // Set stop_weather
-    stop_weather = text_layer_create(GRect(0, 76, stop_bounds.size.w, 18));
+    stop_weather = text_layer_create(GRect(0, 82, stop_bounds.size.w, 18));
     text_layer_set_text(stop_weather, "5C, Scattered Flurries");
     //text_layer_set_text(stop_weather, foo) see above comment
     text_layer_set_font(stop_weather, fonts_get_system_font(FONT_KEY_GOTHIC_18_BOLD));
@@ -314,18 +314,18 @@ void handle_init(void)
     layer_add_child(stop_root, text_layer_get_layer(stop_weather));
 
     // Set stop_ETA
-    raw_layer = layer_create(stop_bounds);
-    layer_set_update_proc(raw_layer, layer_update_callback);
-    layer_add_child(stop_root, raw_layer);
+    // raw_layer = layer_create(stop_bounds);
+    // layer_set_update_proc(raw_layer, layer_update_callback);
+    // layer_add_child(stop_root, raw_layer);
 
-    stop_ETA = text_layer_create(GRect(0, 116, stop_bounds.size.w, stop_bounds.size.h));
+    stop_ETA = text_layer_create(GRect(20, 100, 104, 148));
     text_layer_set_text(stop_ETA, "15 min");
     //text_layer_set_text(stop_ETA, foo) see above comment
     text_layer_set_font(stop_ETA, fonts_get_system_font(FONT_KEY_BITHAM_42_BOLD));
     text_layer_set_text_alignment(stop_ETA, GTextAlignmentCenter);
     text_layer_set_overflow_mode(stop_ETA, GTextOverflowModeTrailingEllipsis);
     // text_color is by default black
-    text_layer_set_background_color(stop_ETA, GColorClear);
+    text_layer_set_background_color(stop_ETA, GColorWhite);
     layer_add_child(stop_root, text_layer_get_layer(stop_ETA));
 
 
