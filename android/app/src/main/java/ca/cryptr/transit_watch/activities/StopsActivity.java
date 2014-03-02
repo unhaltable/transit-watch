@@ -1,7 +1,10 @@
 package ca.cryptr.transit_watch.activities;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.ActionMode;
@@ -64,6 +67,12 @@ public class StopsActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_stops);
 
+        // Don't allow user to try to add stops if there's no Internet
+        if (!isNetworkAvailable()) {
+            findViewById(R.id.empty_add).setVisibility(View.GONE);
+            findViewById(R.id.add_stop).setVisibility(View.GONE);
+        }
+
         mNextbusService = new AndroidNextbusService();
 //        mPreferencesDataSource = new PreferencesDataSource(this);
 //        mPreferencesDataSource.open();
@@ -101,6 +110,16 @@ public class StopsActivity extends Activity {
             default:
                 return super.onOptionsItemSelected(item);
         }
+    }
+
+    /**
+     * Checks if there's an Internet connection.
+     */
+    private boolean isNetworkAvailable() {
+        ConnectivityManager connectivityManager
+                = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
+        return activeNetworkInfo != null && activeNetworkInfo.isConnected();
     }
 
     public static Weather getWeather() {
