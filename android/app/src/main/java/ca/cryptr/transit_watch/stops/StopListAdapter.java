@@ -104,7 +104,7 @@ public class StopListAdapter extends ResourceCursorAdapter {
 
         @Override
         protected void onPostExecute(PredictionGroup items) {
-//            System.out.println(predictions);
+            System.out.println(predictions);
 
 //            minutesView.setText(String.valueOf(eta_min));
 //            if (eta_min > 10)
