@@ -2,7 +2,6 @@ package ca.cryptr.transit_watch.activities;
 
 import android.app.FragmentTransaction;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -13,7 +12,6 @@ import android.widget.TextView;
 
 import net.sf.nextbus.publicxmlfeed.domain.Agency;
 import net.sf.nextbus.publicxmlfeed.domain.Route;
-import net.sf.nextbus.publicxmlfeed.service.TransientServiceException;
 
 import java.util.List;
 
@@ -54,13 +52,7 @@ public class SelectRouteFragment extends SelectTransitItemFragment<Route> {
     @Override
     protected List<Route> getItemList() {
         Agency agency = ((SelectStopActivity) getActivity()).getAgency();
-
-        try {
-            Log.i(TAG, "Loading routes for " + agency.getTitle());
-            return nbs.getRoutes(agency);
-        } catch (TransientServiceException e) {
-            return null;
-        }
+        return nbs.getRoutes(agency);
     }
 
     @Override

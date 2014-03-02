@@ -44,11 +44,11 @@ public class DataReceiver extends PebbleKit.PebbleDataReceiver {
 
         long messageType = data.getInteger(MESSAGE_TYPE);
         if (messageType == APP_OPENED) {
+            PebbleKit.sendAckToPebble(context, transactionId);
             onAppOpened(context);
-            PebbleKit.sendAckToPebble(context, transactionId);
         } else if (messageType == STOP_SELECTED) {
-            onStopSelected(context, data.getUnsignedInteger(STOP_INDEX));
             PebbleKit.sendAckToPebble(context, transactionId);
+            onStopSelected(context, data.getUnsignedInteger(STOP_INDEX));
         } else {
             PebbleKit.sendNackToPebble(context, transactionId);
         }
@@ -91,9 +91,15 @@ public class DataReceiver extends PebbleKit.PebbleDataReceiver {
 
         savedStops.addUint32(MESSAGE_TYPE, 0);
         savedStops.addUint32(1, stopCount);
-        savedStops.addUint32(1, 4);  // Four fields
+        savedStops.addUint32(2, 4);  // Four fields
 
+        Log.i(TAG, "Sending stop data");
         PebbleKit.sendDataToPebble(context, WATCHAPP_UUID, savedStops);
+
+        // Test code:
+//        PebbleDictionary dictionary = new PebbleDictionary();
+//        dictionary.addString(0, "Hello");
+//        PebbleKit.sendDataToPebble(context, WATCHAPP_UUID, dictionary);
     }
 
     private void onStopSelected(Context context, long stopIndex) {

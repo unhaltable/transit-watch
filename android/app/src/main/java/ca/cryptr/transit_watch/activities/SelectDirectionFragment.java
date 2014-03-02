@@ -48,6 +48,9 @@ public class SelectDirectionFragment extends SelectTransitItemFragment<Direction
 
     @Override
     protected List<Direction> getItemList() {
+        assert nbs != null;
+        assert mParent != null;
+        assert nbs.getRouteConfiguration(mParent.getRoute()) != null;
         return nbs.getRouteConfiguration(mParent.getRoute()).getDirections();
     }
 

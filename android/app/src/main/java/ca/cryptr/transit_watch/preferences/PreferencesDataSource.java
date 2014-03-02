@@ -40,6 +40,9 @@ public class PreferencesDataSource {
     };
 
     private static final String[] STOPS_COLUMNS = new String[] {
+            PreferencesSQLiteHelper.STOPS.TABLE + "." +
+            PreferencesSQLiteHelper.STOPS.COLUMN_AUTO_ID + " AS " +
+            PreferencesSQLiteHelper.STOPS.COLUMN_AUTO_ID,
             PreferencesSQLiteHelper.STOPS.COLUMN_DIRECTION,
             PreferencesSQLiteHelper.STOPS.COLUMN_TAG,
             PreferencesSQLiteHelper.STOPS.COLUMN_TITLE,
@@ -144,14 +147,7 @@ public class PreferencesDataSource {
         }
     }
 
-    /**
-     * Retrieve all ca.cryptr.transit_watch.stops from the database.
-     *
-     * @return all ca.cryptr.transit_watch.stops from the database
-     */
-    public List<Direction> getStops() {
-        List<Direction> directions = new ArrayList<Direction>();
-
+    public Cursor getStopsCursor() {
         SQLiteQueryBuilder queryBuilder = new SQLiteQueryBuilder();
         queryBuilder.setTables(PreferencesSQLiteHelper.AGENCIES.TABLE + ", " +
                                PreferencesSQLiteHelper.ROUTES.TABLE + ", " +
@@ -165,10 +161,20 @@ public class PreferencesDataSource {
         queryBuilder.appendWhere(" AND ");
         queryBuilder.appendWhere(PreferencesSQLiteHelper.ROUTES.COLUMN_AGENCY + " = " +
                                  PreferencesSQLiteHelper.AGENCIES.COLUMN_TAG);
-        Cursor cursor = queryBuilder.query(mDatabase,
-                                           Util.concatAll(AGENCIES_COLUMNS, ROUTES_COLUMNS, DIRECTIONS_COLUMNS, STOPS_COLUMNS),
-                                           null, null, null, null,
-                                           PreferencesSQLiteHelper.DIRECTIONS.COLUMN_TAG);
+        return queryBuilder.query(mDatabase,
+                                  Util.concatAll(AGENCIES_COLUMNS, ROUTES_COLUMNS, DIRECTIONS_COLUMNS, STOPS_COLUMNS),
+                                  null, null, null, null,
+                                  PreferencesSQLiteHelper.DIRECTIONS.COLUMN_TAG);
+    }
+
+    /**
+     * Retrieve all ca.cryptr.transit_watch.stops from the database.
+     *
+     * @return all ca.cryptr.transit_watch.stops from the database
+     */
+    public List<Direction> getStops() {
+        List<Direction> directions = new ArrayList<Direction>();
+        Cursor cursor = getStopsCursor();
 
         // Keep references to the column positions of each property
         AgencyCursorColumns agencyCursorColumns = AgencyCursorColumns.fromCursor(cursor);
@@ -211,21 +217,21 @@ public class PreferencesDataSource {
         return directions;
     }
 
-    private Agency agencyFromCursor(Cursor cursor, AgencyCursorColumns agencyCursorColumns) {
+    public static Agency agencyFromCursor(Cursor cursor, AgencyCursorColumns agencyCursorColumns) {
         return new Agency(cursor.getString(agencyCursorColumns.getTagColumn()),
                           cursor.getString(agencyCursorColumns.getTitleColumn()),
                           cursor.getString(agencyCursorColumns.getShortTitleColumn()),
                           cursor.getString(agencyCursorColumns.getRegionTitleColumn()), null);
     }
 
-    private Route routeFromCursor(Cursor cursor, RouteCursorColumns routeCursorColumns, Agency agency) {
+    public static Route routeFromCursor(Cursor cursor, RouteCursorColumns routeCursorColumns, Agency agency) {
         return new Route(agency,
                          cursor.getString(routeCursorColumns.getTagColumn()),
                          cursor.getString(routeCursorColumns.getTitleColumn()),
                          cursor.getString(routeCursorColumns.getShortTitleColumn()), null);
     }
 
-    private Direction directionFromCursor(Cursor cursor, DirectionCursorColumns directionCursorColumns, Route route, List<Stop> stops) {
+    public static Direction directionFromCursor(Cursor cursor, DirectionCursorColumns directionCursorColumns, Route route, List<Stop> stops) {
         return new Direction(route,
                              cursor.getString(directionCursorColumns.getTagColumn()),
                              cursor.getString(directionCursorColumns.getTitleColumn()),
@@ -233,7 +239,7 @@ public class PreferencesDataSource {
                              stops, null);
     }
 
-    private Stop stopFromCursor(Cursor cursor, StopCursorColumns stopCursorColumns, Agency agency) {
+    public static Stop stopFromCursor(Cursor cursor, StopCursorColumns stopCursorColumns, Agency agency) {
         return new Stop(agency,
                         cursor.getString(stopCursorColumns.getTagColumn()),
                         cursor.getString(stopCursorColumns.getTitleColumn()),
@@ -243,7 +249,7 @@ public class PreferencesDataSource {
     /**
      * Specifies which columns in a cursor correspond to each property of an {@link net.sf.nextbus.publicxmlfeed.domain.Agency}
      */
-    private static class AgencyCursorColumns {
+    public static class AgencyCursorColumns {
         private final int tagColumn;
         private final int titleColumn;
         private final int shortTitleColumn;
@@ -284,7 +290,7 @@ public class PreferencesDataSource {
     /**
      * Specifies which columns in a cursor correspond to each property of an {@link net.sf.nextbus.publicxmlfeed.domain.Agency}
      */
-    private static class RouteCursorColumns {
+    public static class RouteCursorColumns {
         private final int tagColumn;
         private final int titleColumn;
         private final int shortTitleColumn;
@@ -318,12 +324,12 @@ public class PreferencesDataSource {
     /**
      * Specifies which columns in a cursor correspond to each property of an {@link net.sf.nextbus.publicxmlfeed.domain.Agency}
      */
-    private static class DirectionCursorColumns {
+    public static class DirectionCursorColumns {
         private final int tagColumn;
         private final int titleColumn;
         private final int nameColumn;
 
-        private DirectionCursorColumns(int tagColumn, int titleColumn, int nameColumn) {
+        DirectionCursorColumns(int tagColumn, int titleColumn, int nameColumn) {
             this.tagColumn = tagColumn;
             this.titleColumn = titleColumn;
             this.nameColumn = nameColumn;
@@ -352,12 +358,12 @@ public class PreferencesDataSource {
     /**
      * Specifies which columns in a cursor correspond to each property of an {@link net.sf.nextbus.publicxmlfeed.domain.Stop}
      */
-    private static class StopCursorColumns {
+    public static class StopCursorColumns {
         private final int tagColumn;
         private final int titleColumn;
         private final int shortTitleColumn;
 
-        private StopCursorColumns(int tagColumn, int titleColumn, int shortTitleColumn) {
+        StopCursorColumns(int tagColumn, int titleColumn, int shortTitleColumn) {
             this.tagColumn = tagColumn;
             this.titleColumn = titleColumn;
             this.shortTitleColumn = shortTitleColumn;
@@ -381,5 +387,4 @@ public class PreferencesDataSource {
             return shortTitleColumn;
         }
     }
-
 }

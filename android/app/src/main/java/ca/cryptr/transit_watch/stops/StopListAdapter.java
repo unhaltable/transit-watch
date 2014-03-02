@@ -1,60 +1,74 @@
 package ca.cryptr.transit_watch.stops;
 
 import android.content.Context;
-import android.view.LayoutInflater;
+import android.database.Cursor;
 import android.view.View;
-import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
 import android.widget.LinearLayout;
+import android.widget.ResourceCursorAdapter;
 import android.widget.TextView;
 
-import java.util.List;
+import net.sf.nextbus.publicxmlfeed.domain.Agency;
+import net.sf.nextbus.publicxmlfeed.domain.Route;
+import net.sf.nextbus.publicxmlfeed.domain.Stop;
+
 import java.util.Random;
 
 import ca.cryptr.transit_watch.R;
+import ca.cryptr.transit_watch.preferences.PreferencesDataSource;
 
-public class StopListAdapter extends ArrayAdapter<FavStop> {
+public class StopListAdapter extends ResourceCursorAdapter {
 
-    public StopListAdapter(Context context, List<FavStop> stops) {
-        super(context, R.layout.stop_list_item, stops);
+    public StopListAdapter(Context context, Cursor c) {
+        super(context, R.layout.stop_list_item, c, false);
     }
 
     @Override
-    public long getItemId(int position) {
-        return position;
+    public Object getItem(int position) {
+        Cursor cursor = (Cursor) super.getItem(position);
+
+        // Keep references to the column positions of each property
+        PreferencesDataSource.AgencyCursorColumns agencyCursorColumns = PreferencesDataSource.AgencyCursorColumns.fromCursor(cursor);
+        PreferencesDataSource.StopCursorColumns stopCursorColumns = PreferencesDataSource.StopCursorColumns.fromCursor(cursor);
+
+        // Save the agency, routeView, direction tag for the next group of stops
+        Agency agency = PreferencesDataSource.agencyFromCursor(cursor, agencyCursorColumns);
+
+        return PreferencesDataSource.stopFromCursor(cursor, stopCursorColumns, agency);
     }
 
-    @SuppressWarnings("ConstantConditions")
     @Override
-    public View getView(int position, View view, ViewGroup viewGroup) {
-        View vi = view;
-        if (view == null)
-            vi = LayoutInflater.from(getContext()).inflate(R.layout.stop_list_item, null);
-
-        LinearLayout eta = (LinearLayout) vi.findViewById(R.id.eta);
-        TextView minutes = (TextView) vi.findViewById(R.id.minutes);
-        TextView route = (TextView) vi.findViewById(R.id.route);
-        TextView stop = (TextView) vi.findViewById(R.id.stop);
-
-        FavStop stopInfo = getItem(position);
+    public void bindView(View view, Context context, Cursor cursor) {
+        LinearLayout etaView = (LinearLayout) view.findViewById(R.id.eta);
+        TextView minutesView = (TextView) view.findViewById(R.id.minutes);
+        TextView routeView = (TextView) view.findViewById(R.id.route);
+        TextView stopView = (TextView) view.findViewById(R.id.stop);
 
         // ETA
         Random generator = new Random();
         int i = generator.nextInt(30) + 1;
 
         int eta_min = i; // get the actual eta
-        minutes.setText(String.valueOf(eta_min));
+        minutesView.setText(String.valueOf(eta_min));
         if (eta_min > 10)
-            eta.setBackgroundColor(getContext().getResources().getColor(R.color.stop_green));
+            etaView.setBackgroundColor(context.getResources().getColor(R.color.stop_green));
         else if (eta_min > 5)
-            eta.setBackgroundColor(getContext().getResources().getColor(R.color.stop_orange));
+            etaView.setBackgroundColor(context.getResources().getColor(R.color.stop_orange));
         else
-            eta.setBackgroundColor(getContext().getResources().getColor(R.color.stop_red));
+            etaView.setBackgroundColor(context.getResources().getColor(R.color.stop_red));
+
+        // Keep references to the column positions of each property
+        PreferencesDataSource.AgencyCursorColumns agencyCursorColumns = PreferencesDataSource.AgencyCursorColumns.fromCursor(cursor);
+        PreferencesDataSource.RouteCursorColumns routeCursorColumns = PreferencesDataSource.RouteCursorColumns.fromCursor(cursor);
+        PreferencesDataSource.DirectionCursorColumns directionCursorColumns = PreferencesDataSource.DirectionCursorColumns.fromCursor(cursor);
+        PreferencesDataSource.StopCursorColumns stopCursorColumns = PreferencesDataSource.StopCursorColumns.fromCursor(cursor);
+
+        // Save the agency, routeView, direction tag for the next group of stops
+        Agency agency = PreferencesDataSource.agencyFromCursor(cursor, agencyCursorColumns);
+        Route route = PreferencesDataSource.routeFromCursor(cursor, routeCursorColumns, agency);
+        Stop stop = PreferencesDataSource.stopFromCursor(cursor, stopCursorColumns, agency);
 
         // Route info
-        route.setText(String.format("%s (%s)", stopInfo.getRoute(), stopInfo.getAgency()));
-        stop.setText(stopInfo.getStop());
-
-        return vi;
+        routeView.setText(String.format("%stop (%stop)", route.getTitle(), agency.getTitle()));
+        stopView.setText(stop.getTitle());
     }
 }

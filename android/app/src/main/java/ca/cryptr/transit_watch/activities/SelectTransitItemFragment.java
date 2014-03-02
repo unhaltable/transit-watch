@@ -94,11 +94,14 @@ public abstract class SelectTransitItemFragment<T extends NextbusValueObject> ex
 
         @Override
         protected List<T> doInBackground(Void... params) {
-            List<T> itemList = getItemList();
-            if (itemList != null)
-                return itemList;
-            cancel(true);
-            return null;
+            List<T> itemList;
+            try {
+                itemList = getItemList();
+            } catch (Exception e) {
+                cancel(true);
+                return null;
+            }
+            return itemList;
         }
 
         @Override

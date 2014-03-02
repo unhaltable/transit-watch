@@ -3,6 +3,7 @@ package ca.cryptr.transit_watch.activities;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.database.Cursor;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
@@ -15,7 +16,6 @@ import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.TextView;
 
-import net.sf.nextbus.publicxmlfeed.domain.Direction;
 import net.sf.nextbus.publicxmlfeed.domain.Stop;
 import net.sf.nextbus.publicxmlfeed.impl.NextbusService;
 
@@ -28,7 +28,6 @@ import ca.cryptr.transit_watch.preferences.PreferencesDataSource;
 import ca.cryptr.transit_watch.stops.FavStop;
 import ca.cryptr.transit_watch.stops.StopListAdapter;
 import ca.cryptr.transit_watch.util.AndroidNextbusService;
-import ca.cryptr.transit_watch.util.FileIO;
 import ca.cryptr.transit_watch.weather.LocationChecker;
 import ca.cryptr.transit_watch.weather.SiteListParser;
 import ca.cryptr.transit_watch.weather.Weather;
@@ -37,7 +36,6 @@ public class StopsActivity extends Activity {
 
     private int LIMIT = 10;
 
-    private static FileIO data;
     public static final String FILENAME = "/data.json";
     private static String FILEPATH;
 
@@ -53,7 +51,7 @@ public class StopsActivity extends Activity {
     private StopListAdapter adapter;
     private List<Stop> stops;
 
-    private static ArrayList<FavStop> favStops;
+    private List<FavStop> favStops;
 
     protected Object mActionMode;
     public int selectedItem = -1;
@@ -75,15 +73,6 @@ public class StopsActivity extends Activity {
         mNextbusService = new AndroidNextbusService();
         mPreferencesDataSource = new PreferencesDataSource(this);
         mPreferencesDataSource.open();
-
-//        // Load saved data
-//        FILEPATH = new File(this.getFilesDir(), FILENAME).getPath();
-//        try {
-//            data = new FileIO(this.getFilesDir(), FILENAME);
-//            data.save(FILEPATH);
-//        } catch (IOException e) {
-//            Toast.makeText(this, R.string.file_error, Toast.LENGTH_SHORT).show();
-//        }
 
         // Fav stops
         setupFavStopsList();
@@ -135,34 +124,11 @@ public class StopsActivity extends Activity {
         return mNextbusService;
     }
 
-    public static ArrayList<FavStop> getFavStops() {
-        return favStops;
-    }
-
-    public static void setFavStops(ArrayList<FavStop> favStops) {
-        StopsActivity.favStops = favStops;
-    }
-
-    public static void addFavStop(FavStop stop) {
-        favStops.add(stop);
-
-        try {
-            data.save(FILEPATH);
-        } catch (IOException e) {
-
-        }
-    }
-
     private void removeStop() {
-        mPreferencesDataSource.deleteStop(stops.get(selectedItem));
-        setupFavStopsList();
+        mPreferencesDataSource.deleteStop((Stop) adapter.getItem(selectedItem));
 
-//        try {
-//            data.save(FILEPATH);
-//        } catch (IOException e) {
-//            Toast.makeText(this,
-//                    R.string.file_error, Toast.LENGTH_SHORT).show();
-//        }
+        // Refresh adapter
+        adapter.changeCursor(mPreferencesDataSource.getStopsCursor());
     }
 
     public void setupWeather() {
@@ -192,15 +158,8 @@ public class StopsActivity extends Activity {
         // Display a message if there's no stops saved
         listStops.setEmptyView(findViewById(R.id.empty_list));
 
-        for (Direction d : mPreferencesDataSource.getStops())
-            for (Stop s : d.getStops()) {
-                stops.add(s);
-                favStops.add(new FavStop(s.getAgency().getTitle(),
-                                     (d.getRoute().getShortTitle() != null ? d.getRoute().getShortTitle() : d.getRoute().getTitle()),
-                                     (s.getShortTitle()) != null ? s.getShortTitle() : s.getTitle()));
-            }
-
-        adapter = new StopListAdapter(this, favStops);
+        Cursor cursor = mPreferencesDataSource.getStopsCursor();
+        adapter = new StopListAdapter(this, cursor);
         listStops.setAdapter(adapter);
 
         listStops.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
@@ -248,4 +207,5 @@ public class StopsActivity extends Activity {
             selectedItem = -1;
         }
     };
+
 }

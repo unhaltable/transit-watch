@@ -3,22 +3,22 @@
 #define NUM_MENU_SECTIONS 1 // Some arbitrary number....
 #define NUM_FIRST_MENU_ITEMS 10
 
-static Window *window;
-static Window *menu_window;
-static Window *stop_window
+Window *window;
+Window *menu_window;
+Window *stop_window;
 
-static BitmapLayer *image_layer;
-static GBitmap *image;
+BitmapLayer *image_layer;
+GBitmap *image;
 
 // Begin SimpleMenuLayer
-static SimpleMenuLayer *main_menu;
-static SimpleMenuSection menu_sections[NUM_MENU_SECTIONS];
-static SimpleMenuItem first_menu_items[NUM_FIRST_MENU_ITEMS];
+SimpleMenuLayer *main_menu;
+SimpleMenuSection menu_sections[NUM_MENU_SECTIONS];
+SimpleMenuItem first_menu_items[NUM_FIRST_MENU_ITEMS];
 
-static TextLayer *stop_title;
-static TextLayer *stop_subtitle;
-static TextLayer *stop_weather;
-static TextLayer *stop_ETA;
+TextLayer *stop_title;
+TextLayer *stop_subtitle;
+TextLayer *stop_weather;
+TextLayer *stop_ETA;
 
 int i; // Dummy variable so I can actually compile the thing...
 bool on_splash;
@@ -103,46 +103,45 @@ void out_failed_handler(DictionaryIterator *failed, AppMessageResult reason, voi
 void in_dropped_handler(AppMessageResult reason, void *context){}
 
 // incoming data received
-void in_received_handler(DictionaryIterator *received, void *context)
-{
+void in_received_handler(DictionaryIterator *received, void *context) {
+    APP_LOG(APP_LOG_LEVEL_DEBUG, "Received message from Android.");
+
     Tuple *tuple = dict_find(received, MESSAGE_TYPE);
-    if (!tuple)
-    {
+    if (!tuple) {
         APP_LOG(APP_LOG_LEVEL_DEBUG, "Missing message type!");
         return;
     }
 
     unsigned int message_type = tuple->value->uint32;
-    switch(message_type)
-    {
-    case MESSAGE_STOPS_DATA:
-        initialize_stops_data(received, context);
-        break;
-    default:
-        APP_LOG(APP_LOG_LEVEL_DEBUG, "Unknown message type %d", message_type);
+    switch (message_type) {
+        case MESSAGE_STOPS_DATA:
+            initialize_stops_data(received, context);
+            break;
+        default:
+            APP_LOG(APP_LOG_LEVEL_DEBUG, "Unknown message type %d", message_type);
     }
 }
 
-static void menu_select_callback(int index, void *context) {
+void menu_select_callback(int index, void *context) {
     // TODO
     // This will open up each individual stop's windows...
     first_menu_items[index].subtitle = "Nope.";
     layer_mark_dirty(simple_menu_layer_get_layer(main_menu));
 }
 
-static void up_click_handler(ClickRecognizerRef recognizer, void *context) {
+void up_click_handler(ClickRecognizerRef recognizer, void *context) {
     // TODO
     i = 0;
 }
 
-static void down_click_handler(ClickRecognizerRef recognizer, void *context) {
+void down_click_handler(ClickRecognizerRef recognizer, void *context) {
     // TODO
     i = 0;
 }
 
-static void select_click_handler(ClickRecognizerRef recognizer, void *context) {
+void select_click_handler(ClickRecognizerRef recognizer, void *context) {
     // TODO
-    if(on_splash) {
+    if (on_splash) {
         on_splash = false;
         window_stack_push(menu_window, true);
         APP_LOG(APP_LOG_LEVEL_DEBUG, "Just pushed a window!");
@@ -153,13 +152,13 @@ static void select_click_handler(ClickRecognizerRef recognizer, void *context) {
 
 }
 
-static void config_provider(void *context) { // gets the proper click handlers for each button
+void config_provider(void *context) { // gets the proper click handlers for each button
     window_single_click_subscribe(BUTTON_ID_UP, up_click_handler);
     window_single_click_subscribe(BUTTON_ID_DOWN, down_click_handler);
     window_single_click_subscribe(BUTTON_ID_SELECT, select_click_handler);
-    }
+}
 
-static void window_load(Window *window) {
+void window_load(Window *window) {
 
     int num_a_items = 0;
 
@@ -257,6 +256,7 @@ void handle_init(void)
     Tuplet value = TupletInteger(MESSAGE_TYPE, 1);
     dict_write_tuplet(iter, &value);
     app_message_outbox_send();
+    APP_LOG(APP_LOG_LEVEL_DEBUG, "Sent message to Android");
     
     // Creation of Main Menu
     menu_window = window_create();
