@@ -59,4 +59,8 @@ public class SettingsActivity extends Activity {
             return rootView;
         }
     }
+
+    public void getPebble(View view) {
+
+    }
 }

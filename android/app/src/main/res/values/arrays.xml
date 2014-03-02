@@ -6,4 +6,14 @@
         <item>MiWay</item>
         <item>Mississauga, Canada</item>
     </string-array>
+    <string-array name="devs">
+        <item>Spencer Elliott</item>
+        <item>Twitter: @spe_</item>
+        <item>Eugene Cheung</item>
+        <item>Twitter: @arkon</item>
+        <item>Nicholas Goh</item>
+        <item>Twitter: @NickGoh_</item>
+        <item>Henry Liu</item>
+        <item>GitHub: hxhl65</item>
+    </string-array>
 </resources>
