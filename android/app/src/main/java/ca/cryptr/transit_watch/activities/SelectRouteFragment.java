@@ -74,7 +74,6 @@ public class SelectRouteFragment extends SelectTransitItemFragment<Route> {
         menu.findItem(R.id.action_add_previous_transit).setVisible(true);
         menu.findItem(R.id.action_add_previous_route).setVisible(false);
         menu.findItem(R.id.action_add_previous_dir).setVisible(false);
-        menu.findItem(R.id.action_add_done).setVisible(false);
     }
 
     @Override

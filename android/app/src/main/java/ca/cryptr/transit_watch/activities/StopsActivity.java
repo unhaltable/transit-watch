@@ -146,11 +146,11 @@ public class StopsActivity extends Activity {
     public static void addFavStop(FavStop stop) {
         favStops.add(stop);
 
-        try {
-            data.save(FILEPATH);
-        } catch (IOException e) {
-
-        }
+//        try {
+//            data.save(FILEPATH);
+//        } catch (IOException e) {
+//
+//        }
     }
 
     private void removeStop() {
@@ -221,7 +221,6 @@ public class StopsActivity extends Activity {
     }
 
     private ActionMode.Callback mActionModeCallback = new ActionMode.Callback() {
-
         public boolean onCreateActionMode(ActionMode mode, Menu menu) {
             MenuInflater inflater = mode.getMenuInflater();
             inflater.inflate(R.menu.context, menu);

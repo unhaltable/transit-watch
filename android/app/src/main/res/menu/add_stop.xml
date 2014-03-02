@@ -22,9 +22,4 @@
         android:showAsAction="always|withText"
         android:title="@string/action_previous" />
 
-    <item android:id="@+id/action_add_done"
-        android:icon="@drawable/ic_action_accept"
-        android:showAsAction="always|withText"
-        android:title="@string/action_done" />
-
 </menu>

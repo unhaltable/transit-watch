@@ -1,17 +1,15 @@
 package ca.cryptr.transit_watch.util;
 
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
+
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
-import java.util.List;
 import java.util.Scanner;
-import java.util.TreeMap;
-
-import com.google.gson.Gson;
-import com.google.gson.reflect.TypeToken;
 
 import ca.cryptr.transit_watch.activities.StopsActivity;
 import ca.cryptr.transit_watch.stops.FavStop;
@@ -59,5 +57,4 @@ public class FileIO {
         out.flush();
         out.close();
     }
-
 }

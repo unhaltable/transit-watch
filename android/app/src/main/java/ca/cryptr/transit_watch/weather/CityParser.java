@@ -3,6 +3,9 @@ package ca.cryptr.transit_watch.weather;
 import android.os.AsyncTask;
 import android.widget.TextView;
 
+import org.w3c.dom.Document;
+import org.xml.sax.SAXException;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.MalformedURLException;
@@ -15,9 +18,6 @@ import javax.xml.xpath.XPath;
 import javax.xml.xpath.XPathConstants;
 import javax.xml.xpath.XPathExpressionException;
 import javax.xml.xpath.XPathFactory;
-
-import org.w3c.dom.Document;
-import org.xml.sax.SAXException;
 
 import ca.cryptr.transit_watch.activities.StopsActivity;
 
