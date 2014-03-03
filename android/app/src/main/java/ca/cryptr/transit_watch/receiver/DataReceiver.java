@@ -20,6 +20,9 @@ public class DataReceiver extends PebbleKit.PebbleDataReceiver {
 
     public static final int MESSAGE_TYPE = 0;
 
+    public static final int MESSAGE_STOPS_METADATA = 0;
+    public static final int MESSAGE_STOP_DATA = 1;
+
     public static final long APP_OPENED = 1;
     public static final long STOP_SELECTED = 2;
 
@@ -55,21 +58,31 @@ public class DataReceiver extends PebbleKit.PebbleDataReceiver {
     }
 
     /**
-     * Send saved stop data to watchapp. In the sent dictionary:
+     * Send saved stop data to watchapp. First dictionary sent:
      *
-     * 0: message type
-     * 1: total number of stops
-     * 2: number of data fields per stop
-     * say the number of data fields per stop is n
-     * 3 to n+3: first stop data
-     * n+4 to 2n+4: second stop data
-     * etc
+     * 0: message type: MESSAGE_STOPS_METADATA == 0
+     * 1: total number of stops n
+     * 2: number of data fields per stop (currently 4)
+     *
+     * Next n dictionaries:
+     * 0: message type: MESSAGE_STOP_DATA == 1
+     * 1: route tag
+     * 2: route title
+     * 3: direction name
+     * 4: stop title
      */
     private void onAppOpened(Context context) {
-        // Sync saved ca.cryptr.transit_watch.stops
-        PebbleDictionary savedStops = new PebbleDictionary();
+        // Sync saved stops
+        PebbleDictionary first = new PebbleDictionary();
         int stopCount = 0;
-        int dictionaryIndex = 3;
+        for (Direction direction : mPreferencesDataSource.getStops())
+            stopCount += direction.getStops().size();
+        first.addUint32(MESSAGE_TYPE, MESSAGE_STOPS_METADATA);
+        first.addUint32(1, stopCount);
+        first.addUint32(2, 4);
+
+        PebbleKit.sendDataToPebble(context, WATCHAPP_UUID, first);
+
         for (Direction direction : mPreferencesDataSource.getStops()) {
             Route route = direction.getRoute();
 
@@ -78,30 +91,26 @@ public class DataReceiver extends PebbleKit.PebbleDataReceiver {
             String directionName = direction.getName();
 
             for (Stop stop : direction.getStops()) {
+                PebbleDictionary savedStop = new PebbleDictionary();
+                savedStop.addUint32(0, MESSAGE_STOP_DATA);
+
                 String stopTitle = stop.getShortTitle() != null ? stop.getShortTitle() : stop.getTitle();
 
-                savedStops.addString(dictionaryIndex++, routeTag);
-                savedStops.addString(dictionaryIndex++, routeTitle);
-                savedStops.addString(dictionaryIndex++, directionName);
-                savedStops.addString(dictionaryIndex++, stopTitle);
+                savedStop.addString(1, routeTag);
+                savedStop.addString(2, routeTitle);
+                savedStop.addString(3, directionName);
+                savedStop.addString(4, stopTitle);
 
-                stopCount++;
+                Log.i(TAG, "Sending data for stop: " + stopTitle);
+
+                try {
+                    Thread.sleep(1000L);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+                PebbleKit.sendDataToPebble(context, WATCHAPP_UUID, savedStop);
             }
         }
-
-        savedStops.addUint32(0, 0); // 0 is MESSAGE_STOP_DATA in app.c
-        savedStops.addUint32(1, stopCount);
-        savedStops.addUint32(2, 4);  // Four fields
-
-        Log.i(TAG, "Sending stop data: ");
-        PebbleKit.sendDataToPebble(context, WATCHAPP_UUID, savedStops);
-
-        // Test code:
-        PebbleDictionary dictionary = new PebbleDictionary();
-        dictionary.addString(0, "Hello");
-        dictionary.addString(2, "Goodbye");
-        dictionary.addString(1, "Blah");
-//        PebbleKit.sendDataToPebble(context, WATCHAPP_UUID, dictionary);
     }
 
     private void onStopSelected(Context context, long stopIndex) {
