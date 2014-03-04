@@ -9,14 +9,10 @@ import android.widget.ResourceCursorAdapter;
 import android.widget.TextView;
 
 import net.sf.nextbus.publicxmlfeed.domain.Agency;
-import net.sf.nextbus.publicxmlfeed.domain.Direction;
-import net.sf.nextbus.publicxmlfeed.domain.Prediction;
 import net.sf.nextbus.publicxmlfeed.domain.PredictionGroup;
 import net.sf.nextbus.publicxmlfeed.domain.Route;
-import net.sf.nextbus.publicxmlfeed.domain.Schedule;
 import net.sf.nextbus.publicxmlfeed.domain.Stop;
 
-import java.util.List;
 import java.util.Random;
 
 import ca.cryptr.transit_watch.R;

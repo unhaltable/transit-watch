@@ -84,7 +84,6 @@ public abstract class NextbusListAdapter<T> extends BaseAdapter implements Filte
 
     private class ArrayFilter extends Filter {
 
-        private boolean filtered = false;
         @Override
         protected FilterResults performFiltering(CharSequence constraint) {
             FilterResults results = new FilterResults();
@@ -96,8 +95,6 @@ public abstract class NextbusListAdapter<T> extends BaseAdapter implements Filte
             }
 
             if (constraint == null || constraint.length() == 0) {
-                filtered = false;
-
                 ArrayList<T> list;
                 synchronized (mLock) {
                     list = new ArrayList<T>(itemsCopy);
@@ -105,8 +102,6 @@ public abstract class NextbusListAdapter<T> extends BaseAdapter implements Filte
                 results.values = list;
                 results.count = list.size();
             } else {
-                filtered = true;
-
                 String constraintText = constraint.toString().toLowerCase();
 
                 ArrayList<T> values;
@@ -114,12 +109,9 @@ public abstract class NextbusListAdapter<T> extends BaseAdapter implements Filte
                     values = new ArrayList<T>(itemsCopy);
                 }
 
-                final int count = values.size();
                 final ArrayList<T> newValues = new ArrayList<T>();
 
-                for (int i = 0; i < count; i++) {
-                    final T value = values.get(i);
-
+                for (T value : values) {
                     // Get the list item contents
                     String top = "", bottom = "";
 
@@ -127,8 +119,7 @@ public abstract class NextbusListAdapter<T> extends BaseAdapter implements Filte
                         top = String.format("%s%s",
                                 ((Agency) value).getTitle(),
                                 (((Agency) value).getShortTitle() != null ?
-                                        String.format(" (%s)", ((Agency) value).getShortTitle(), "") :
-                                ""));
+                                        String.format(" (%s)", ((Agency) value).getShortTitle()) : ""));
                         bottom = ((Agency) value).getRegionTitle();
                     } else if (value instanceof Route) {
                         top = ((Route) value).getTitle();
@@ -159,20 +150,12 @@ public abstract class NextbusListAdapter<T> extends BaseAdapter implements Filte
 
         @Override
         protected void publishResults(CharSequence constraint, FilterResults results) {
-            //noinspection unchecked
-            if (filtered) {
-                System.out.println("Filtered");
-                System.out.println(results.values);
-                mObjects = (List<T>) results.values;
-            } else {
-                System.out.println("Not filtered");
-                System.out.println(itemsCopy);
-                mObjects = itemsCopy;
-            }
-
             if (results.count > 0) {
+                //noinspection unchecked
+                mObjects = (List<T>) results.values;
                 notifyDataSetChanged();
             } else {
+                mObjects = itemsCopy;
                 notifyDataSetInvalidated();
             }
         }

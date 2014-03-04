@@ -20,12 +20,9 @@ import net.sf.nextbus.publicxmlfeed.domain.Stop;
 import net.sf.nextbus.publicxmlfeed.impl.NextbusService;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
 
 import ca.cryptr.transit_watch.R;
 import ca.cryptr.transit_watch.preferences.PreferencesDataSource;
-import ca.cryptr.transit_watch.stops.FavStop;
 import ca.cryptr.transit_watch.stops.StopListAdapter;
 import ca.cryptr.transit_watch.util.AndroidNextbusService;
 import ca.cryptr.transit_watch.weather.LocationChecker;
@@ -33,11 +30,6 @@ import ca.cryptr.transit_watch.weather.SiteListParser;
 import ca.cryptr.transit_watch.weather.Weather;
 
 public class StopsActivity extends Activity {
-
-    private int LIMIT = 10;
-
-    public static final String FILENAME = "/data.json";
-    private static String FILEPATH;
 
     private static final String TAG = StopsActivity.class.getSimpleName();
 
@@ -49,9 +41,6 @@ public class StopsActivity extends Activity {
 
     private ListView listStops;
     private StopListAdapter adapter;
-    private List<Stop> stops;
-
-    private List<FavStop> favStops;
 
     protected Object mActionMode;
     public int selectedItem = -1;
@@ -66,9 +55,6 @@ public class StopsActivity extends Activity {
             findViewById(R.id.empty_add).setVisibility(View.GONE);
             findViewById(R.id.add_stop).setVisibility(View.GONE);
         }
-
-        stops = new ArrayList<Stop>();
-        favStops = new ArrayList<FavStop>();
 
         mNextbusService = new AndroidNextbusService();
         mPreferencesDataSource = new PreferencesDataSource(this);

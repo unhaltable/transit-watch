@@ -6,8 +6,6 @@ import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
@@ -116,7 +114,7 @@ public abstract class SelectTransitItemFragment<T extends NextbusValueObject> ex
 
         @Override
         protected void onCancelled() {
-            Toast.makeText(getActivity(), "Could not load data.", Toast.LENGTH_SHORT).show();
+            Toast.makeText(getActivity(), R.string.data_fail, Toast.LENGTH_SHORT).show();
         }
     }
 }

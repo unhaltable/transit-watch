@@ -24,11 +24,13 @@
 
         <activity
             android:name=".activities.SettingsActivity"
+            android:configChanges="keyboardHidden|orientation|screenSize"
             android:label="@string/title_activity_settings"
             android:parentActivityName=".activities.StopsActivity"/>
 
         <activity
             android:name=".activities.SelectStopActivity"
+            android:configChanges="keyboardHidden|orientation|screenSize"
             android:label="@string/title_activity_add_transit"/>
 
         <receiver
