@@ -9,6 +9,7 @@ import android.widget.ResourceCursorAdapter;
 import android.widget.TextView;
 
 import net.sf.nextbus.publicxmlfeed.domain.Agency;
+import net.sf.nextbus.publicxmlfeed.domain.Direction;
 import net.sf.nextbus.publicxmlfeed.domain.Prediction;
 import net.sf.nextbus.publicxmlfeed.domain.PredictionGroup;
 import net.sf.nextbus.publicxmlfeed.domain.Route;
@@ -34,6 +35,7 @@ public class StopListAdapter extends ResourceCursorAdapter {
     private Stop stop;
 
     private PredictionGroup predictions;
+    private int eta;
 
     public StopListAdapter(Context context, Cursor c) {
         super(context, R.layout.stop_list_item, c, false);
@@ -94,22 +96,22 @@ public class StopListAdapter extends ResourceCursorAdapter {
     protected class GetSchedule extends AsyncTask<Void, Void, PredictionGroup> {
         @Override
         protected PredictionGroup doInBackground(Void... params) {
-            try {
-                predictions = StopsActivity.getNextbusService().getPredictions(route, stop);
-            } catch(Exception e) {
-                System.out.println("ERROR");
-            }
+            predictions = StopsActivity.getNextbusService().getPredictions(route, stop);
             return predictions;
         }
-
         @Override
         protected void onPostExecute(PredictionGroup items) {
-            System.out.println(predictions);
+            try {
+//                System.out.println(predictions.getDirections().get(0).getPredictions().get(0).getPredictedArrivalOrDepartureMinutes());
+//                System.out.println(predictions.getDirections());
+            } catch(Exception e) {
+                e.printStackTrace();
+                System.out.println("ERROR");
+            }
 
 //            minutesView.setText(String.valueOf(eta_min));
-//            if (eta_min > 10)
+//            if (eta > 10)
 //                etaView.setBackgroundColor(context.getResources().getColor(R.color.stop_green));
-//            else if (eta_min > 5)
 //                etaView.setBackgroundColor(context.getResources().getColor(R.color.stop_orange));
 //            else
 //                etaView.setBackgroundColor(context.getResources().getColor(R.color.stop_red));

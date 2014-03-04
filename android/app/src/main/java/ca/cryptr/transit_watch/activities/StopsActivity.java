@@ -143,6 +143,7 @@ public class StopsActivity extends Activity {
             new SiteListParser(city, temperature, summary).execute();
         } catch (IOException e) {
             city.setText(R.string.location_error);
+            temperature.setVisibility(View.GONE);
             summary.setText(R.string.location_error_check);
         }
     }

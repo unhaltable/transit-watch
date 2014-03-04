@@ -7,19 +7,4 @@
         android:showAsAction="always|withText"
         android:title="@string/action_cancel" />
 
-    <item android:id="@+id/action_add_previous_transit"
-        android:icon="@drawable/ic_action_previous_item"
-        android:showAsAction="always|withText"
-        android:title="@string/action_previous" />
-
-    <item android:id="@+id/action_add_previous_route"
-        android:icon="@drawable/ic_action_previous_item"
-        android:showAsAction="always|withText"
-        android:title="@string/action_previous" />
-
-    <item android:id="@+id/action_add_previous_dir"
-        android:icon="@drawable/ic_action_previous_item"
-        android:showAsAction="always|withText"
-        android:title="@string/action_previous" />
-
 </menu>

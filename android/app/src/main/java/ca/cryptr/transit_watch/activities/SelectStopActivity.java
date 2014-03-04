@@ -46,30 +46,30 @@ public class SelectStopActivity extends Activity {
         FragmentTransaction ft = getFragmentManager().beginTransaction();
 
         switch (item.getItemId()) {
-            case android.R.id.home:
-                this.finish();
-                return true;
+//            case android.R.id.home:
+//                this.finish();
+//                return true;
             case R.id.action_add_cancel:
                 this.finish();
                 return true;
-            case R.id.action_add_previous_transit:
-                SelectAgencyFragment prevTransit = new SelectAgencyFragment();
-                ft.replace(R.id.fragment_add, prevTransit);
-                ft.addToBackStack(null);
-                ft.commit();
-                return true;
-            case R.id.action_add_previous_route:
-                SelectRouteFragment prevRoute = new SelectRouteFragment();
-                ft.replace(R.id.fragment_add, prevRoute);
-                ft.addToBackStack(null);
-                ft.commit();
-                return true;
-            case R.id.action_add_previous_dir:
-                SelectDirectionFragment prevDir = new SelectDirectionFragment();
-                ft.replace(R.id.fragment_add, prevDir);
-                ft.addToBackStack(null);
-                ft.commit();
-                return true;
+//            case R.id.action_add_previous_transit:
+//                SelectAgencyFragment prevTransit = new SelectAgencyFragment();
+//                ft.replace(R.id.fragment_add, prevTransit);
+//                ft.addToBackStack(null);
+//                ft.commit();
+//                return true;
+//            case R.id.action_add_previous_route:
+//                SelectRouteFragment prevRoute = new SelectRouteFragment();
+//                ft.replace(R.id.fragment_add, prevRoute);
+//                ft.addToBackStack(null);
+//                ft.commit();
+//                return true;
+//            case R.id.action_add_previous_dir:
+//                SelectDirectionFragment prevDir = new SelectDirectionFragment();
+//                ft.replace(R.id.fragment_add, prevDir);
+//                ft.addToBackStack(null);
+//                ft.commit();
+//                return true;
             default:
                 return super.onOptionsItemSelected(item);
         }

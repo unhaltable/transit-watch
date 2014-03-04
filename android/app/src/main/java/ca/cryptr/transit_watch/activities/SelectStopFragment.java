@@ -66,14 +66,6 @@ public class SelectStopFragment extends SelectTransitItemFragment<Stop> {
     }
 
     @Override
-    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        menu.findItem(R.id.action_add_cancel).setVisible(false);
-        menu.findItem(R.id.action_add_previous_transit).setVisible(false);
-        menu.findItem(R.id.action_add_previous_route).setVisible(false);
-        menu.findItem(R.id.action_add_previous_dir).setVisible(true);
-    }
-
-    @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
         Stop s = (Stop) getListView().getItemAtPosition(position);
 

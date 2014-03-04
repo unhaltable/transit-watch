@@ -13,7 +13,7 @@
     <string name="location_error_check">Please check your locations settings</string>
 
     <!-- Saved stops -->
-    <string name="weather">Weather forecast</string>
+    <string name="weather">Loading your weather forecast...</string>
     <string name="fav_stops">Favourite stops</string>
     <string name="add_stop">ADD</string>
     <string name="empty_stops_list">Your favourite stops will show up here</string>
@@ -27,7 +27,6 @@
 
     <!-- Add route -->
     <string name="title_activity_add_route">Choose a route</string>
-    <string name="action_previous">Back</string>
     <string name="filter_routes">Filter routes</string>
 
     <!-- Add direction -->

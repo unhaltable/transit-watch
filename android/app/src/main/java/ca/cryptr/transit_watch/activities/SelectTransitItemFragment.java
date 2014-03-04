@@ -6,6 +6,8 @@ import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
@@ -59,6 +61,11 @@ public abstract class SelectTransitItemFragment<T extends NextbusValueObject> ex
 
         return rootView;
     }
+
+//    @Override
+//    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+//        menu.findItem(R.id.action_add_cancel).setVisible(true);
+//    }
 
     private void setupList(View rootView) {
         itemList = (ListView) rootView.findViewById(android.R.id.list);

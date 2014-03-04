@@ -14,7 +14,7 @@
 
         <activity
             android:name=".activities.StopsActivity"
-            android:configChanges="orientation|screenSize"
+            android:configChanges="keyboardHidden|orientation|screenSize"
             android:label="@string/app_name">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -24,15 +24,12 @@
 
         <activity
             android:name=".activities.SettingsActivity"
-            android:configChanges="orientation|screenSize"
             android:label="@string/title_activity_settings"
             android:parentActivityName=".activities.StopsActivity"/>
 
         <activity
             android:name=".activities.SelectStopActivity"
-            android:configChanges="orientation|screenSize"
-            android:label="@string/title_activity_add_transit"
-            android:parentActivityName=".activities.StopsActivity"/>
+            android:label="@string/title_activity_add_transit"/>
 
         <receiver
             android:name=".receiver.DataReceiver"

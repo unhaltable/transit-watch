@@ -61,14 +61,6 @@ public class SelectRouteFragment extends SelectTransitItemFragment<Route> {
     }
 
     @Override
-    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        menu.findItem(R.id.action_add_cancel).setVisible(false);
-        menu.findItem(R.id.action_add_previous_transit).setVisible(true);
-        menu.findItem(R.id.action_add_previous_route).setVisible(false);
-        menu.findItem(R.id.action_add_previous_dir).setVisible(false);
-    }
-
-    @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
         // Set the route name
         Route r = (Route) getListView().getItemAtPosition(position);

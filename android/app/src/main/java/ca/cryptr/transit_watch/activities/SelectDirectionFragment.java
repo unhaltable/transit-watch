@@ -60,14 +60,6 @@ public class SelectDirectionFragment extends SelectTransitItemFragment<Direction
     }
 
     @Override
-    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        menu.findItem(R.id.action_add_cancel).setVisible(false);
-        menu.findItem(R.id.action_add_previous_transit).setVisible(false);
-        menu.findItem(R.id.action_add_previous_route).setVisible(true);
-        menu.findItem(R.id.action_add_previous_dir).setVisible(false);
-    }
-
-    @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
         // Set the direction
         Direction d = (Direction) getListView().getItemAtPosition(position);
