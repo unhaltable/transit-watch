@@ -24,6 +24,9 @@ static Layer *raw_layer;
 int i; // Dummy variable so I can actually compile the thing...
 bool on_splash;
 
+int i;
+int stops_expected;
+
 // stops_data[i][j] is the j-th field of the i-th stop
 char*** stops_data = NULL;
 unsigned int num_stops = 0, num_fields_per_stop = 0;
@@ -31,15 +34,17 @@ unsigned int num_stops = 0, num_fields_per_stop = 0;
 // Possible message types
 #define MESSAGE_TYPE 0
 enum {
-    MESSAGE_STOPS_DATA
+    MESSAGE_STOPS_METADATA,
+    MESSAGE_STOP_DATA
 };
 
 // Data fields for stops data
 enum {
     NUM_STOPS = 1,
-    NUM_FIELDS_PER_STOP,
-    IDX_BEGIN_STOPS_DATA
+    NUM_FIELDS_PER_STOP = 2
 };
+
+unsigned int IDX_BEGIN_STOPS_DATA = 1;
 
 // Data fields per stop
 enum {
@@ -69,55 +74,53 @@ void destroy_stops_data()
 
 void initialize_stops_data(DictionaryIterator *received, void *context)
 {
-    destroy_stops_data();
+    // destroy_stops_data();
 
-    // Get the number of stops we're receiving
-    Tuple *tuple = dict_find(received, NUM_STOPS);
-    if (tuple)
-        num_stops = tuple->value->uint32;
-    else
-        num_stops = 0;
+    // // Get the number of stops we're receiving
+    // Tuple *tuple = dict_find(received, NUM_STOPS);
+    // if (tuple)
+    //     num_stops = tuple->value->uint32;
+    // else
+    //     num_stops = 0;
 
-    // Get the number of data fields per stop
-    tuple = dict_find(received, NUM_FIELDS_PER_STOP);
-    if (tuple)
-        num_fields_per_stop = tuple->value->uint32;
-    else
-        num_fields_per_stop = 0;
+    // // Get the number of data fields per stop
+    // tuple = dict_find(received, NUM_FIELDS_PER_STOP);
+    // if (tuple)
+    //     num_fields_per_stop = tuple->value->uint32;
+    // else
+    //     num_fields_per_stop = 0;
 
-    if (num_stops == 0 || num_fields_per_stop == 0)
-    {
-        APP_LOG(APP_LOG_LEVEL_DEBUG, "Malformed: NUM_STOPS: %d, NUM_FIELDS_PER_STOP: %d",
-                num_stops, num_fields_per_stop);
-        return;
-    }
+    // if (num_stops == 0 || num_fields_per_stop == 0)
+    // {
+    //     APP_LOG(APP_LOG_LEVEL_DEBUG, "Malformed: NUM_STOPS: %d, NUM_FIELDS_PER_STOP: %d",
+    //             num_stops, num_fields_per_stop);
+    //     return;
+    // }
 
-    // Allocate stops_data according to these sizes
-    stops_data = (char***)malloc(num_stops * sizeof(char**));
-    APP_LOG(APP_LOG_LEVEL_DEBUG, "Expecting %d number of stops with %d fields per stop...",
-            num_stops, num_fields_per_stop);
+    // // Allocate stops_data according to these sizes
+    // stops_data = (char***) malloc(num_stops * sizeof(char**));
+    // APP_LOG(APP_LOG_LEVEL_DEBUG, "Expecting %d number of stops with %d fields per stop...",
+    //         num_stops, num_fields_per_stop);
     
-    for (unsigned int i = 0; i < num_stops; i++)
-    {
-        stops_data[i] = (char**)malloc(num_fields_per_stop * sizeof(char*));
-        for (unsigned int j = 0; j < num_fields_per_stop; j++)
-        {
-            tuple = dict_find(received, i*num_fields_per_stop + j + IDX_BEGIN_STOPS_DATA);
-            if (tuple)
-            {
-                char* data_str = tuple->value->cstring;
-                stops_data[i][j] = (char*)malloc((strlen(data_str)+1) * sizeof(char));
-                strcpy(stops_data[i][j], data_str);
+    // for (unsigned int i = 0; i < num_stops; i++)
+    // {
+    //     stops_data[i] = (char**)malloc(num_fields_per_stop * sizeof(char*));
+    //     for (unsigned int j = 0; j < num_fields_per_stop; j++)
+    //     {
+    //         tuple = dict_find(received, i*num_fields_per_stop + j + IDX_BEGIN_STOPS_DATA);
+    //         if (tuple)
+    //         {
+    //             char* data_str = tuple->value->cstring;
+    //             stops_data[i][j] = (char*)malloc((strlen(data_str)+1) * sizeof(char));
+    //             strcpy(stops_data[i][j], data_str);
 
-                APP_LOG(APP_LOG_LEVEL_DEBUG, "Stops data (stop %d, field %d): %s",
-                        i, j, stops_data[i][j]);
-            }
-            else
-                APP_LOG(APP_LOG_LEVEL_DEBUG, "Missing data (stop %d, field %d)!", i, j);
-        }
-    }
-
-    first_menu_items = malloc(num_stops * sizeof(SimpleMenuItem));
+    //             APP_LOG(APP_LOG_LEVEL_DEBUG, "Stops data (stop %d, field %d): %s",
+    //                     i, j, stops_data[i][j]);
+    //         }
+    //         else
+    //             APP_LOG(APP_LOG_LEVEL_DEBUG, "Missing data (stop %d, field %d)!", i, j);
+    //     }
+    // }
 }
 
 char *translate_error(AppMessageResult result) {
@@ -163,16 +166,58 @@ void in_received_handler(DictionaryIterator *received, void *context)
     unsigned int message_type = tuple->value->uint32;
     switch(message_type)
     {
-    case MESSAGE_STOPS_DATA:
-        APP_LOG(APP_LOG_LEVEL_DEBUG, "Received a MESSAGE_STOPS_DATA. Syncing...");
-        initialize_stops_data(received, context);
-        if (on_splash)
-        {
-            on_splash = false;
-            window_stack_push(menu_window, true);
-            APP_LOG(APP_LOG_LEVEL_DEBUG, "Just pushed a window!");
-            window_stack_remove(window, true);
-            APP_LOG(APP_LOG_LEVEL_DEBUG, "Just removed a window!");
+    case MESSAGE_STOPS_METADATA:
+        APP_LOG(APP_LOG_LEVEL_DEBUG, "Received a MESSAGE_STOPS_METADATA. Syncing...");
+
+        // Delete existing data
+        destroy_stops_data();
+
+        i = 0;
+        // Get the number of stops we're receiving
+        Tuple *tuple = dict_find(received, NUM_STOPS);
+        stops_expected = tuple ? tuple->value->uint32 : 0;
+        // Get the number of data fields per stop
+        tuple = dict_find(received, NUM_FIELDS_PER_STOP);
+        num_fields_per_stop = tuple ? tuple->value->uint32 : 0;
+        // initialize_stops_data(received, context);
+        break;
+    case MESSAGE_STOP_DATA:
+        APP_LOG(APP_LOG_LEVEL_DEBUG, "Received a MESSAGE_STOP_DATA...");
+        if (stops_expected > 0) {
+            if (i < stops_expected)
+            {
+                // Parse received stop data
+                stops_data[i] = (char**) malloc(num_fields_per_stop * sizeof(char*));
+                for (unsigned int j = 0; j < num_fields_per_stop; j++)
+                {
+                    tuple = dict_find(received, j + IDX_BEGIN_STOPS_DATA);
+                    if (tuple)
+                    {
+                        char* data_str = tuple->value->cstring;
+                        stops_data[i][j] = (char*)malloc((strlen(data_str)+1) * sizeof(char));
+                        strcpy(stops_data[i][j], data_str);
+
+                        APP_LOG(APP_LOG_LEVEL_DEBUG, "Stops data (stop %d, field %d): %s",
+                                i, j, stops_data[i][j]);
+                    }
+                    else
+                        APP_LOG(APP_LOG_LEVEL_DEBUG, "Missing data (stop %d, field %d)!", i, j);
+                }
+                i++;
+            } else if (i == stops_expected) {
+                // Done loading stops
+                first_menu_items = malloc(num_stops * sizeof(SimpleMenuItem));
+                if (on_splash)
+                {
+                    on_splash = false;
+                    window_stack_push(menu_window, true);
+                    APP_LOG(APP_LOG_LEVEL_DEBUG, "Just pushed a window!");
+                    window_stack_remove(window, true);
+                    APP_LOG(APP_LOG_LEVEL_DEBUG, "Just removed a window!");
+                }
+            }
+        } else {
+            APP_LOG(APP_LOG_LEVEL_DEBUG, "Too many stops received.");
         }
         break;
     default:
@@ -236,7 +281,7 @@ static void window_load(Window *window)
     }
 
     menu_sections[0] = (SimpleMenuSection) {
-        .title = "Favorited Stops",
+        .title = "Favourited Stops",
         .num_items = num_stops,
         .items = first_menu_items,
     };
