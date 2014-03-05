@@ -238,10 +238,10 @@ static void menu_select_callback(int index, void *context) {
     if (stops_data && index < (int)num_stops && num_fields_per_stop > 3)
     {
         APP_LOG(APP_LOG_LEVEL_DEBUG, "Loading data for stop %d into stop_window", index);
-        text_layer_set_text(stop_title, stops_data[index][0]);
-        text_layer_set_text(stop_subtitle, stops_data[index][1]);
-        text_layer_set_text(stop_weather, stops_data[index][2]);
-        text_layer_set_text(stop_ETA, stops_data[index][3]);
+        text_layer_set_text(route_title, stops_data[index][1]);
+        text_layer_set_text(stop_title, stops_data[index][2]);
+        text_layer_set_text(stop_weather, stops_data[index][3]);
+        text_layer_set_text(stop_ETA, stops_data[index][4]);
     }
 
     // Show the window
@@ -336,16 +336,16 @@ void handle_init(void)
     Layer *stop_root = window_get_root_layer(stop_window);
     GRect stop_bounds = layer_get_frame(stop_root);
 
-    // Set stop_title
-    stop_title = text_layer_create(GRect(0, 0, stop_bounds.size.w, 28));
-    text_layer_set_text(stop_title, "5 N Avenue Rd");
-    //text_layer_set_text(stop_title, pointer to string) this is for when we implement non-dummy values
-    text_layer_set_font(stop_title, fonts_get_system_font(FONT_KEY_GOTHIC_28_BOLD));
-    text_layer_set_text_alignment(stop_title, GTextAlignmentCenter);
-    text_layer_set_overflow_mode(stop_title, GTextOverflowModeTrailingEllipsis);
-    text_layer_set_text_color(stop_title, GColorWhite);
-    text_layer_set_background_color(stop_title, GColorClear);
-    layer_add_child(stop_root, text_layer_get_layer(stop_title));
+    // Set route_title
+    route_title = text_layer_create(GRect(0, 0, stop_bounds.size.w, 28));
+    text_layer_set_text(route_title, "5 N Avenue Rd");
+    //text_layer_set_text(route_title, pointer to string) this is for when we implement non-dummy values
+    text_layer_set_font(route_title, fonts_get_system_font(FONT_KEY_GOTHIC_28_BOLD));
+    text_layer_set_text_alignment(route_title, GTextAlignmentCenter);
+    text_layer_set_overflow_mode(route_title, GTextOverflowModeTrailingEllipsis);
+    text_layer_set_text_color(route_title, GColorWhite);
+    text_layer_set_background_color(route_title, GColorClear);
+    layer_add_child(stop_root, text_layer_get_layer(route_title));
 
     // Set stop_subtitle
     stop_subtitle = text_layer_create(GRect(0, 28, stop_bounds.size.w, 48));
@@ -441,7 +441,7 @@ void handle_init(void)
             0, 3, stops_data[0][3]);
 
     first_menu_items = malloc(num_stops * sizeof(SimpleMenuItem));
-    
+
     on_splash = false;
     window_stack_push(menu_window, true);
     APP_LOG(APP_LOG_LEVEL_DEBUG, "Just pushed a window!");
