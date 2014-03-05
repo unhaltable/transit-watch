@@ -152,6 +152,7 @@ void in_dropped_handler(AppMessageResult reason, void *context)
 // incoming data received
 void in_received_handler(DictionaryIterator *received, void *context)
 {
+    APP_LOG(APP_LOG_LEVEL_DEBUG, "Received a message");
     Tuple *tuple = dict_find(received, MESSAGE_TYPE);
     if (!tuple)
     {
@@ -309,18 +310,18 @@ void handle_init(void)
     on_splash = true;
 
     // Register AppMessage handlers + initialize
-    app_message_register_inbox_received(in_received_handler);
-    app_message_register_inbox_dropped(in_dropped_handler);
-    app_message_register_outbox_sent(out_sent_handler);    
-    app_message_register_outbox_failed(out_failed_handler);
-    app_message_open(app_message_inbox_size_maximum(), app_message_outbox_size_maximum());
+    // app_message_register_inbox_received(in_received_handler);
+    // app_message_register_inbox_dropped(in_dropped_handler);
+    // app_message_register_outbox_sent(out_sent_handler);    
+    // app_message_register_outbox_failed(out_failed_handler);
+    // app_message_open(app_message_inbox_size_maximum(), app_message_outbox_size_maximum());
 
     // Send initial message to notify the app has started
-    DictionaryIterator *iter;
-    app_message_outbox_begin(&iter);
-    Tuplet value = TupletInteger(MESSAGE_TYPE, 1);
-    dict_write_tuplet(iter, &value);
-    app_message_outbox_send();
+    // DictionaryIterator *iter;
+    // app_message_outbox_begin(&iter);
+    // Tuplet value = TupletInteger(MESSAGE_TYPE, 1);
+    // dict_write_tuplet(iter, &value);
+    // app_message_outbox_send();
     
     // Creation of Main Menu
     menu_window = window_create();
@@ -388,8 +389,7 @@ void handle_init(void)
     window_stack_push(window, true);
     window_set_background_color(window, GColorBlack);
 
-    // App Logging!
-    APP_LOG(APP_LOG_LEVEL_DEBUG, "Just pushed a window!");
+    APP_LOG(APP_LOG_LEVEL_DEBUG, "Pushed black window");
 
     window_set_click_config_provider(window, config_provider);
 
@@ -404,6 +404,13 @@ void handle_init(void)
     bitmap_layer_set_bitmap(image_layer, image);
     bitmap_layer_set_alignment(image_layer, GAlignCenter);
     layer_add_child(window_layer, bitmap_layer_get_layer(image_layer));
+
+    // temp
+    on_splash = false;
+    window_stack_push(menu_window, true);
+    APP_LOG(APP_LOG_LEVEL_DEBUG, "Just pushed a window!");
+    window_stack_remove(window, true);
+    APP_LOG(APP_LOG_LEVEL_DEBUG, "Just removed a window!");
 }
 
 void handle_deinit(void)
