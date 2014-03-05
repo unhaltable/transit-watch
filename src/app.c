@@ -322,7 +322,7 @@ void handle_init(void)
     // Tuplet value = TupletInteger(MESSAGE_TYPE, 1);
     // dict_write_tuplet(iter, &value);
     // app_message_outbox_send();
-    
+
     // Creation of Main Menu
     menu_window = window_create();
     window_set_window_handlers(menu_window, (WindowHandlers) {
@@ -406,6 +406,42 @@ void handle_init(void)
     layer_add_child(window_layer, bitmap_layer_get_layer(image_layer));
 
     // temp
+
+    // create sample data
+    num_stops = 1;
+    num_fields_per_stop = 4;
+    stops_data = (char***) malloc(num_stops * sizeof(char**));
+    // Parse received stop data
+    stops_data[0] = (char**) malloc(num_fields_per_stop * sizeof(char*));
+
+    char* data_str;
+
+    data_str = "506";
+    stops_data[0][0] = (char*) malloc((strlen(data_str) + 1) * sizeof(char));
+    strcpy(stops_data[0][0], data_str);
+    APP_LOG(APP_LOG_LEVEL_DEBUG, "Stops data (stop %d, field %d): %s",
+            0, 0, stops_data[0][0]);
+
+    data_str = "506-Carlton";
+    stops_data[0][1] = (char*) malloc((strlen(data_str) + 1) * sizeof(char));
+    strcpy(stops_data[0][1], data_str);
+    APP_LOG(APP_LOG_LEVEL_DEBUG, "Stops data (stop %d, field %d): %s",
+            0, 1, stops_data[0][1]);
+
+    data_str = "East";
+    stops_data[0][2] = (char*) malloc((strlen(data_str) + 1) * sizeof(char));
+    strcpy(stops_data[0][2], data_str);
+    APP_LOG(APP_LOG_LEVEL_DEBUG, "Stops data (stop %d, field %d): %s",
+            0, 2, stops_data[0][2]);
+
+    data_str = "College St At Beverley St";
+    stops_data[0][3] = (char*) malloc((strlen(data_str) + 1) * sizeof(char));
+    strcpy(stops_data[0][3], data_str);
+    APP_LOG(APP_LOG_LEVEL_DEBUG, "Stops data (stop %d, field %d): %s",
+            0, 3, stops_data[0][3]);
+
+    first_menu_items = malloc(num_stops * sizeof(SimpleMenuItem));
+    
     on_splash = false;
     window_stack_push(menu_window, true);
     APP_LOG(APP_LOG_LEVEL_DEBUG, "Just pushed a window!");
