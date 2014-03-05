@@ -21,15 +21,11 @@ static TextLayer *stop_ETA;
 
 static Layer *raw_layer;
 
-int i; // Dummy variable so I can actually compile the thing...
 bool on_splash;
-
-int i;
-int stops_expected;
 
 // stops_data[i][j] is the j-th field of the i-th stop
 char*** stops_data = NULL;
-unsigned int num_stops = 0, num_fields_per_stop = 0;
+unsigned int i = 0, num_stops = 0, num_fields_per_stop = 0;
 
 // Possible message types
 #define MESSAGE_TYPE 0
@@ -173,18 +169,24 @@ void in_received_handler(DictionaryIterator *received, void *context)
         destroy_stops_data();
 
         i = 0;
+
         // Get the number of stops we're receiving
         Tuple *tuple = dict_find(received, NUM_STOPS);
-        stops_expected = tuple ? tuple->value->uint32 : 0;
+        num_stops = tuple ? tuple->value->uint32 : 0;
+
         // Get the number of data fields per stop
         tuple = dict_find(received, NUM_FIELDS_PER_STOP);
         num_fields_per_stop = tuple ? tuple->value->uint32 : 0;
-        // initialize_stops_data(received, context);
+
+        APP_LOG(APP_LOG_LEVEL_DEBUG, "Expecting %d number of stops with %d fields per stop...",
+        num_stops, num_fields_per_stop);
+
+        stops_data = (char***) malloc(num_stops * sizeof(char**));
         break;
     case MESSAGE_STOP_DATA:
         APP_LOG(APP_LOG_LEVEL_DEBUG, "Received a MESSAGE_STOP_DATA...");
-        if (stops_expected > 0) {
-            if (i < stops_expected)
+        if (num_stops > 0) {
+            if (i < num_stops)
             {
                 // Parse received stop data
                 stops_data[i] = (char**) malloc(num_fields_per_stop * sizeof(char*));
@@ -194,7 +196,7 @@ void in_received_handler(DictionaryIterator *received, void *context)
                     if (tuple)
                     {
                         char* data_str = tuple->value->cstring;
-                        stops_data[i][j] = (char*)malloc((strlen(data_str)+1) * sizeof(char));
+                        stops_data[i][j] = (char*) malloc((strlen(data_str) + 1) * sizeof(char));
                         strcpy(stops_data[i][j], data_str);
 
                         APP_LOG(APP_LOG_LEVEL_DEBUG, "Stops data (stop %d, field %d): %s",
@@ -204,7 +206,7 @@ void in_received_handler(DictionaryIterator *received, void *context)
                         APP_LOG(APP_LOG_LEVEL_DEBUG, "Missing data (stop %d, field %d)!", i, j);
                 }
                 i++;
-            } else if (i == stops_expected) {
+            } else if (i == num_stops) {
                 // Done loading stops
                 first_menu_items = malloc(num_stops * sizeof(SimpleMenuItem));
                 if (on_splash)
