@@ -72,16 +72,36 @@ public class DataReceiver extends PebbleKit.PebbleDataReceiver {
      * 4: stop title
      */
     private void onAppOpened(Context context) {
-        // Sync saved stops
+        // Prepare metadata dictionary
         PebbleDictionary first = new PebbleDictionary();
         int stopCount = 0;
+
+        // Count saved stops
         for (Direction direction : mPreferencesDataSource.getStops())
             stopCount += direction.getStops().size();
+
         first.addUint32(MESSAGE_TYPE, MESSAGE_STOPS_METADATA);
         first.addUint32(1, stopCount);
         first.addUint32(2, 4);
 
-        PebbleKit.sendDataToPebble(context, WATCHAPP_UUID, first);
+        // Send initial dictionary
+        PebbleKit.sendDataToPebbleWithTransactionId(context, WATCHAPP_UUID, first, MESSAGE_STOPS_METADATA);
+
+        PebbleKit.registerReceivedAckHandler(context, new PebbleKit.PebbleAckReceiver(WATCHAPP_UUID) {
+            /**
+             * Runs when the watchapp acknowledges our sent data
+             */
+            @Override
+            public void receiveAck(Context context, int transactionId) {
+                switch (transactionId) {
+                    case MESSAGE_STOPS_METADATA:
+
+                        break;
+                    case MESSAGE_STOP_DATA:
+                        break;
+                }
+            }
+        });
 
         for (Direction direction : mPreferencesDataSource.getStops()) {
             Route route = direction.getRoute();
