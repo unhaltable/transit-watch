@@ -14,8 +14,8 @@ static SimpleMenuLayer *main_menu;
 static SimpleMenuSection menu_sections[NUM_MENU_SECTIONS];
 static SimpleMenuItem* first_menu_items;
 
+static TextLayer *route_title;
 static TextLayer *stop_title;
-static TextLayer *stop_subtitle;
 static TextLayer *stop_weather;
 static TextLayer *stop_ETA;
 
@@ -44,10 +44,10 @@ unsigned int IDX_BEGIN_STOPS_DATA = 1;
 
 // Data fields per stop
 enum {
-    ROUTE_TAG,
     ROUTE_TITLE,
-    DIRECTION_NAME,
-    STOP_TITLE
+    STOP_TITLE,
+    STOP_WEATHER,
+    STOP_ETA
 };
 
 void destroy_stops_data()
@@ -152,80 +152,80 @@ void in_dropped_handler(AppMessageResult reason, void *context)
 // incoming data received
 void in_received_handler(DictionaryIterator *received, void *context)
 {
-    APP_LOG(APP_LOG_LEVEL_DEBUG, "Received a message");
-    Tuple *tuple = dict_find(received, MESSAGE_TYPE);
-    if (!tuple)
-    {
-        APP_LOG(APP_LOG_LEVEL_DEBUG, "Missing message type!");
-        return;
-    }
+    // APP_LOG(APP_LOG_LEVEL_DEBUG, "Received a message");
+    // Tuple *tuple = dict_find(received, MESSAGE_TYPE);
+    // if (!tuple)
+    // {
+    //     APP_LOG(APP_LOG_LEVEL_DEBUG, "Missing message type!");
+    //     return;
+    // }
 
-    unsigned int message_type = tuple->value->uint32;
-    switch(message_type)
-    {
-    case MESSAGE_STOPS_METADATA:
-        APP_LOG(APP_LOG_LEVEL_DEBUG, "Received a MESSAGE_STOPS_METADATA. Syncing...");
+    // unsigned int message_type = tuple->value->uint32;
+    // switch(message_type)
+    // {
+    // case MESSAGE_STOPS_METADATA:
+    //     APP_LOG(APP_LOG_LEVEL_DEBUG, "Received a MESSAGE_STOPS_METADATA. Syncing...");
 
-        // Delete existing data
-        destroy_stops_data();
+    //     // Delete existing data
+    //     destroy_stops_data();
 
-        i = 0;
+    //     i = 0;
 
-        // Get the number of stops we're receiving
-        Tuple *tuple = dict_find(received, NUM_STOPS);
-        num_stops = tuple ? tuple->value->uint32 : 0;
+    //     // Get the number of stops we're receiving
+    //     Tuple *tuple = dict_find(received, NUM_STOPS);
+    //     num_stops = tuple ? tuple->value->uint32 : 0;
 
-        // Get the number of data fields per stop
-        tuple = dict_find(received, NUM_FIELDS_PER_STOP);
-        num_fields_per_stop = tuple ? tuple->value->uint32 : 0;
+    //     // Get the number of data fields per stop
+    //     tuple = dict_find(received, NUM_FIELDS_PER_STOP);
+    //     num_fields_per_stop = tuple ? tuple->value->uint32 : 0;
 
-        APP_LOG(APP_LOG_LEVEL_DEBUG, "Expecting %d number of stops with %d fields per stop...",
-        num_stops, num_fields_per_stop);
+    //     APP_LOG(APP_LOG_LEVEL_DEBUG, "Expecting %d number of stops with %d fields per stop...",
+    //     num_stops, num_fields_per_stop);
 
-        stops_data = (char***) malloc(num_stops * sizeof(char**));
-        break;
-    case MESSAGE_STOP_DATA:
-        APP_LOG(APP_LOG_LEVEL_DEBUG, "Received a MESSAGE_STOP_DATA...");
-        if (num_stops > 0) {
-            if (i < num_stops)
-            {
-                // Parse received stop data
-                stops_data[i] = (char**) malloc(num_fields_per_stop * sizeof(char*));
-                for (unsigned int j = 0; j < num_fields_per_stop; j++)
-                {
-                    tuple = dict_find(received, j + IDX_BEGIN_STOPS_DATA);
-                    if (tuple)
-                    {
-                        char* data_str = tuple->value->cstring;
-                        stops_data[i][j] = (char*) malloc((strlen(data_str) + 1) * sizeof(char));
-                        strcpy(stops_data[i][j], data_str);
+    //     stops_data = (char***) malloc(num_stops * sizeof(char**));
+    //     break;
+    // case MESSAGE_STOP_DATA:
+    //     APP_LOG(APP_LOG_LEVEL_DEBUG, "Received a MESSAGE_STOP_DATA...");
+    //     if (num_stops > 0) {
+    //         if (i < num_stops)
+    //         {
+    //             // Parse received stop data
+    //             stops_data[i] = (char**) malloc(num_fields_per_stop * sizeof(char*));
+    //             for (unsigned int j = 0; j < num_fields_per_stop; j++)
+    //             {
+    //                 tuple = dict_find(received, j + IDX_BEGIN_STOPS_DATA);
+    //                 if (tuple)
+    //                 {
+    //                     char* data_str = tuple->value->cstring;
+    //                     stops_data[i][j] = (char*) malloc((strlen(data_str) + 1) * sizeof(char));
+    //                     strcpy(stops_data[i][j], data_str);
 
-                        APP_LOG(APP_LOG_LEVEL_DEBUG, "Stops data (stop %d, field %d): %s",
-                                i, j, stops_data[i][j]);
-                    }
-                    else
-                        APP_LOG(APP_LOG_LEVEL_DEBUG, "Missing data (stop %d, field %d)!", i, j);
-                }
-                i++;
-            } else if (i == num_stops) {
-                // Done loading stops
-                first_menu_items = malloc(num_stops * sizeof(SimpleMenuItem));
-                if (on_splash)
-                {
-                    on_splash = false;
-                    window_stack_push(menu_window, true);
-                    APP_LOG(APP_LOG_LEVEL_DEBUG, "Just pushed a window!");
-                    window_stack_remove(window, true);
-                    APP_LOG(APP_LOG_LEVEL_DEBUG, "Just removed a window!");
-                }
-            }
-        } else {
-            APP_LOG(APP_LOG_LEVEL_DEBUG, "Too many stops received.");
-        }
-        break;
-    default:
-        APP_LOG(APP_LOG_LEVEL_DEBUG, "Unknown message type %d", message_type);
-    }
+    //                     APP_LOG(APP_LOG_LEVEL_DEBUG, "Stops data (stop %d, field %d): %s",
+    //                             i, j, stops_data[i][j]);
+    //                 }
+    //                 else
+    //                     APP_LOG(APP_LOG_LEVEL_DEBUG, "Missing data (stop %d, field %d)!", i, j);
+    //             }
+    //             i++;
+    //         } else if (i == num_stops) {
+    //             // Done loading stops
+    //             first_menu_items = malloc(num_stops * sizeof(SimpleMenuItem));
+    //             if (on_splash)
+    //             {
+    //                 on_splash = false;
+    //                 window_stack_push(menu_window, true);
+    //                 APP_LOG(APP_LOG_LEVEL_DEBUG, "Just pushed a window!");
+    //                 window_stack_remove(window, true);
+    //                 APP_LOG(APP_LOG_LEVEL_DEBUG, "Just removed a window!");
+    //             }
+    //         }
+    //     } else {
+    //         APP_LOG(APP_LOG_LEVEL_DEBUG, "Too many stops received.");
+    //     }
+    //     break;
+    // default:
+    //     APP_LOG(APP_LOG_LEVEL_DEBUG, "Unknown message type %d", message_type);
+    // }
 }
 
 static void menu_select_callback(int index, void *context) {
@@ -238,10 +238,10 @@ static void menu_select_callback(int index, void *context) {
     if (stops_data && index < (int)num_stops && num_fields_per_stop > 3)
     {
         APP_LOG(APP_LOG_LEVEL_DEBUG, "Loading data for stop %d into stop_window", index);
-        text_layer_set_text(route_title, stops_data[index][1]);
-        text_layer_set_text(stop_title, stops_data[index][2]);
-        text_layer_set_text(stop_weather, stops_data[index][3]);
-        text_layer_set_text(stop_ETA, stops_data[index][4]);
+        text_layer_set_text(route_title, stops_data[index][0]);
+        text_layer_set_text(stop_title, stops_data[index][1]);
+        text_layer_set_text(stop_weather, stops_data[index][2]);
+        text_layer_set_text(stop_ETA, stops_data[index][3]);
     }
 
     // Show the window
@@ -347,16 +347,16 @@ void handle_init(void)
     text_layer_set_background_color(route_title, GColorClear);
     layer_add_child(stop_root, text_layer_get_layer(route_title));
 
-    // Set stop_subtitle
-    stop_subtitle = text_layer_create(GRect(0, 28, stop_bounds.size.w, 48));
-    text_layer_set_text(stop_subtitle, "Queen's Park @ Museum Station");
+    // Set stop_title
+    stop_title = text_layer_create(GRect(0, 28, stop_bounds.size.w, 48));
+    text_layer_set_text(stop_title, "Queen's Park @ Museum Station");
     //text_layer_set_text(stop_title, foo) see above comment
-    text_layer_set_font(stop_subtitle, fonts_get_system_font(FONT_KEY_GOTHIC_24));
-    text_layer_set_text_alignment(stop_subtitle, GTextAlignmentCenter);
-    text_layer_set_overflow_mode(stop_subtitle, GTextOverflowModeWordWrap);
-    text_layer_set_text_color(stop_subtitle, GColorWhite);
-    text_layer_set_background_color(stop_subtitle, GColorClear);
-    layer_add_child(stop_root, text_layer_get_layer(stop_subtitle));
+    text_layer_set_font(stop_title, fonts_get_system_font(FONT_KEY_GOTHIC_24));
+    text_layer_set_text_alignment(stop_title, GTextAlignmentCenter);
+    text_layer_set_overflow_mode(stop_title, GTextOverflowModeWordWrap);
+    text_layer_set_text_color(stop_title, GColorWhite);
+    text_layer_set_background_color(stop_title, GColorClear);
+    layer_add_child(stop_root, text_layer_get_layer(stop_title));
 
     // Set stop_weather
     stop_weather = text_layer_create(GRect(0, 82, stop_bounds.size.w, 18));
@@ -428,7 +428,7 @@ void handle_init(void)
     APP_LOG(APP_LOG_LEVEL_DEBUG, "Stops data (stop %d, field %d): %s",
             0, 1, stops_data[0][1]);
 
-    data_str = "-4°C, a few flurries.";
+    data_str = "-4C, a few flurries.";
     stops_data[0][2] = (char*) malloc((strlen(data_str) + 1) * sizeof(char));
     strcpy(stops_data[0][2], data_str);
     APP_LOG(APP_LOG_LEVEL_DEBUG, "Stops data (stop %d, field %d): %s",
@@ -457,8 +457,8 @@ void handle_deinit(void)
     bitmap_layer_destroy(image_layer);
     window_destroy(window);
 
+    text_layer_destroy(route_title);
     text_layer_destroy(stop_title);
-    text_layer_destroy(stop_subtitle);
     text_layer_destroy(stop_weather);
     text_layer_destroy(stop_ETA);
 
