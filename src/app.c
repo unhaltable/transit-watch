@@ -97,7 +97,7 @@ void initialize_stops_data(DictionaryIterator *received, void *context)
     // stops_data = (char***) malloc(num_stops * sizeof(char**));
     // APP_LOG(APP_LOG_LEVEL_DEBUG, "Expecting %d number of stops with %d fields per stop...",
     //         num_stops, num_fields_per_stop);
-    
+
     // for (unsigned int i = 0; i < num_stops; i++)
     // {
     //     stops_data[i] = (char**)malloc(num_fields_per_stop * sizeof(char*));
@@ -312,7 +312,7 @@ void handle_init(void)
     // Register AppMessage handlers + initialize
     // app_message_register_inbox_received(in_received_handler);
     // app_message_register_inbox_dropped(in_dropped_handler);
-    // app_message_register_outbox_sent(out_sent_handler);    
+    // app_message_register_outbox_sent(out_sent_handler);
     // app_message_register_outbox_failed(out_failed_handler);
     // app_message_open(app_message_inbox_size_maximum(), app_message_outbox_size_maximum());
 
@@ -398,7 +398,7 @@ void handle_init(void)
 
     // Don't forget to deinit this
     image = gbitmap_create_with_resource(RESOURCE_ID_IMAGE_LOGO);
-    
+
     // Creation of image layer
     image_layer = bitmap_layer_create(bounds);
     bitmap_layer_set_bitmap(image_layer, image);
@@ -416,25 +416,25 @@ void handle_init(void)
 
     char* data_str;
 
-    data_str = "506";
+    data_str = "506 E Carlton";
     stops_data[0][0] = (char*) malloc((strlen(data_str) + 1) * sizeof(char));
     strcpy(stops_data[0][0], data_str);
     APP_LOG(APP_LOG_LEVEL_DEBUG, "Stops data (stop %d, field %d): %s",
             0, 0, stops_data[0][0]);
 
-    data_str = "506-Carlton";
+    data_str = "College St At Beverley St";
     stops_data[0][1] = (char*) malloc((strlen(data_str) + 1) * sizeof(char));
     strcpy(stops_data[0][1], data_str);
     APP_LOG(APP_LOG_LEVEL_DEBUG, "Stops data (stop %d, field %d): %s",
             0, 1, stops_data[0][1]);
 
-    data_str = "East";
+    data_str = "-4°C, a few flurries.";
     stops_data[0][2] = (char*) malloc((strlen(data_str) + 1) * sizeof(char));
     strcpy(stops_data[0][2], data_str);
     APP_LOG(APP_LOG_LEVEL_DEBUG, "Stops data (stop %d, field %d): %s",
             0, 2, stops_data[0][2]);
 
-    data_str = "College St At Beverley St";
+    data_str = "15 min";
     stops_data[0][3] = (char*) malloc((strlen(data_str) + 1) * sizeof(char));
     strcpy(stops_data[0][3], data_str);
     APP_LOG(APP_LOG_LEVEL_DEBUG, "Stops data (stop %d, field %d): %s",
