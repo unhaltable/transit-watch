@@ -70,10 +70,10 @@ public class StopListAdapter extends ResourceCursorAdapter {
         stop = PreferencesDataSource.stopFromCursor(cursor, stopCursorColumns, agency);
 
         // ETA
-        Random generator = new Random();
-        int i = generator.nextInt(30) + 1;
+//        Random generator = new Random();
+//        int i = generator.nextInt(30) + 1;
 
-        int eta_min = i; // get the actual eta
+        int eta_min = 15; // get the actual eta
         minutesView.setText(String.valueOf(eta_min));
         if (eta_min > 10)
             etaView.setBackgroundColor(context.getResources().getColor(R.color.stop_green));
@@ -85,7 +85,7 @@ public class StopListAdapter extends ResourceCursorAdapter {
 //        new GetSchedule().execute();
 
         // Route info
-        routeView.setText(String.format("%s (%s)", route.getTitle(), agency.getTitle()));
+        routeView.setText(String.format("%s (%s)", route.getTitle(), agency.getShortTitle()));
         stopView.setText(stop.getTitle());
     }
 

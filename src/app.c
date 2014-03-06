@@ -428,7 +428,7 @@ void handle_init(void)
     APP_LOG(APP_LOG_LEVEL_DEBUG, "Stops data (stop %d, field %d): %s",
             0, 1, stops_data[0][1]);
 
-    data_str = "-4C, a few flurries.";
+    data_str = "-8C, Clear.";
     stops_data[0][2] = (char*) malloc((strlen(data_str) + 1) * sizeof(char));
     strcpy(stops_data[0][2], data_str);
     APP_LOG(APP_LOG_LEVEL_DEBUG, "Stops data (stop %d, field %d): %s",
