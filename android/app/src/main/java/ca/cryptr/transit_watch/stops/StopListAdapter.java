@@ -85,7 +85,7 @@ public class StopListAdapter extends ResourceCursorAdapter {
 //        new GetSchedule().execute();
 
         // Route info
-        routeView.setText(String.format("%s (%s)", route.getTitle(), agency.getTitle()));
+        routeView.setText(String.format("%s (%s)", route.getTitle(), agency.getShortTitle()));
         stopView.setText(stop.getTitle());
     }
 
