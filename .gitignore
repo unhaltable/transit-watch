@@ -40,3 +40,7 @@ Thumbs.db
 PebbleKit/library/build
 build
 .lock-waf_darwin_build
+
+# Sublime Text
+*.sublime-workspace
+*.sublime-project
